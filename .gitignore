@@ -1,5 +1,14 @@
 
 # Disk image of the raspberry pi's minimal working state
 pi.7z
+
+# Project files
 .idea
 .idea/
+
+# Java files
+*.jar
+*.class
+
+# Python files
+*.pyc
