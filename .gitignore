@@ -1,7 +1,3 @@
-
-# Disk image of the raspberry pi's minimal working state
-pi.7z
-
 # Project files
 .idea
 .idea/
@@ -12,3 +8,6 @@ pi.7z
 
 # Python files
 *.pyc
+
+# Visual Studio code settings
+.vscode/
