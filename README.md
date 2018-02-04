@@ -21,4 +21,5 @@ After connecting to the network, use eg. `ssh pi@192.168.0.1` to login.
 
 ### Raspberry Pi Disk Image
 
-I've taken an image of the raspberry pi, and uploaded it using Git Large File Storage ([installation instructions](https://github.com/git-lfs/git-lfs/wiki/Installation)).
+I've taken an image of the raspberry pi, and uploaded it using Git Large File Storage ([installation instructions](https://github.com/git-lfs/git-lfs/wiki/Installation)). After installing, use `git lfs install --skip-smudge` to force it to avoid pulling large files unless explicitly asked to.
+To later download the large files, use `git lfs pull`.

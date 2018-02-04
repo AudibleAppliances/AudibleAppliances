@@ -13,5 +13,8 @@ target/
 # Python files
 *.pyc
 
-# Visual Studio code settings
+# Visual Studio Code and Extensions settings
 .vscode/
+.project
+.classpath
+.settings
