@@ -3,6 +3,9 @@
 .idea/
 *.iml
 
+# Build files
+target/
+
 # Java files
 *.jar
 *.class
