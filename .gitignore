@@ -18,3 +18,7 @@ target/
 .project
 .classpath
 .settings
+
+# Build/Run scripts
+build
+run
