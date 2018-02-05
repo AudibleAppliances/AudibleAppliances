@@ -30,9 +30,11 @@ The TTS component uses the [Festival Sound Synthesis System](http://www.cstr.ed.
 
 The easiest way of setting it up is to run the script `ttssetup.sh`, or by running the following commands:
 
-    sudo apt install festival
-    wget http://www.speech.cs.cmu.edu/cmu_arctic/packed/cmu_us_awb_arctic-0.95-release.tar.bz2
-    echo "3f42f17fcb7eaec5cac61f7e6b6aa928a6ffb45f51b1da124278fd300d47984a  cmu_us_awb_arctic-0.95-release.tar.bz2" | sha256sum -c -
-    tar xf cmu_us_awb_arctic-0.95-release.tar.bz2
-    sudo mkdir -p /usr/share/festival/voices/us
-    sudo mv cmu_us_awb_arctic /usr/share/festival/voices/us/cmu_us_awb_arctic_clunits
+```bash
+sudo apt install festival
+wget http://www.speech.cs.cmu.edu/cmu_arctic/packed/cmu_us_awb_arctic-0.95-release.tar.bz2
+echo "3f42f17fcb7eaec5cac61f7e6b6aa928a6ffb45f51b1da124278fd300d47984a  cmu_us_awb_arctic-0.95-release.tar.bz2" | sha256sum -c -
+tar xf cmu_us_awb_arctic-0.95-release.tar.bz2
+sudo mkdir -p /usr/share/festival/voices/us
+sudo mv cmu_us_awb_arctic /usr/share/festival/voices/us/cmu_us_awb_arctic_clunits
+```
