@@ -8,7 +8,7 @@ public abstract class ScreenNumber {
     private final int minBound;
     private final int maxBound;
 
-    private double val;
+    private int val;
 
     public ScreenNumber( int minBound, int maxBound ){
         this.minBound = minBound;
@@ -22,7 +22,7 @@ public abstract class ScreenNumber {
      * @param newVal
      * @return if the value has been set successfully
      */
-    public boolean setValue( double newVal ){
+    public boolean setValue( int newVal ){
         if ( minBound >= newVal && newVal <= maxBound ){
             this.val = newVal;
             return true;
@@ -34,12 +34,12 @@ public abstract class ScreenNumber {
      * Returns the value
      * @return
      */
-    public double getValue(){
+    public int getValue(){
         return val;
     }
 
     /**
-     * Gives a string that can be spoken out loud
+     * Gives a string that can be spoken out lo
      * @return
      */
     public abstract String speakValue();
