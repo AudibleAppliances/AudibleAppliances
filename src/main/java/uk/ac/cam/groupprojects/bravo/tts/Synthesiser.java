@@ -2,10 +2,18 @@ package uk.ac.cam.groupprojects.bravo.tts;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+// Interfaces with the "festival" program.
+// It has a "pipe" mode, where it just accepts commands and performs them, but that doesn't
+// report error messages and the like (which is desirable, and necessary to get the voice list).
+// This class uses the "interactive" interface, which means we have to skip the
+// "startup banner" (wall of text), and skip past any prompts ("festival> ") that are presented.
 
 public class Synthesiser implements AutoCloseable {
     private final Process festival;
@@ -39,6 +47,37 @@ public class Synthesiser implements AutoCloseable {
         }
     }
 
+    // Sets the rate of playback of the voice
+    // rate is measured in Hertz - valid values are from 2000 to 192000 inclusive (see aplay's documentation)
+    public void setRate(int rate) throws RateSetException {
+        if (rate < 2000 || rate > 192000) {
+            throw new RateSetException("Invalid rate: must be between 2000Hz and 192000Hz inclusive.");
+        }
+
+        // Get the current command used by festival to play audio
+        write("(Parameter.get \"Audio_Command\")");
+
+        // Check it contains a suitable rate parameter
+        String pattern = "-r (\\$SR|\\d+)";
+        String currentSetting = readLine();
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(currentSetting);
+        if (!m.find()) {
+            throw new RateSetException("Failed to set rate. Got current setting: \"" + currentSetting + "\"");
+        }
+
+        // Overwrite the rate parameter with our rate
+        String newSetting = m.replaceFirst("-r " + rate);
+        // Omit the "" around the new setting as it already contains them (as we read it from the output)
+        write("(Parameter.set \"Audio_Command\" " + newSetting + ")");
+
+        // Check festival updated correctly
+        String feedback = readLine();
+        if (!feedback.equals(newSetting)) {
+            throw new RateSetException("Failed to set rate. Got feedback: \"" + feedback + "\"");
+        }
+    }
+
     public void speak(String text) {
         write("(SayText \"" + text + "\")");
         readLine(); // Discard the next line of input (contains "utterance" information)
@@ -55,10 +94,13 @@ public class Synthesiser implements AutoCloseable {
         }
     }
 
+    // Output a command to the festival process
     private void write(String s) {
         out.write(s + "\n");
         out.flush();
     }
+    // Read a single whitespace-delimited token from the process' output.
+    // Ignore tokens containing the festival prompt ("festival>")
     private String read() {
         String s;
         do {
@@ -66,6 +108,8 @@ public class Synthesiser implements AutoCloseable {
         } while (s.startsWith("festival>"));
         return s;
     }
+    // Reada newline-delimited string from the process' output.
+    // Ignore tokens containing the festival prompt ("festival>")
     private String readLine() {
         String s = in.nextLine().trim();
         if (s.startsWith("festival> ")) {
@@ -99,6 +143,7 @@ public class Synthesiser implements AutoCloseable {
         }
     }
 
+    // Create a process in interactive mode, ready for usage
     private static Process spawnFestivalProcess() throws FestivalMissingException {
         try {
             ProcessBuilder pb = new ProcessBuilder(Arrays.asList("festival", "--interactive"));
