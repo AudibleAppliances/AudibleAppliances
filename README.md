@@ -38,3 +38,7 @@ tar xf cmu_us_awb_arctic-0.95-release.tar.bz2
 sudo mkdir -p /usr/share/festival/voices/us
 sudo mv cmu_us_awb_arctic /usr/share/festival/voices/us/cmu_us_awb_arctic_clunits
 ```
+
+### Testing with Maven
+Unit tests live in the test directory and must have a name with the following form `*Test.java`. Integration tests live in the it directory and must have the following form `*IT.java`.
+To run the unit tests run `mvn clean test`, to run both the unit tests and integration tests run `mvn clean verify`.
