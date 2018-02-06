@@ -11,3 +11,4 @@ deploy:
   skip_cleanup: true
   on:
     repo: odnh/AudibleAppliances
+    tags: true
