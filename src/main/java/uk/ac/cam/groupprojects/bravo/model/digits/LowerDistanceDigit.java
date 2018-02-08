@@ -2,9 +2,12 @@ package uk.ac.cam.groupprojects.bravo.model.digits;
 
 import uk.ac.cam.groupprojects.bravo.model.ScreenNumber;
 
-public class DistanceDigit extends ScreenNumber{
-    public DistanceDigit() {
-        super(0, 100);
+/**
+ * Created by david on 08/02/2018.
+ */
+public class LowerDistanceDigit extends ScreenNumber {
+    public LowerDistanceDigit() {
+        super(0, 9);
     }
 
     @Override

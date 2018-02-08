@@ -1,24 +1,33 @@
 package uk.ac.cam.groupprojects.bravo.model;
 
-import uk.ac.cam.groupprojects.bravo.model.digits.DistanceDigit;
+import uk.ac.cam.groupprojects.bravo.model.digits.HigherDistanceDigit;
+import uk.ac.cam.groupprojects.bravo.model.digits.LowerDistanceDigit;
 
 public class Distance extends ScreenNumber {
 
     private ScreenNumber km;
+
+    //We actually store what we read, so this is in 100m increments
     private ScreenNumber m;
 
     public Distance() {
         super(0, 0);
-        km = new DistanceDigit();
-        m = new DistanceDigit();
+        km = new HigherDistanceDigit();
+        m = new LowerDistanceDigit();
     }
 
-    public boolean setDistance( int km, int m ){
-        return this.km.setValue( km ) && this.m.setValue( m );
+    public boolean setValue( int value ){
+        return value > 0 && setValue( value / 100, value % 100 );
+    }
+
+    public boolean setValue( int km, int m ){
+        return
+                this.km.setValue( km )
+                && this.m.setValue( m );
     }
 
     @Override
     public String speakValue() {
-        return String.format("You have currently travelled %d kilometres and %d metres", km.getValue(), m.getValue() );
+        return String.format("You have currently travelled %d.%d kilometres", km.getValue(), m.getValue() );
     }
 }
