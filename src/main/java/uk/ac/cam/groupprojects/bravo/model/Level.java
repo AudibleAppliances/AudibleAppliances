@@ -11,6 +11,6 @@ public class Level extends ScreenNumber {
 
     @Override
     public String speakValue() {
-        return String.format( "Your current level is %d ", getValue() );
+        return String.format( "Your current level is %d", getValue() );
     }
 }
