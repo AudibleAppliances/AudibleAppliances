@@ -1,14 +1,34 @@
 language: java
 jdk: openjdk8
 sudo: false
+
 script: mvn package
 
+#deploy:
+#  provider: releases
+#  api_key:
+#    secure: HVaXYkjZe0YGdTm2PG+7gonFoyUCzqcza8f0n6ynsWb+pxkJv060qmWt7eU6leLmWUC0VJ8vKzvyX9s+OEaQbNU0VodfCToGqn+ioLof1v+NELdNoiDOGM77ENIuGvKPmu0JHOlmnUNOVyKWlP3b6KzzEASxj6XKf4EOGAtx3MbZichn904rajIaEdvgvquE0TdVU3K21PhPm7+wzCzFWc7cOO5LnkhqPWJSU1YYDfzaXa+tRmifBgg8Fc+3iTUIeO3LX4IKVOpXRnnStr8ZtTVtHo4HJGRCsZUHaddUy7OvRIjCE4UCnIMncau2pe73pyJKtMks2Y8khWKu6z7lQ/Q5jq6yw9z6gCrUa6Sg+B6rgA4DWlxm0WfTGpxwSgdAdnUva3RkSPtsFustPaNxExNgI7sTQa09ExsXITx/OG4J0qED//wHBmBTh+fah1mGtOv1dZKeHZi4BUj7lqzZomZkXEggeDwEC5SILSdVLCWf1/rFlMqTPNghlBZi7gAtGh0ZYxx3lX5X5D88ls+o5LljJsU79hw9is7oHTvk8GZN7EzDm9DNTj8KV/efiu4eA/RpKv3wOfWK6FGIjdydcW30ZBw8moOirClVz8lWfQsv8SxUmx12aknlgmHKXkvqHQL352ZfTCKrSeNjKgEeMv2lGuG5sN+8yOaWugnkkA8=
+#  file: target/audible-1.0-SNAPSHOT.jar
+#  skip_cleanup: true
+#  on:
+#    repo: odnh/AudibleAppliances
+#    tags: true
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_289780662e1b_key -iv $encrypted_289780662e1b_iv -in audible_travis.enc -out audible_travis -d
+
+addons:
+  ssh_known_hosts: shell.srcf.net
+
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_<...>_key -iv $encrypted_<...>_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/deploy_rsa
+- ssh-add /tmp/deploy_rsa
+
 deploy:
-  provider: releases
-  api_key:
-    secure: HVaXYkjZe0YGdTm2PG+7gonFoyUCzqcza8f0n6ynsWb+pxkJv060qmWt7eU6leLmWUC0VJ8vKzvyX9s+OEaQbNU0VodfCToGqn+ioLof1v+NELdNoiDOGM77ENIuGvKPmu0JHOlmnUNOVyKWlP3b6KzzEASxj6XKf4EOGAtx3MbZichn904rajIaEdvgvquE0TdVU3K21PhPm7+wzCzFWc7cOO5LnkhqPWJSU1YYDfzaXa+tRmifBgg8Fc+3iTUIeO3LX4IKVOpXRnnStr8ZtTVtHo4HJGRCsZUHaddUy7OvRIjCE4UCnIMncau2pe73pyJKtMks2Y8khWKu6z7lQ/Q5jq6yw9z6gCrUa6Sg+B6rgA4DWlxm0WfTGpxwSgdAdnUva3RkSPtsFustPaNxExNgI7sTQa09ExsXITx/OG4J0qED//wHBmBTh+fah1mGtOv1dZKeHZi4BUj7lqzZomZkXEggeDwEC5SILSdVLCWf1/rFlMqTPNghlBZi7gAtGh0ZYxx3lX5X5D88ls+o5LljJsU79hw9is7oHTvk8GZN7EzDm9DNTj8KV/efiu4eA/RpKv3wOfWK6FGIjdydcW30ZBw8moOirClVz8lWfQsv8SxUmx12aknlgmHKXkvqHQL352ZfTCKrSeNjKgEeMv2lGuG5sN+8yOaWugnkkA8=
-  file: target/audible-1.0-SNAPSHOT.jar
+  provider: script
   skip_cleanup: true
+  script: rsync -r --delete-after --quiet target/audible-1.0-SNAPSHOT.jar oh260@shell.srcf.net:~/public_html/AudibleAppliances/builds/
   on:
-    repo: odnh/AudibleAppliances
-    tags: true
+    branch: master
