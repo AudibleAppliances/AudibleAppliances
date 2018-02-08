@@ -32,7 +32,8 @@ public class Synthesiser implements AutoCloseable {
             s = in.next();
         }
     }
-    public Synthesiser(String voice) throws FestivalMissingException, VoiceMissingException {
+    public Synthesiser(String voice) throws FestivalMissingException,
+                                            VoiceMissingException {
         this();
         setVoice(voice);
     }
@@ -118,7 +119,8 @@ public class Synthesiser implements AutoCloseable {
         return s;
     }
 
-    public static List<String> getVoices() throws FestivalMissingException {
+    public static List<String> getVoices() throws FestivalMissingException,
+                                                  InvalidVoiceListException {
         try (Synthesiser synth = new Synthesiser()) {
             // Tell the festival process to list the available voices
             synth.write("(voice.list)");
@@ -126,14 +128,22 @@ public class Synthesiser implements AutoCloseable {
             // Read the formatted output (the voice list)
             // Usual output would be eg. "(kal_diphone us1_mbrola cmu_us_awb_arctic_clunits)"
             List<String> voices = new ArrayList<>();
-            Boolean seenLastVoice = false;
-            while (!seenLastVoice) {
-                String s = synth.read();
-                if (s.startsWith("(")) { // First item
-                    s = s.substring(1);
-                } else if (s.endsWith(")")) { // Last item
+
+            String s = synth.read();
+            if (!s.startsWith("(")) {
+                throw new InvalidVoiceListException("Got invalid token after retrieving voices: \"" + s + "\"");
+            }
+            // Trim the opening bracket, store it
+            s = s.substring(1);
+            voices.add(s);
+
+            boolean lastVoice = false;
+            while (!lastVoice) {
+                s = synth.read();
+
+                if (s.endsWith(")")) { // Last item
                     s = s.substring(0, s.length() - 1);
-                    seenLastVoice = true;
+                    lastVoice = true;
                 }
                 voices.add(s);
             }
