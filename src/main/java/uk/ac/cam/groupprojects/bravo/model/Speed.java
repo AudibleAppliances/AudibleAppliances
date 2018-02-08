@@ -1,13 +1,30 @@
 package uk.ac.cam.groupprojects.bravo.model;
 
+import uk.ac.cam.groupprojects.bravo.model.digits.HigherSpeedDigit;
+import uk.ac.cam.groupprojects.bravo.model.digits.LowerSpeedDigit;
+
 public class Speed extends ScreenNumber {
+
+    private HigherSpeedDigit higherSpeedDigit;
+    private LowerSpeedDigit lowerSpeedDigit;
 
     public Speed() {
         super(0, 100);
+
+        higherSpeedDigit = new HigherSpeedDigit();
+        lowerSpeedDigit = new LowerSpeedDigit();
+    }
+
+    public boolean setValue( int value ){
+        return value > 0 && this.setValue( value / 100, value % 10 );
+    }
+
+    public boolean setValue( int val1, int val2 ){
+        return higherSpeedDigit.setValue( val1 ) && lowerSpeedDigit.setValue( val2 );
     }
 
     @Override
     public String speakValue() {
-        return String.format( "You are currently cycling at %.2f kilometres per hour", getValue() );
+        return String.format( "You are currently cycling at %d.%d kilometres per hour", higherSpeedDigit.getValue(), lowerSpeedDigit.getValue() );
     }
 }
