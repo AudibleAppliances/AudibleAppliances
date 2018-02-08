@@ -2,15 +2,17 @@ package uk.ac.cam.groupprojects.bravo.model.digits;
 
 import uk.ac.cam.groupprojects.bravo.model.ScreenNumber;
 
-public class TimeDigit extends ScreenNumber {
+/**
+ * Created by david on 08/02/2018.
+ */
+public class HigherSpeedDigit extends ScreenNumber {
 
-    public TimeDigit() {
-        super(0, 59);
+    public HigherSpeedDigit() {
+        super(0, 99);
     }
 
     @Override
     public String speakValue() {
         return null;
     }
-
 }
