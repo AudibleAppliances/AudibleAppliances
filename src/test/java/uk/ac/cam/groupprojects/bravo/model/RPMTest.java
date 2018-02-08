@@ -13,7 +13,7 @@ public class RPMTest {
     public void testBounds(){
         RPM rpm = new RPM();
         assertEquals( false, rpm.setValue(-5) );
-        assertEquals( false, rpm.setValue(400) );
+        assertEquals( false, rpm.setValue(4000) );
         assertEquals( true, rpm.setValue(50) );
     }
 
