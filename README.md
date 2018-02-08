@@ -1,5 +1,7 @@
 # Audible Appliances - Bravo Group
 
+[![Build Status](https://travis-ci.org/odnh/AudibleAppliances.svg?branch=master)](https://travis-ci.org/odnh/AudibleAppliances)
+
 Use a Raspberry Pi to read out data from exercise machine screens for the visually impaired.
 
 ## Raspberry Pi Configuration
@@ -38,3 +40,13 @@ tar xf cmu_us_awb_arctic-0.95-release.tar.bz2
 sudo mkdir -p /usr/share/festival/voices/us
 sudo mv cmu_us_awb_arctic /usr/share/festival/voices/us/cmu_us_awb_arctic_clunits
 ```
+
+### Raspberry Pi Internet
+
+To connect the raspberry pi to a laptop, enable internet sharing over the ethernet link, and connect the laptop to a non-eduroam network. The pi should be able to connect through the laptop (reboot it if necessary).
+
+You can ssh onto the pi from the laptop you're providing internet from by connecting to the IP address of the ethernet interface on the laptop.
+
+### Testing with Maven
+Unit tests live in the test directory and must have a name with the following form `*Test.java`. Integration tests live in the it directory and must have the following form `*IT.java`.
+To run the unit tests run `mvn clean test`, to run both the unit tests and integration tests run `mvn clean verify`.
