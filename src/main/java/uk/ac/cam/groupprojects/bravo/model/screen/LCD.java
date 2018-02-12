@@ -54,4 +54,16 @@ public class LCD {
         return code;
     }
 
+    public LCDFunction matchSettings(){
+        String toTest = returnString();
+        for ( LCDFunction function: LCDFunction.values() ){
+            for ( String pattern : function.getValues() ){
+                if ( pattern.compareTo( toTest ) == 0 ){
+                    return function;
+                }
+            }
+        }
+        return LCDFunction.NOT_DEF;
+    }
+
 }
