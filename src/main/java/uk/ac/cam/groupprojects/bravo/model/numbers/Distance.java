@@ -1,7 +1,7 @@
-package uk.ac.cam.groupprojects.bravo.model;
+package uk.ac.cam.groupprojects.bravo.model.numbers;
 
-import uk.ac.cam.groupprojects.bravo.model.digits.HigherDistanceDigit;
-import uk.ac.cam.groupprojects.bravo.model.digits.LowerDistanceDigit;
+import uk.ac.cam.groupprojects.bravo.model.numbers.digits.HigherDistanceDigit;
+import uk.ac.cam.groupprojects.bravo.model.numbers.digits.LowerDistanceDigit;
 
 public class Distance extends ScreenNumber {
 

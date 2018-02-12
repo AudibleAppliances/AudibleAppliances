@@ -1,4 +1,4 @@
-package uk.ac.cam.groupprojects.bravo.model;
+package uk.ac.cam.groupprojects.bravo.model.numbers;
 
 
 public class RPM extends ScreenNumber {

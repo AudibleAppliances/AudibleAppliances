@@ -1,7 +1,7 @@
-package uk.ac.cam.groupprojects.bravo.model;
+package uk.ac.cam.groupprojects.bravo.model.numbers;
 
-import uk.ac.cam.groupprojects.bravo.model.digits.HigherSpeedDigit;
-import uk.ac.cam.groupprojects.bravo.model.digits.LowerSpeedDigit;
+import uk.ac.cam.groupprojects.bravo.model.numbers.digits.HigherSpeedDigit;
+import uk.ac.cam.groupprojects.bravo.model.numbers.digits.LowerSpeedDigit;
 
 public class Speed extends ScreenNumber {
 

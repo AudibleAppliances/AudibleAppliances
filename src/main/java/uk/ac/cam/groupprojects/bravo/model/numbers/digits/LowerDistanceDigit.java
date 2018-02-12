@@ -1,6 +1,6 @@
-package uk.ac.cam.groupprojects.bravo.model.digits;
+package uk.ac.cam.groupprojects.bravo.model.numbers.digits;
 
-import uk.ac.cam.groupprojects.bravo.model.ScreenNumber;
+import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
 
 /**
  * Created by david on 08/02/2018.

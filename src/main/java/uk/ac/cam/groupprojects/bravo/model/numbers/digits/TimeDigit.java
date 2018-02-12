@@ -1,6 +1,6 @@
-package uk.ac.cam.groupprojects.bravo.model.digits;
+package uk.ac.cam.groupprojects.bravo.model.numbers.digits;
 
-import uk.ac.cam.groupprojects.bravo.model.ScreenNumber;
+import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
 
 public class TimeDigit extends ScreenNumber {
 

@@ -1,6 +1,7 @@
-package uk.ac.cam.groupprojects.bravo.model;
+package uk.ac.cam.groupprojects.bravo.model.numbers;
 
 import org.junit.Test;
+import uk.ac.cam.groupprojects.bravo.model.numbers.Level;
 
 import static org.junit.Assert.assertEquals;
 
