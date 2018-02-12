@@ -7,21 +7,21 @@ public class LCD {
 
     /*
         Used to store the state of the screen
-        Stores the height of the bar (0 - 7)
+        Stores which bits are turned on
         Each is a new column
      */
-    private int[] screen;
+    private boolean[][] screen;
 
     public LCD(){
-        screen = new int[10];
+        screen = new boolean[10][8];
     }
 
-    public LCD( int[] newScreen ){
+    public LCD( boolean[][] newScreen ){
         this();
         updateScreen( newScreen );
     }
 
-    public boolean updateScreen( int[] newScreen ){
+    public boolean updateScreen( boolean[][] newScreen ){
         if ( validate( newScreen ) ){
             screen = newScreen;
             return true;
@@ -30,17 +30,26 @@ public class LCD {
         }
     }
 
-    private boolean validate( int[] newScreen ){
+    private boolean validate( boolean[][] newScreen ){
         if ( newScreen.length != 10 )
             return false;
 
-        for (int aNewScreen : newScreen) {
-            if (aNewScreen < 0 || aNewScreen > 7) {
+        for (boolean[] aNewScreen : newScreen) {
+            if ( aNewScreen.length != 8 )
                 return false;
-            }
         }
 
         return true;
+    }
+
+    public String returnString(){
+        String code = "";
+        for ( int i = 0; i < screen.length; i++ ){
+            for ( int j = 0; j < screen[i].length; j++ ){
+                code += ( screen[i][j] ) ? "1" : "0";
+            }
+        }
+        return code;
     }
 
 }
