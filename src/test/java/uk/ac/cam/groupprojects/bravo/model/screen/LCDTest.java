@@ -79,11 +79,11 @@ public class LCDTest {
         testScreen1[9] = new boolean[]{ true, true, true, false, false, false, false };
 
         LCD lcd1 = new LCD();
-        assertEquals( "00000000000000000000000000000000000000000000000000000000000000000000000000000000", lcd1.returnString() );
+        assertEquals( "00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000", lcd1.returnString() );
         assertEquals( true, lcd1.updateScreen( testScreen ) );
-        assertEquals( "11100000111000001110000011100000111000001110000011100000111000001110000011100000", lcd1.returnString() );
+        assertEquals( "11100000 11100000 11100000 11100000 11100000 11100000 11100000 11100000 11100000 11100000", lcd1.returnString() );
         assertEquals( false, lcd1.updateScreen( testScreen1 ) );
-        assertEquals( "11100000111000001110000011100000111000001110000011100000111000001110000011100000", lcd1.returnString() );
+        assertEquals( "11100000 11100000 11100000 11100000 11100000 11100000 11100000 11100000 11100000 11100000", lcd1.returnString() );
 
     }
 

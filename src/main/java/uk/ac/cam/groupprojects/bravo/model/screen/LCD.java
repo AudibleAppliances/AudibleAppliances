@@ -48,6 +48,8 @@ public class LCD {
             for ( int j = 0; j < screen[i].length; j++ ){
                 code += ( screen[i][j] ) ? "1" : "0";
             }
+            if ( i != ( screen.length - 1 ) )
+                code += " ";
         }
         return code;
     }
