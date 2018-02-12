@@ -21,6 +21,12 @@ public class LCD {
         updateScreen( newScreen );
     }
 
+    /**
+     * Validates the screen being passed in using the validate function
+     * Then sets the screen variable to the passed in value
+     * @param newScreen the latest update of the screen
+     * @return If it was correct set (passed the validation tests)
+     */
     public boolean updateScreen( boolean[][] newScreen ){
         if ( validate( newScreen ) ){
             screen = newScreen;
@@ -30,6 +36,15 @@ public class LCD {
         }
     }
 
+    /**
+     *
+     * This function will validate any screen array that it is given.
+     * It makes sure that that the outer array is 10 wide
+     * And every inner array is 8 wide
+     *
+     * @param newScreen The array to validate
+     * @return Whether the array passed the validation tests
+     */
     private boolean validate( boolean[][] newScreen ){
         if ( newScreen.length != 10 )
             return false;
@@ -42,6 +57,11 @@ public class LCD {
         return true;
     }
 
+    /**
+     * Returns the LCD screen encoded as a string
+     * Will return in a form of 8 0s and 1s all joined by a space
+     * @return
+     */
     public String returnString(){
         String code = "";
         for ( int i = 0; i < screen.length; i++ ){
@@ -54,6 +74,16 @@ public class LCD {
         return code;
     }
 
+    /**
+     *
+     * Will attempt to use the current state to match it up with one of the
+     * pre-defined formats in LCDFunction.
+     *
+     * Uses a linear search, should potentially maybe use a binary tree or
+     * some sort of optimised searching algorithm
+     *
+     * @return the LCDFunction
+     */
     public LCDFunction matchSettings(){
         String toTest = returnString();
         for ( LCDFunction function: LCDFunction.values() ){
@@ -64,6 +94,16 @@ public class LCD {
             }
         }
         return LCDFunction.NOT_DEF;
+    }
+
+    /**
+     * Will use the audible name to create a string to speak out
+     *
+     * @return
+     */
+    public String speakSetting(){
+        return "You are currently on the " +
+                matchSettings().getAudibleName() + " mode";
     }
 
 }
