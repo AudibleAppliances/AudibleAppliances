@@ -1,4 +1,4 @@
-package uk.ac.cam.groupprojects.bravo.barProcessing;
+package uk.ac.cam.groupprojects.bravo.graphProcessing;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -6,11 +6,13 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import uk.ac.cam.groupprojects.bravo.model.screen.LCD;
+
 public class Graph {
 
     private BufferedImage i;
     private int w, h;
-    private double a = 0.2;
+    private double a = 0.2; // proportion of cells to not be checked (padding)
 
     private static int graphW = 10;
     private static int graphH = 8;
@@ -73,15 +75,17 @@ public class Graph {
 
     }
 
-    public boolean[][] get() {
+    public LCD get() {
 
-        return g.clone();
+        return new LCD(g);
 
     }
 
     public static void main(String[] args) {
+    	
+    	// general testing
 
-        File f = new File("test images/test5.jpg");
+        File f = new File("test resources/graph/test4.jpg");
         BufferedImage test;
         try {
 
@@ -89,13 +93,13 @@ public class Graph {
 
             Graph testGraph = new Graph(test);
 
-            boolean[][] r = testGraph.get();
+            LCD r = testGraph.get();
 
             for (int i = 0; i < graphH; i ++) {
 
                 for (int j = 0; j < graphW; j ++) {
 
-                    if (r[j][i]) System.out.print("-");
+                    if (r.get(j, i)) System.out.print("-");
                     else System.out.print("X");
                     System.out.print(" ");
 
