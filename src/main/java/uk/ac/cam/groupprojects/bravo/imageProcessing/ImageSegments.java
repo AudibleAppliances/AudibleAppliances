@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
-class ImageSegments {
+public class ImageSegments {
 
     private String mConfigPath;
     private HashMap<BoxType, BoxInfo> mBoxes = new HashMap<>();
