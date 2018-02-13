@@ -50,3 +50,17 @@ sudo mv cmu_us_awb_arctic /usr/share/festival/voices/us/cmu_us_awb_arctic_clunit
 ```
 
 This only works on Debian systems... it won't take much work to port the script to non-Debian systems though.
+
+### Raspberry Pi Internet
+
+To connect the raspberry pi to a laptop, enable internet sharing over the ethernet link, and connect the laptop to a non-eduroam network. The pi should be able to connect through the laptop (reboot it if necessary).
+
+You can ssh onto the pi from the laptop you're providing internet from by connecting to the IP address of the ethernet interface on the laptop.
+
+### Testing with Maven
+Unit tests live in the test directory and must have a name with the following form `*Test.java`. Integration tests live in the it directory and must have the following form `*IT.java`.
+To run the unit tests run `mvn clean test`, to run both the unit tests and integration tests run `mvn clean verify`.
+
+### OCR Setup
+
+The OCR package is quite simple - it has a dependency on an external program though, `ssocr`. It can be installed (on a `dpkg`-based system) using the `ssocr-setup` script in the top-level repository (on non-`dpkg`-based systems, replace the `make deb` with `make install` in the script and remove the `dpkg` command).
