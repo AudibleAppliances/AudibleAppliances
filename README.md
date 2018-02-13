@@ -26,11 +26,19 @@ After connecting to the network, use eg. `ssh pi@192.168.0.1` to login.
 I've taken an image of the raspberry pi, and uploaded it using Git Large File Storage ([installation instructions](https://github.com/git-lfs/git-lfs/wiki/Installation)). After installing, use `git lfs install --skip-smudge` to force it to avoid pulling large files unless explicitly asked to.
 To later download the large files, use `git lfs pull`.
 
-### Raspberry Pi TTS Setup
+### Raspberry Pi Internet
 
-The TTS component uses the [Festival Sound Synthesis System](http://www.cstr.ed.ac.uk/projects/festival/).
+To connect the raspberry pi to a laptop, enable internet sharing over the ethernet link, and connect the laptop to a non-eduroam network. The pi should be able to connect through the laptop (reboot it if necessary).
 
-The easiest way of setting it up is to run the script `ttssetup.sh`, or by running the following commands:
+You can ssh onto the pi from the laptop you're providing internet from by connecting to the IP address of the ethernet interface on the laptop.
+
+### Testing with Maven
+Unit tests live in the test directory and must have a name with the following form `*Test.java`. Integration tests live in the it directory and must have the following form `*IT.java`.
+To run the unit tests run `mvn clean test`, to run both the unit tests and integration tests run `mvn clean verify`.
+
+### TTS Setup
+
+The TTS component uses the [Festival Sound Synthesis System](http://www.cstr.ed.ac.uk/projects/festival/). The easiest way of setting it up is to run the script `ttssetup.sh`, or by running the following commands:
 
 ```bash
 sudo apt install festival
@@ -41,12 +49,4 @@ sudo mkdir -p /usr/share/festival/voices/us
 sudo mv cmu_us_awb_arctic /usr/share/festival/voices/us/cmu_us_awb_arctic_clunits
 ```
 
-### Raspberry Pi Internet
-
-To connect the raspberry pi to a laptop, enable internet sharing over the ethernet link, and connect the laptop to a non-eduroam network. The pi should be able to connect through the laptop (reboot it if necessary).
-
-You can ssh onto the pi from the laptop you're providing internet from by connecting to the IP address of the ethernet interface on the laptop.
-
-### Testing with Maven
-Unit tests live in the test directory and must have a name with the following form `*Test.java`. Integration tests live in the it directory and must have the following form `*IT.java`.
-To run the unit tests run `mvn clean test`, to run both the unit tests and integration tests run `mvn clean verify`.
+This only works on Debian systems... it won't take much work to port the script to non-Debian systems though.
