@@ -1,8 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
 import java.awt.geom.Point2D;
@@ -13,7 +11,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 
 /**
- *  Segements the image from processing using a config file. Also performs preprocessing (thresholding) to make the OCR
+ *  Segments the image from processing using a config file. Also performs preprocessing (thresholding) to make the OCR
  *  more accurate
  *
  *  @author Oliver Hope
@@ -66,11 +64,13 @@ public class ImageSegments {
 
         } catch (FileNotFoundException e) {
             throw new ConfigException("Could not read config file");
+        } catch (JsonParseException e2) {
+            throw new ConfigException("Error parsing JSON");
         }
     }
 
     /**
-     * Takes and image and the type of box we want and returns jus tthat box from the image
+     * Takes and image and the type of box we want and returns just that box from the image
      *
      * @param type BoxType that we want to crop
      * @param image Image of exercise bike screen
