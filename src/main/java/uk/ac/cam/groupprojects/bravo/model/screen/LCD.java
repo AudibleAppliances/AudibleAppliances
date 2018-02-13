@@ -36,6 +36,17 @@ public class LCD {
         }
     }
 
+    public static boolean validateString( String string ){
+        String[] parts = string.split(" ");
+        if ( parts.length != 10 )
+            return false;
+        for ( String s : parts ){
+            if ( s.length() != 8 )
+                return false;
+        }
+        return true;
+    }
+
     /**
      *
      * This function will validate any screen array that it is given.

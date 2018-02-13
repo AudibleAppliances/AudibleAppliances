@@ -53,6 +53,16 @@ public class LCDTest {
     }
 
     @Test
+    public void testStringValidation(){
+        assertEquals( true,
+                LCD.validateString("10000000 10000000 10000000 10000000 " +
+                        "10000000 10000000 10000000 10000000 10000000 10000000") );
+        assertEquals( false,
+                LCD.validateString("1000000 10000000 10000000 10000000 " +
+                        "10000000 10000000 10000000 10000000 10000000 10000000") );
+    }
+
+    @Test
     public void testStrings(){
         boolean[][] testScreen = new boolean[10][8];
         testScreen[0] = new boolean[]{ true, true, true, false, false, false, false, false };
