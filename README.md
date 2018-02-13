@@ -50,3 +50,7 @@ You can ssh onto the pi from the laptop you're providing internet from by connec
 ### Testing with Maven
 Unit tests live in the test directory and must have a name with the following form `*Test.java`. Integration tests live in the it directory and must have the following form `*IT.java`.
 To run the unit tests run `mvn clean test`, to run both the unit tests and integration tests run `mvn clean verify`.
+
+### OCR
+
+The OCR package is quite simple - it has a dependency on an external program though, `ssocr`. It can be installed (on a `dpkg`-based system) using the `ssocr-setup` script in the top-level repository (on non-`dpkg`-based systems, replace the `make deb` with `make install` in the script and remove the `dpkg` command).
