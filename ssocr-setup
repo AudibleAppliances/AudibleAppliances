@@ -8,5 +8,5 @@ tar xf ssocr.tar.bz2 -C ssocr --strip-components=1 &&
 
 cd ssocr &&
 make &&
-make deb &&
+make deb && # Make and install a .deb so it's easier to uninstall
 sudo dpkg -i ssocr/ssocr_*.deb
