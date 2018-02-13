@@ -1,8 +1,8 @@
-package uk.ac.cam.groupprojects.bravo.model;
+package uk.ac.cam.groupprojects.bravo.model.numbers;
 
 public class Calories extends ScreenNumber{
 
-    public Calories(int minBound, int maxBound) {
+    public Calories() {
         super(0, 999);
     }
 

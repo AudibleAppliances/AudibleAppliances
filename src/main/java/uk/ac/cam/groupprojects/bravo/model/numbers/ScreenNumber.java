@@ -1,4 +1,4 @@
-package uk.ac.cam.groupprojects.bravo.model;
+package uk.ac.cam.groupprojects.bravo.model.numbers;
 
 /**
  * Created by david on 06/02/2018.
@@ -23,7 +23,7 @@ public abstract class ScreenNumber {
      * @return if the value has been set successfully
      */
     public boolean setValue( int newVal ){
-        if ( minBound >= newVal && newVal <= maxBound ){
+        if ( minBound <= newVal && newVal <= maxBound ){
             this.val = newVal;
             return true;
         }

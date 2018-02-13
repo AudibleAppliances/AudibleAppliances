@@ -1,4 +1,4 @@
-package uk.ac.cam.groupprojects.bravo.model;
+package uk.ac.cam.groupprojects.bravo.model.numbers;
 
 
 public class RPM extends ScreenNumber {
@@ -9,6 +9,6 @@ public class RPM extends ScreenNumber {
 
     @Override
     public String speakValue() {
-        return String.format("Your current rotations per minute is %d ", getValue() );
+        return String.format("Your current rotations per minute is %d", getValue() );
     }
 }
