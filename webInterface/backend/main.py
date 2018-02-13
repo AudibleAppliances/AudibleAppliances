@@ -11,14 +11,26 @@ def gen(camera):
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
+@app.route('/')
+def index():
+    return render_template("div_test.html")
+
+@app.route('/myStyle.css')
+def style():
+    return render_template("myStyle.css")
+
+@app.route('/functions.js')
+def javascript():
+    return render_template("functions.js")
+
 @app.route('/video_feed')
 def video_feed():
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/news_box', methods=['POST'])
+@app.route('/new_box', methods=['POST'])
 def new_box():
-    content = request.get_json(silent=True)
+    content = request.get_json(silent=False, force=True)
     with open("boxes.json", 'r') as fp:
         content_type = content.pop("type", None)
         config = json.load(fp)
@@ -35,4 +47,4 @@ def get_boxes():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True, threaded=True)
