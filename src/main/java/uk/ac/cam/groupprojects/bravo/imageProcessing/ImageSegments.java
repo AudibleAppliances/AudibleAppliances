@@ -12,18 +12,34 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
+/**
+ *  Segements the image from processing using a config file. Also performs preprocessing (thresholding) to make the OCR
+ *  more accurate
+ *
+ *  @author Oliver Hope
+ */
 public class ImageSegments {
 
     private String mConfigPath;
     private HashMap<BoxType, BoxInfo> mBoxes = new HashMap<>();
 
+    /**
+     * Loads config file in to object
+     *
+     * @param config Path to configuration file
+     * @throws ConfigException If file not found or incorrect formatting
+     */
     public ImageSegments(String config) throws ConfigException {
         mConfigPath = config;
         readConfig();
     }
 
+    /**
+     * Reads in the config file for cropping.
+     *
+     * @throws ConfigException If file not found or malformed config file
+     */
     private void readConfig() throws ConfigException {
-
         try {
             JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(mConfigPath)));
             JsonParser parser = new JsonParser();
@@ -53,6 +69,13 @@ public class ImageSegments {
         }
     }
 
+    /**
+     * Takes and image and the type of box we want and returns jus tthat box from the image
+     *
+     * @param type BoxType that we want to crop
+     * @param image Image of exercise bike screen
+     * @return Crop of BoxType from image
+     */
     public BufferedImage getImageBox(BoxType type, BufferedImage image) {
         BoxInfo box = mBoxes.get(type);
 

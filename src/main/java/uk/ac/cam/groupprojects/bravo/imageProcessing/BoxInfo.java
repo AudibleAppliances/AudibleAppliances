@@ -2,6 +2,11 @@ package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
 import java.awt.geom.Point2D;
 
+/**
+ * Holds the information about a box in a photo of the exercise bike screen
+ *
+ * @author Oliver Hope
+ */
 public class BoxInfo {
 
     private BoxType mType;
