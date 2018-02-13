@@ -36,13 +36,21 @@ public class LCD {
         }
     }
 
+    /**
+     * Given a string (similar to one returned in returnString() )
+     * Then it will validate and check whether it's in the correct format
+     *
+     * @param string
+     * @return
+     */
     public static boolean validateString( String string ){
         String[] parts = string.split(" ");
         if ( parts.length != 10 )
             return false;
         for ( String s : parts ){
-            if ( s.length() != 8 )
+            if ( !s.matches("^[01]{8}$") ){
                 return false;
+            }
         }
         return true;
     }
