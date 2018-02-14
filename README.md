@@ -1,6 +1,6 @@
 # Audible Appliances - Bravo Group
 
-[![Build Status](https://travis-ci.org/odnh/AudibleAppliances.svg?branch=master)](https://travis-ci.org/odnh/AudibleAppliances)
+[![Build Status](https://travis-ci.org/AudibleAppliances/AudibleAppliances.svg?branch=master)](https://travis-ci.org/AudibleAppliances/AudibleAppliances)
 
 Use a Raspberry Pi to read out data from exercise machine screens for the visually impaired.
 
