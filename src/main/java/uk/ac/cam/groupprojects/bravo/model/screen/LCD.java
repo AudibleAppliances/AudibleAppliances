@@ -100,6 +100,9 @@ public class LCD {
      *
      * Uses a linear search, should potentially maybe use a binary tree or
      * some sort of optimised searching algorithm
+     * 
+     * Custom algorithm could entail counting total number of dots lit up
+     * ie some kind of radix/bucket search
      *
      * @return the LCDFunction
      */
@@ -123,6 +126,12 @@ public class LCD {
     public String speakSetting(){
         return "You are currently on the " +
                 matchSettings().getAudibleName() + " mode";
+    }
+    
+    public boolean get(int x, int y) {
+    	
+    	return screen[Math.min(9, Math.max(0, x))][Math.min(9, Math.max(0, y))];
+    	
     }
 
 }
