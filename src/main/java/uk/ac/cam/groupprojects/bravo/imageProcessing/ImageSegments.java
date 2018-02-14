@@ -24,11 +24,11 @@ public class ImageSegments {
     /**
      * Loads config file in to object
      *
-     * @param config Path to configuration file
+     * @param configPath Path to configuration file
      * @throws ConfigException If file not found or incorrect formatting
      */
-    public ImageSegments(String config) throws ConfigException {
-        mConfigPath = config;
+    public ImageSegments(String configPath) throws ConfigException {
+        mConfigPath = configPath;
         readConfig();
     }
 
@@ -80,10 +80,10 @@ public class ImageSegments {
         BoxInfo box = mBoxes.get(type);
 
         // Calculate coordinates
-        int x = (int) Math.round(box.getCorner().x * image.getWidth());
-        int y = (int) Math.round(box.getCorner().y * image.getHeight());
-        int w = (int) Math.round(box.getWidth() * image.getWidth());
-        int h = (int) Math.round(box.getHeight() * image.getHeight());
+        int x = (int) Math.round(box.getCorner().x/100.0 * image.getWidth());
+        int y = (int) Math.round(box.getCorner().y/100.0 * image.getHeight());
+        int w = (int) Math.round(box.getWidth()/100.0 * image.getWidth());
+        int h = (int) Math.round(box.getHeight()/100.0 * image.getHeight());
 
         // Crop image and return
         return image.getSubimage(x, y, w, h);
