@@ -84,8 +84,15 @@ public class ConfigData {
         }
     }
 
-    // TODO: write getters
     public String getVoice() {
         return mVoice;
+    }
+
+    public BoxInfo getBox(BoxType type) {
+       return mBoxes.get(type);
+    }
+
+    public boolean isSpokenField(BoxType type) {
+        return mSpokenFields.get(type);
     }
 }
