@@ -2,6 +2,7 @@ package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
+import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 public class ImageSegments {
 
     private String mConfigPath;
-    private HashMap<BoxType, BoxInfo> mBoxes = new HashMap<>();
+    private ConfigData mConfigData;
 
     /**
      * Loads config file in to object
@@ -38,35 +39,7 @@ public class ImageSegments {
      * @throws ConfigException If file not found or malformed config file
      */
     private void readConfig() throws ConfigException {
-        try {
-            JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(mConfigPath)));
-            JsonParser parser = new JsonParser();
-
-            JsonObject config = parser.parse(reader).getAsJsonObject();
-            JsonObject boxes = config.getAsJsonObject("boxes");
-
-            // Parse individual boxes
-            for (BoxType type : BoxType.values()) {
-                String typeName = type.name().toLowerCase();
-                JsonObject box = boxes.getAsJsonObject(typeName);
-
-                // Get box info
-                double boxWidth = box.get("width").getAsDouble();
-                double boxHeight = box.get("height").getAsDouble();
-                JsonArray corner = box.getAsJsonArray("corner");
-                double cornerX = corner.get(0).getAsDouble();
-                double cornerY = corner.get(1).getAsDouble();
-
-                // Create box info and place in data structure.
-                BoxInfo newBox = new BoxInfo(type, new Point2D.Double(cornerX, cornerY), boxWidth, boxHeight);
-                mBoxes.put(type, newBox);
-            }
-
-        } catch (FileNotFoundException e) {
-            throw new ConfigException("Could not read config file");
-        } catch (JsonParseException e2) {
-            throw new ConfigException("Error parsing JSON");
-        }
+        mConfigData = new ConfigData(mConfigPath);
     }
 
     /**
@@ -77,7 +50,7 @@ public class ImageSegments {
      * @return Crop of BoxType from image
      */
     public BufferedImage getImageBox(BoxType type, BufferedImage image) {
-        BoxInfo box = mBoxes.get(type);
+        BoxInfo box = mConfigData.getBox(type);
 
         // Calculate coordinates
         int x = (int) Math.round(box.getCorner().x/100.0 * image.getWidth());

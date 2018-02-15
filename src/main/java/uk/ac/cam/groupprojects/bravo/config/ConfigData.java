@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 
 /**
- * Reads ins and stores the details from a config file
+ * Reads in and stores the details from a config file
  *
  * @author Oliver Hope
  */
