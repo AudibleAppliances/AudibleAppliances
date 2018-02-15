@@ -11,26 +11,22 @@ import java.io.File;
 import java.io.IOException;
 
 public class SegmentRecogniser {
-    public static int recogniseInt(String imagePath) throws IOException,
-                                                            NumberFormatException,
-                                                            UnrecognisedDigitException {
+    public static int recogniseInt(String imagePath)
+                throws IOException, NumberFormatException, UnrecognisedDigitException {
         return Integer.parseInt(recognise(imagePath));
     }
 
-    public static float recogniseFloat(String imagePath) throws IOException,
-                                                                NumberFormatException,
-                                                                UnrecognisedDigitException {
+    public static float recogniseFloat(String imagePath)
+                throws IOException, NumberFormatException, UnrecognisedDigitException {
         return Float.parseFloat(recognise(imagePath));
     }
-    public static int recogniseInt(BufferedImage img) throws IOException,
-                                                            NumberFormatException,
-                                                            UnrecognisedDigitException {
+    public static int recogniseInt(BufferedImage img) 
+                throws IOException, NumberFormatException, UnrecognisedDigitException {
         return Integer.parseInt(recognise(img));
     }
 
-    public static float recogniseFloat(BufferedImage img) throws IOException,
-                                                                NumberFormatException,
-                                                                UnrecognisedDigitException {
+    public static float recogniseFloat(BufferedImage img)
+                throws IOException, NumberFormatException, UnrecognisedDigitException {
         return Float.parseFloat(recognise(img));
     }
 
