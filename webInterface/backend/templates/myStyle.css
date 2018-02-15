@@ -16,3 +16,102 @@
     width: 100px;
     height: 100px;
 }
+
+body {
+    font-family: helvetica, sans-serif;
+}
+
+h1 {
+    font-size: 4em;
+    margin-bottom: 3vh;
+}
+
+.button {
+    text-align: center;
+    font-size: 1.2em;
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    padding: 0 2ch 0 2ch;
+    box-shadow: none;
+}
+
+.button:hover {
+    opacity: 0.7;
+}
+
+#accessibility_options {
+    position: fixed;
+    text-align: center;
+    right: 2vw;
+}
+
+.accessibility_button {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.mask {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: grey;
+    margin: 0;
+    padding: 0;
+    opacity: 0.9;
+}
+
+.picker {
+    position: fixed;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    left: 25vw;
+    width: 50vw;
+    top: 25vh;
+    height: 50vh;
+    background-color: white;
+    border-radius: 10px;
+    border: 2px solid black;
+}
+
+.color_choice {
+    margin: 1ch;
+    border-radius: 10px;
+    border: 2px solid black;
+}
+
+#update_camera_button {
+    bottom: 10vh;
+    width: 20vw;
+    left: 40vw;
+    position: fixed;
+}
+
+.container {
+    position: relative;
+    padding: 0 3ch 3ch 3ch;
+    border: 2px solid black;
+    border-radius: 4px;
+}
+
+#voice_choice, #frequency_choice {
+    width: 60vw;
+    margin: 2vh 0 2vh 3vw;
+}
+
+#voice_options {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+}
+
+.voice_button {
+    padding: 1ch 0 1ch 0;
+    margin: 0 1ch 0 1ch;
+}

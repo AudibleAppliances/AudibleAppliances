@@ -13,7 +13,7 @@ $.getJSON("/get_boxes", function(data) {
     });
 });
 
-var allowed_colours = ["orange", "blue", "purple"]
+var allowed_colours = ["orange", "blue", "purple"];
 
 function mouse_down(e) {
     var start_x = e.pageX;
@@ -22,7 +22,7 @@ function mouse_down(e) {
     box.className = "square";
     box.style.borderColor = allowed_colours[Math.floor(Math.random() * allowed_colours.length)];
     var resize_box = function(e) {
-        update_box(box, start_x, start_y, e)
+        update_box(box, start_x, start_y, e);
     };
     var commit_box = function() {
         var type = "speed";
@@ -41,13 +41,13 @@ function mouse_down(e) {
             data: arg,
             dataType: "application/json"
         });
-    }
+    };
     document.getElementById('canvas').addEventListener("mousemove", resize_box);
     var mouse_up_and_clean_up = function() {
         document.getElementById('canvas').removeEventListener("mousemove", resize_box);
         document.getElementById('canvas').removeEventListener("mouseup", mouse_up_and_clean_up);
         commit_box();
-    }
+    };
     document.getElementById('canvas').addEventListener("mouseup", mouse_up_and_clean_up);
 }
 
