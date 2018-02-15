@@ -10,4 +10,7 @@ public class ApplicationConstants {
 
     public static final boolean DEBUG = false;
 
+    public static final int UPDATE_FREQ = 1000;
+    public static final int SPEAK_FREQ = 10000;
+
 }

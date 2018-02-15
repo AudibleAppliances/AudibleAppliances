@@ -52,5 +52,9 @@ public class BikeStateTracker {
         lcdScreen = new Graph( temp ).get();
     }
 
+    public void speakItems(){
+        //Will need to pass in some sort of config
+    }
+
 
 }

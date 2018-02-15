@@ -1,19 +1,18 @@
 package uk.ac.cam.groupprojects.bravo.main;
 
+import uk.ac.cam.groupprojects.bravo.imageProcessing.CameraException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ConfigException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.PiCamera;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.DEBUG;
-import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.
-        VERSION_NO;
-import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.
-        PATH_TO_CONFIG;
+import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
 
 /**
  * Created by david on 13/02/2018.
@@ -24,6 +23,8 @@ public class AudibleAppliances {
     private static ImageSegments segments;
     private static BikeStateTracker bikeStateTracker;
     private static boolean running = false;
+
+    private static int timeTracker = 0;
 
     public static void main(String[] args) {
         printHeader();
@@ -87,11 +88,24 @@ public class AudibleAppliances {
         synthesiser.speak("Welcome to Audible Appliances");
 
         while( running ){
-            //Do some shit
             try {
-                Thread.sleep(1000);
+                Thread.sleep( UPDATE_FREQ );
+                timeTracker += UPDATE_FREQ;
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                if ( DEBUG )
+                    e.printStackTrace();
+            }
+
+            try {
+                bikeStateTracker.processNewImage( PiCamera.takeImage() );
+            } catch (CameraException e) {
+                if ( DEBUG )
+                    e.printStackTrace();
+            }
+
+            if ( timeTracker == SPEAK_FREQ ){
+                timeTracker = 0;
+                bikeStateTracker.speakItems();
             }
         }
         synthesiser.speak("Goodbye! Hope to see you again soon!");
