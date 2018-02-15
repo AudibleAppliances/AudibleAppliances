@@ -4,6 +4,7 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.CameraException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ConfigException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.PiCamera;
+import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
@@ -99,6 +100,12 @@ public class AudibleAppliances {
             try {
                 bikeStateTracker.processNewImage( PiCamera.takeImage() );
             } catch (CameraException e) {
+                if ( DEBUG )
+                    e.printStackTrace();
+            } catch (UnrecognisedDigitException e) {
+                if ( DEBUG )
+                    e.printStackTrace();
+            } catch (IOException e) {
                 if ( DEBUG )
                     e.printStackTrace();
             }
