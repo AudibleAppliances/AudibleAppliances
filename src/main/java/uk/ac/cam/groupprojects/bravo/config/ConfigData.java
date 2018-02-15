@@ -1,0 +1,94 @@
+package uk.ac.cam.groupprojects.bravo.config;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxInfo;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxType;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.ConfigException;
+
+import java.awt.geom.Point2D;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+
+/**
+ * Reads ins and stores the details from a config file
+ *
+ * @author Oliver Hope
+ */
+public class ConfigData {
+
+    private final String configPath;
+    private HashMap<BoxType, BoxInfo> mBoxes = new HashMap<>();
+    private HashMap<BoxType, Boolean> mSpokenFields = new HashMap<>();
+    private String mVoice;
+
+    /**
+     * Loads the data in from config file to object
+     *
+     * @param configPath
+     */
+    public ConfigData(String configPath) throws ConfigException {
+        this.configPath = configPath;
+        parseConfig();
+    }
+
+    /**
+     * Read in a config file to object fields
+     *
+     * @throws ConfigException if config file non-existent or malformed
+     */
+    private void parseConfig() throws ConfigException {
+        try {
+            JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(configPath)));
+            JsonParser parser = new JsonParser();
+
+            JsonObject config = parser.parse(reader).getAsJsonObject();
+            JsonObject boxes = config.getAsJsonObject("boxes");
+
+            // Parse individual boxes
+            for (BoxType type : BoxType.values()) {
+                String typeName = type.name().toLowerCase();
+                JsonObject box = boxes.getAsJsonObject(typeName);
+
+                // Get box info
+                double boxWidth = box.get("width").getAsDouble();
+                double boxHeight = box.get("height").getAsDouble();
+                JsonArray corner = box.getAsJsonArray("corner");
+                double cornerX = corner.get(0).getAsDouble();
+                double cornerY = corner.get(1).getAsDouble();
+
+                // Create box info and place in data structure.
+                BoxInfo newBox = new BoxInfo(type, new Point2D.Double(cornerX, cornerY), boxWidth, boxHeight);
+                mBoxes.put(type, newBox);
+            }
+
+            // Parse voice
+            JsonObject voice = config.getAsJsonObject("voice");
+            mVoice = voice.getAsString();
+
+            // Parse spoken_fileds
+            JsonObject spoken_fields = config.getAsJsonObject("spoken_fields");
+
+            for (BoxType type : BoxType.values()) {
+                String typeName = type.name().toLowerCase();
+                JsonObject field = spoken_fields.getAsJsonObject(typeName);
+                mSpokenFields.put(type, field.getAsBoolean());
+            }
+
+        } catch(FileNotFoundException e){
+            throw new ConfigException("Could not read config file");
+        } catch(JsonParseException e2){
+            throw new ConfigException("Error parsing JSON");
+        }
+    }
+
+    // TODO: write getters
+    public String getVoice() {
+        return mVoice;
+    }
+}
