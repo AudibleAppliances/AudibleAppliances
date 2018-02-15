@@ -2,20 +2,46 @@ package uk.ac.cam.groupprojects.bravo.ocr;
 
 import java.util.List;
 import java.util.Scanner;
+
+import javax.imageio.ImageIO;
+
 import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 public class SegmentRecogniser {
-    public static int recogniseInt(String imagePath) throws IOException,
-                                                            NumberFormatException,
-                                                            UnrecognisedDigitException {
+    public static int recogniseInt(String imagePath)
+                throws IOException, NumberFormatException, UnrecognisedDigitException {
         return Integer.parseInt(recognise(imagePath));
     }
 
-    public static float recogniseFloat(String imagePath) throws IOException,
-                                                                NumberFormatException,
-                                                                UnrecognisedDigitException {
+    public static float recogniseFloat(String imagePath)
+                throws IOException, NumberFormatException, UnrecognisedDigitException {
         return Float.parseFloat(recognise(imagePath));
+    }
+    public static int recogniseInt(BufferedImage img) 
+                throws IOException, NumberFormatException, UnrecognisedDigitException {
+        return Integer.parseInt(recognise(img));
+    }
+
+    public static float recogniseFloat(BufferedImage img)
+                throws IOException, NumberFormatException, UnrecognisedDigitException {
+        return Float.parseFloat(recognise(img));
+    }
+
+    public static String recognise(BufferedImage img) throws IOException, UnrecognisedDigitException {
+        final String imgType = "png";
+        File f = null;
+        try {
+            f = File.createTempFile("audible", imgType);
+            ImageIO.write(img, imgType, f);
+            return recognise(f.getPath());
+        }
+        finally {
+            if (f != null)
+                f.delete();
+        }
     }
 
     public static String recognise(String imagePath) throws IOException, UnrecognisedDigitException {
