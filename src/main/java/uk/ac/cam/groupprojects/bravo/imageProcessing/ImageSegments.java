@@ -1,15 +1,8 @@
 package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
 
 /**
  *  Segments the image from processing using a config file. Also performs preprocessing (thresholding) to make the OCR
