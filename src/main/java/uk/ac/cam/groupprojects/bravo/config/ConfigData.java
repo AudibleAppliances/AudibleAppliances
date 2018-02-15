@@ -1,9 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.config;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxInfo;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxType;
@@ -68,7 +65,7 @@ public class ConfigData {
             }
 
             // Parse voice
-            JsonObject voice = config.getAsJsonObject("voice");
+            JsonPrimitive voice = config.getAsJsonPrimitive("voice");
             mVoice = voice.getAsString();
 
             // Parse spoken_fileds
@@ -76,7 +73,7 @@ public class ConfigData {
 
             for (BoxType type : BoxType.values()) {
                 String typeName = type.name().toLowerCase();
-                JsonObject field = spoken_fields.getAsJsonObject(typeName);
+                JsonPrimitive field = spoken_fields.getAsJsonPrimitive(typeName);
                 mSpokenFields.put(type, field.getAsBoolean());
             }
 
