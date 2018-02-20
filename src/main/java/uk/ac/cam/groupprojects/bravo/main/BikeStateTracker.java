@@ -101,6 +101,12 @@ public class BikeStateTracker {
         }
     }
 
+    /**
+     * Speaks the values out loud as set in the config file
+     *
+     * @param synthesiser The systhesiser to speak the words
+     * @param config Config holding which fields to be spoken
+     */
     public void speakItems(Synthesiser synthesiser, ConfigData config) {
 
         for (SpokenFields type : SpokenFields.values()) {
