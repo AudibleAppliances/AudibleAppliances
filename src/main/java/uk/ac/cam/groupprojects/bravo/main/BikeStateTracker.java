@@ -28,6 +28,9 @@ public class BikeStateTracker {
     private Pulse currentPulse;
     private Speed currentSpeed;
     private Time currentTime;
+    private RPM currentRPM;
+    //private Program currentProgram; TODO
+    //private WATT currentWatt; TODO: add WATT
 
     private LCD lcdScreen;
 
@@ -43,6 +46,9 @@ public class BikeStateTracker {
         currentPulse = new Pulse();
         currentSpeed = new Speed();
         currentTime = new Time();
+        currentRPM = new RPM();
+        //currentProgram = new Program; TODO
+        //currentWATT = new Watt(); TODO: add watt
 
         lcdScreen = new LCD();
 
@@ -53,30 +59,48 @@ public class BikeStateTracker {
                 throws IOException,UnrecognisedDigitException, NumberFormatException {
         BufferedImage temp;
 
-        temp = segments.getImageBox( BoxType.SPEED, newImage );
+        // Read fixed boxes
+        temp = segments.getImageBox( BoxType.LCD2, newImage );
         currentSpeed.setValue(SegmentRecogniser.recogniseInt(temp));
 
-        temp = segments.getImageBox( BoxType.TIME, newImage );
+        temp = segments.getImageBox( BoxType.LCD1, newImage );
         currentTime.setValue(SegmentRecogniser.recogniseInt(temp));
 
-        temp = segments.getImageBox( BoxType.DISTANCE, newImage );
+        temp = segments.getImageBox( BoxType.LCD3, newImage );
         currentDistance.setValue(SegmentRecogniser.recogniseInt(temp));
 
-        temp = segments.getImageBox( BoxType.PROGRAM, newImage );
-        currentLevel.setValue(SegmentRecogniser.recogniseInt(temp));
-
-        temp = segments.getImageBox( BoxType.CAL, newImage );
+        temp = segments.getImageBox( BoxType.LCD4, newImage );
         currentCalories.setValue(SegmentRecogniser.recogniseInt(temp));
 
-        temp = segments.getImageBox( BoxType.PULSE, newImage );
+        temp = segments.getImageBox( BoxType.LCD7, newImage );
         currentPulse.setValue(SegmentRecogniser.recogniseInt(temp));
 
         temp = segments.getImageBox( BoxType.GRAPH, newImage );
         lcdScreen = new Graph( temp ).get();
+
+        // Read changing boxes
+        if ( SegmentRecogniser.segmentActive(segments.getImageBox( BoxType.WATT, newImage)) ) {
+            temp = segments.getImageBox( BoxType.LCD5, newImage );
+            //currentWATT.setValue(SegmentRecogniser.recogniseInt(temp));
+        }
+        else if ( SegmentRecogniser.segmentActive(segments.getImageBox( BoxType.RPM, newImage))) {
+            temp = segments.getImageBox( BoxType.LCD5, newImage );
+            currentRPM.setValue(SegmentRecogniser.recogniseInt(temp));
+        }
+
+        if ( SegmentRecogniser.segmentActive(segments.getImageBox( BoxType.PROGRAM, newImage)) ) {
+            temp = segments.getImageBox( BoxType.LCD6, newImage );
+            //currentProgram.setValue(SegmentRecogniser.recogniseInt(temp));
+        }
+        else if ( SegmentRecogniser.segmentActive(segments.getImageBox( BoxType.LEVEL, newImage)) ) {
+            temp = segments.getImageBox( BoxType.LCD6, newImage );
+            currentLevel.setValue(SegmentRecogniser.recogniseInt(temp));
+        }
     }
 
     public void speakItems(Synthesiser synthesiser, ConfigData config){
 
+        /* TODO: update for new BoxType
         for (BoxType type : BoxType.values()) {
             if (config.isSpokenField(type)) {
                 String speakVal = "";
@@ -91,6 +115,6 @@ public class BikeStateTracker {
                 synthesiser.speak(speakVal);
             }
         }
+        */
     }
-
 }
