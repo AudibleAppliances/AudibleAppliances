@@ -8,6 +8,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URLDecoder;
 
+/**
+ * Tests for the ImageSegments class
+ *
+ * @author Oliver Hope
+ */
 public class ImageSegmentsTest {
 
     /**
