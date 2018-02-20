@@ -7,6 +7,7 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxType;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
 import uk.ac.cam.groupprojects.bravo.model.screen.LCD;
+import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
@@ -80,20 +81,20 @@ public class BikeStateTracker {
         lcdScreen = new Graph( temp ).get();
 
         // Read changing boxes
-        if ( SegmentRecogniser.segmentActive(segments.getImageBox( BoxType.WATT, newImage)) ) {
+        if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.WATT, newImage)) ) {
             temp = segments.getImageBox( BoxType.LCD5, newImage );
             //currentWATT.setValue(SegmentRecogniser.recogniseInt(temp));
         }
-        else if ( SegmentRecogniser.segmentActive(segments.getImageBox( BoxType.RPM, newImage))) {
+        else if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.RPM, newImage))) {
             temp = segments.getImageBox( BoxType.LCD5, newImage );
             currentRPM.setValue(SegmentRecogniser.recogniseInt(temp));
         }
 
-        if ( SegmentRecogniser.segmentActive(segments.getImageBox( BoxType.PROGRAM, newImage)) ) {
+        if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.PROGRAM, newImage)) ) {
             temp = segments.getImageBox( BoxType.LCD6, newImage );
             //currentProgram.setValue(SegmentRecogniser.recogniseInt(temp));
         }
-        else if ( SegmentRecogniser.segmentActive(segments.getImageBox( BoxType.LEVEL, newImage)) ) {
+        else if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.LEVEL, newImage)) ) {
             temp = segments.getImageBox( BoxType.LCD6, newImage );
             currentLevel.setValue(SegmentRecogniser.recogniseInt(temp));
         }
