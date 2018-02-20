@@ -5,6 +5,7 @@ import uk.ac.cam.groupprojects.bravo.config.SpokenFields;
 import uk.ac.cam.groupprojects.bravo.graphProcessing.Graph;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxType;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
+import uk.ac.cam.groupprojects.bravo.model.Program;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
 import uk.ac.cam.groupprojects.bravo.model.screen.LCD;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
@@ -31,8 +32,8 @@ public class BikeStateTracker {
     private Speed currentSpeed;
     private Time currentTime;
     private RPM currentRPM;
-    //private Program currentProgram; TODO
-    //private WATT currentWatt; TODO: add WATT
+    private Program currentProgram;
+    private Watt currentWatt;
 
     private LCD lcdScreen;
 
@@ -49,8 +50,8 @@ public class BikeStateTracker {
         currentSpeed = new Speed();
         currentTime = new Time();
         currentRPM = new RPM();
-        //currentProgram = new Program; TODO
-        //currentWATT = new Watt(); TODO: add watt
+        currentProgram = new Program();
+        currentWatt = new Watt();
 
         lcdScreen = new LCD();
 
@@ -108,11 +109,12 @@ public class BikeStateTracker {
                 switch (type) {
                     case CAL: speakVal = currentCalories.speakValue(); break;
                     case DISTANCE: speakVal = currentDistance.speakValue(); break;
-                    case PROGRAM: speakVal = currentLevel.speakValue(); break;
+                    case LEVEL: speakVal = currentLevel.speakValue(); break;
                     case PULSE: speakVal = currentPulse.speakValue(); break;
                     case SPEED: speakVal = currentSpeed.speakValue(); break;
                     case TIME: speakVal = currentTime.speakValue(); break;
-                    //TODO: add Watt and Program
+                    case PROGRAM: speakVal = currentProgram.speakValue(); break;
+                    case WATT: speakVal = currentWatt.speakValue(); break;
                 }
                 synthesiser.speak(speakVal);
             }
