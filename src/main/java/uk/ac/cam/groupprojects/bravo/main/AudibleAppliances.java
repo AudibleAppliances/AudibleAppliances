@@ -1,14 +1,12 @@
 package uk.ac.cam.groupprojects.bravo.main;
 
 import uk.ac.cam.groupprojects.bravo.imageProcessing.CameraException;
-import uk.ac.cam.groupprojects.bravo.imageProcessing.ConfigException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.PiCamera;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,22 +29,35 @@ public class AudibleAppliances {
         printHeader();
 
         //Load config
-        System.out.println("Loading in config from " + PATH_TO_CONFIG );
-        try {
 
+        try {
+            /*
+                We load the speech library first so that we can speak any errors
+                out-loud. However if the speech library doesn't work we will need
+                to play to pre-recorded sound clip.
+             */
+            System.out.println("Loading up speech library!");
+            synthesiser = new Synthesiser();
+
+            System.out.println("Loading in config from " + PATH_TO_CONFIG );
             //segments = new ImageSegments( PATH_TO_CONFIG );
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
             bikeStateTracker = new BikeStateTracker( segments );
-            synthesiser = new Synthesiser();
+
             System.out.println("Components set up successfully!");
 
             running = true;
-            new Thread( runTracker ).start();
 
+            //Created thread to track the bike
+            Thread runThread = new Thread( runTracker );
+            runThread.start();
+
+            //Created thread to read from command line
             Thread inputThread = new Thread( handleInput );
             inputThread.setDaemon(true);
             inputThread.start();
+
         } catch( FestivalMissingException e ){
             if ( DEBUG )
                 e.printStackTrace();
@@ -56,6 +67,10 @@ public class AudibleAppliances {
             if ( DEBUG )
                 e.printStackTrace();
             System.out.println("FATAL ERROR: Could not load in config");
+            if ( synthesiser != null ){
+                synthesiser.speak("There was an error, please try again!");
+                synthesiser.close();
+            }
             printFooter();
         }
     }
