@@ -31,17 +31,23 @@ public class SegmentRecogniser {
     }
 
     public static String recognise(BufferedImage img) throws IOException, UnrecognisedDigitException {
-        final String imgType = "png";
         File f = null;
         try {
-            f = File.createTempFile("audible", imgType);
-            ImageIO.write(img, imgType, f);
+            f = saveFile(img);
             return recognise(f.getPath());
         }
         finally {
             if (f != null)
                 f.delete();
         }
+    }
+
+    private static File saveFile(BufferedImage img) throws IOException {
+        final String imgType = "png";
+
+        File f = File.createTempFile("audible", imgType);
+        ImageIO.write(img, imgType, f);
+        return f;
     }
 
     public static String recognise(String imagePath) throws IOException, UnrecognisedDigitException {
@@ -56,7 +62,7 @@ public class SegmentRecogniser {
         try (Scanner s = new Scanner(p.getInputStream())) {
             String output = s.nextLine();
 
-            if (output == "-") {
+            if (output.equals("-")) {
                 throw new UnrecognisedDigitException("Failed to parse digit in file: " + imagePath);
             }
 
@@ -71,11 +77,6 @@ public class SegmentRecogniser {
             }
         }
     }
-    
-    public static boolean segmentActive(String imagePath) throws IOException {
-        throw new UnsupportedOperationException("Stub");
-    }
-
     // Cleanup the output of the recogniser
     // Remove trailing decimals, trim whitespace
     private static String clean(String input) {
