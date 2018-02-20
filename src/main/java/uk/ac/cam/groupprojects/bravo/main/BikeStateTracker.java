@@ -5,8 +5,11 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxType;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
 import uk.ac.cam.groupprojects.bravo.model.screen.LCD;
+import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
+import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * Created by david on 13/02/2018.
@@ -43,10 +46,27 @@ public class BikeStateTracker {
         this.segments = segments;
     }
 
-    public void processNewImage( BufferedImage newImage ){
+    public void processNewImage( BufferedImage newImage )
+                throws IOException,UnrecognisedDigitException, NumberFormatException {
         BufferedImage temp;
 
+        temp = segments.getImageBox( BoxType.SPEED, newImage );
+        currentSpeed.setValue(SegmentRecogniser.recogniseInt(temp));
+
+        temp = segments.getImageBox( BoxType.TIME, newImage );
+        currentTime.setValue(SegmentRecogniser.recogniseInt(temp));
+
+        temp = segments.getImageBox( BoxType.DISTANCE, newImage );
+        currentDistance.setValue(SegmentRecogniser.recogniseInt(temp));
+
+        temp = segments.getImageBox( BoxType.PROGRAM, newImage );
+        currentLevel.setValue(SegmentRecogniser.recogniseInt(temp));
+
         temp = segments.getImageBox( BoxType.CAL, newImage );
+        currentCalories.setValue(SegmentRecogniser.recogniseInt(temp));
+
+        temp = segments.getImageBox( BoxType.PULSE, newImage );
+        currentPulse.setValue(SegmentRecogniser.recogniseInt(temp));
 
         temp = segments.getImageBox( BoxType.GRAPH, newImage );
         lcdScreen = new Graph( temp ).get();
