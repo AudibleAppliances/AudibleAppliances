@@ -10,7 +10,6 @@ import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -120,6 +119,7 @@ public class AudibleAppliances {
             We need to establish which screen we are in.
          */
         boolean initialScreenEstablished = false;
+        int initialScreenCounter = 0;
         if ( running ){
             while ( !initialScreenEstablished ){
                 System.out.println("Establishing the state of the bike!");
@@ -140,13 +140,27 @@ public class AudibleAppliances {
 
                     System.out.println();
 
-                    if ( maxProb > ApplicationConstants.minProb ){
+                    if ( maxProb > ApplicationConstants.MIN_PROB ){
                         currentScreen = maxScreen;
                         initialScreenEstablished = true;
                         System.out.println("Establishing bike state is " + currentScreen.getEnum().toString() );
                     }
 
                 } catch (Exception e) {
+                    if ( DEBUG )
+                        e.printStackTrace();
+                }
+                initialScreenCounter++;
+                if ( initialScreenCounter > ApplicationConstants.MAX_INITIAL_TRIES ){
+                    //Default to SELECTION_SCREEN_1
+                    currentScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
+                    initialScreenEstablished = true;
+                    System.out.println(" INITIAL SCREEN COUNTER LIMIT REACHED defaulting to" + currentScreen.getEnum().toString() );
+                }
+                try {
+                    Thread.sleep( INITIAL_FREQ );
+                    timeTracker += INITIAL_FREQ;
+                } catch (InterruptedException e) {
                     if ( DEBUG )
                         e.printStackTrace();
                 }
@@ -164,13 +178,7 @@ public class AudibleAppliances {
 
             try {
                 bikeStateTracker.processNewImage( PiCamera.takeImage() );
-            } catch (CameraException e) {
-                if ( DEBUG )
-                    e.printStackTrace();
-            } catch (UnrecognisedDigitException e) {
-                if ( DEBUG )
-                    e.printStackTrace();
-            } catch (IOException e) {
+            } catch (CameraException | UnrecognisedDigitException | IOException e) {
                 if ( DEBUG )
                     e.printStackTrace();
             }
