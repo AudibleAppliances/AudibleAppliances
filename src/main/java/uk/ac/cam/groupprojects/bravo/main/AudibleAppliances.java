@@ -3,13 +3,19 @@ package uk.ac.cam.groupprojects.bravo.main;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.CameraException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.PiCamera;
+import uk.ac.cam.groupprojects.bravo.model.menu.MenuScreen;
+import uk.ac.cam.groupprojects.bravo.model.menu.ScreenEnum;
+import uk.ac.cam.groupprojects.bravo.model.menu.SelectionScreen1;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
 
@@ -18,8 +24,11 @@ import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
  */
 public class AudibleAppliances {
 
+    private static Map<ScreenEnum, MenuScreen> screens = new HashMap<>();
+
     private static Synthesiser synthesiser;
     private static ImageSegments segments;
+    private static MenuScreen currentScreen;
     private static BikeStateTracker bikeStateTracker;
     private static boolean running = false;
 
@@ -48,6 +57,9 @@ public class AudibleAppliances {
             System.out.println("Components set up successfully!");
 
             running = true;
+
+            //Need to initialise all of the screens
+            screens.put( ScreenEnum.SELECTION_SCREEN_1, new SelectionScreen1() );
 
             //Created thread to track the bike
             Thread runThread = new Thread( runTracker );
@@ -102,6 +114,44 @@ public class AudibleAppliances {
         System.out.println();
         System.out.println("Starting the bike state tracker! ");
         synthesiser.speak("Welcome to Audible Appliances");
+
+        //FIRST RUN CODE
+        /*
+            We need to establish which screen we are in.
+         */
+        boolean initialScreenEstablished = false;
+        if ( running ){
+            while ( !initialScreenEstablished ){
+                System.out.println("Establishing the state of the bike!");
+                try {
+                    bikeStateTracker.processNewImage( PiCamera.takeImage() );
+
+                    float maxProb = 0.0f;
+                    MenuScreen maxScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
+
+                    for ( MenuScreen screen: screens.values() ){
+                        float prob = screen.screenProbability( bikeStateTracker );
+                        if ( prob > maxProb ){
+                            maxProb = screen.screenProbability( bikeStateTracker );
+                            maxScreen = screen;
+                        }
+                        System.out.println( screen.getEnum().toString() + " : " + prob );
+                    }
+
+                    System.out.println();
+
+                    if ( maxProb > ApplicationConstants.minProb ){
+                        currentScreen = maxScreen;
+                        initialScreenEstablished = true;
+                        System.out.println("Establishing bike state is " + currentScreen.getEnum().toString() );
+                    }
+
+                } catch (Exception e) {
+                    if ( DEBUG )
+                        e.printStackTrace();
+                }
+            }
+        }
 
         while( running ){
             try {
