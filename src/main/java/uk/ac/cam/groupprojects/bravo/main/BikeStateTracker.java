@@ -1,6 +1,7 @@
 package uk.ac.cam.groupprojects.bravo.main;
 
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
+import uk.ac.cam.groupprojects.bravo.config.SpokenFields;
 import uk.ac.cam.groupprojects.bravo.graphProcessing.Graph;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxType;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
@@ -98,10 +99,9 @@ public class BikeStateTracker {
         }
     }
 
-    public void speakItems(Synthesiser synthesiser, ConfigData config){
+    public void speakItems(Synthesiser synthesiser, ConfigData config) {
 
-        /* TODO: update for new BoxType
-        for (BoxType type : BoxType.values()) {
+        for (SpokenFields type : SpokenFields.values()) {
             if (config.isSpokenField(type)) {
                 String speakVal = "";
                 switch (type) {
@@ -111,10 +111,10 @@ public class BikeStateTracker {
                     case PULSE: speakVal = currentPulse.speakValue(); break;
                     case SPEED: speakVal = currentSpeed.speakValue(); break;
                     case TIME: speakVal = currentTime.speakValue(); break;
+                    //TODO: add Watt and Program
                 }
                 synthesiser.speak(speakVal);
             }
         }
-        */
     }
 }
