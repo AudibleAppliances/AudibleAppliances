@@ -31,17 +31,23 @@ public class SegmentRecogniser {
     }
 
     public static String recognise(BufferedImage img) throws IOException, UnrecognisedDigitException {
-        final String imgType = "png";
         File f = null;
         try {
-            f = File.createTempFile("audible", imgType);
-            ImageIO.write(img, imgType, f);
+            f = saveFile(img);
             return recognise(f.getPath());
         }
         finally {
             if (f != null)
                 f.delete();
         }
+    }
+
+    private static File saveFile(BufferedImage img) throws IOException {
+        final String imgType = "png";
+
+        File f = File.createTempFile("audible", imgType);
+        ImageIO.write(img, imgType, f);
+        return f;
     }
 
     public static String recognise(String imagePath) throws IOException, UnrecognisedDigitException {
@@ -71,9 +77,27 @@ public class SegmentRecogniser {
             }
         }
     }
+    public static boolean segmentActive(BufferedImage img) throws IOException {
+        File f = null;
+        try {
+            f = saveFile(img);
+            return segmentActive(f.getPath());
+        }
+        finally {
+            if (f != null)
+                f.delete();
+        }
+    }
     
     public static boolean segmentActive(String imagePath) throws IOException {
-        throw new UnsupportedOperationException("Stub");
+        try {
+            recognise(imagePath);
+
+            return true;
+        }
+        catch (UnrecognisedDigitException e) {
+            return false;
+        }
     }
 
     // Cleanup the output of the recogniser
