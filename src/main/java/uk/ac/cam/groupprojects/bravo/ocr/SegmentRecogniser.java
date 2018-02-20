@@ -62,7 +62,7 @@ public class SegmentRecogniser {
         try (Scanner s = new Scanner(p.getInputStream())) {
             String output = s.nextLine();
 
-            if (output == "-") {
+            if (output.equals("-")) {
                 throw new UnrecognisedDigitException("Failed to parse digit in file: " + imagePath);
             }
 
@@ -77,29 +77,6 @@ public class SegmentRecogniser {
             }
         }
     }
-    public static boolean segmentActive(BufferedImage img) throws IOException {
-        File f = null;
-        try {
-            f = saveFile(img);
-            return segmentActive(f.getPath());
-        }
-        finally {
-            if (f != null)
-                f.delete();
-        }
-    }
-    
-    public static boolean segmentActive(String imagePath) throws IOException {
-        try {
-            recognise(imagePath);
-
-            return true;
-        }
-        catch (UnrecognisedDigitException e) {
-            return false;
-        }
-    }
-
     // Cleanup the output of the recogniser
     // Remove trailing decimals, trim whitespace
     private static String clean(String input) {
