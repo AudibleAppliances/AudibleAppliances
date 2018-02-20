@@ -72,9 +72,11 @@
     "time": false,
     "distance": true,
     "rpm": false,
-    "program": false,
+    "level": false,
     "cal": true,
     "pulse": false,
-    "graph": false
+    "graph": false,
+    "program": true,
+    "watt": true
   }
 }
