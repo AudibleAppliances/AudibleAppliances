@@ -5,6 +5,6 @@ package uk.ac.cam.groupprojects.bravo.imageProcessing;
  *
  * @author Oliver Hope
  */
-public enum BoxType {
-    SPEED, TIME, DISTANCE, RPM, PROGRAM, CAL, PULSE, GRAPH
+public enum LCDType {
+    LCD1, LCD2, LCD3, LCD4, LCD5, LCD6, LCD7
 }
