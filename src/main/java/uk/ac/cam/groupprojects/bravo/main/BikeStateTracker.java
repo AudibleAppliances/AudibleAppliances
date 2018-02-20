@@ -1,5 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.main;
 
+import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.graphProcessing.Graph;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxType;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
@@ -7,7 +8,9 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.*;
 import uk.ac.cam.groupprojects.bravo.model.screen.LCD;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
+import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -72,9 +75,22 @@ public class BikeStateTracker {
         lcdScreen = new Graph( temp ).get();
     }
 
-    public void speakItems(){
-        //Will need to pass in some sort of config
-    }
+    public void speakItems(Synthesiser synthesiser, ConfigData config){
 
+        for (BoxType type : BoxType.values()) {
+            if (config.isSpokenField(type)) {
+                String speakVal = "";
+                switch (type) {
+                    case CAL: speakVal = currentCalories.speakValue();
+                    case DISTANCE: speakVal = currentDistance.speakValue();
+                    case PROGRAM: speakVal = currentLevel.speakValue();
+                    case PULSE: speakVal = currentPulse.speakValue();
+                    case SPEED: speakVal = currentSpeed.speakValue();
+                    case TIME: speakVal = currentTime.speakValue();
+                }
+                synthesiser.speak(speakVal);
+            }
+        }
+    }
 
 }
