@@ -50,6 +50,8 @@ public class BikeStateTracker {
                 throws IOException,UnrecognisedDigitException, NumberFormatException {
         BufferedImage temp;
 
+        System.out.println("PROCESS NEW IMAGE");
+
         if ( segments == null ){
             System.out.println("Fatal Error: SEGMENTS IS NULL! ");
             throw new IOException();
