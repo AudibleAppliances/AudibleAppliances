@@ -1,4 +1,3 @@
-
 function change_font_size(by) {
     var fontSize = parseInt($('body').css('font-size'), 10);
     $("body").css("font-size", fontSize + by);
