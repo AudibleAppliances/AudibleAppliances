@@ -81,12 +81,12 @@ public class BikeStateTracker {
             if (config.isSpokenField(type)) {
                 String speakVal = "";
                 switch (type) {
-                    case CAL: speakVal = currentCalories.speakValue();
-                    case DISTANCE: speakVal = currentDistance.speakValue();
-                    case PROGRAM: speakVal = currentLevel.speakValue();
-                    case PULSE: speakVal = currentPulse.speakValue();
-                    case SPEED: speakVal = currentSpeed.speakValue();
-                    case TIME: speakVal = currentTime.speakValue();
+                    case CAL: speakVal = currentCalories.speakValue(); break;
+                    case DISTANCE: speakVal = currentDistance.speakValue(); break;
+                    case PROGRAM: speakVal = currentLevel.speakValue(); break;
+                    case PULSE: speakVal = currentPulse.speakValue(); break;
+                    case SPEED: speakVal = currentSpeed.speakValue(); break;
+                    case TIME: speakVal = currentTime.speakValue(); break;
                 }
                 synthesiser.speak(speakVal);
             }
