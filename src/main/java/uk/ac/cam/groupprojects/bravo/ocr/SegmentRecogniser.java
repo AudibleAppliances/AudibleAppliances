@@ -71,6 +71,11 @@ public class SegmentRecogniser {
             }
         }
     }
+    
+    public static boolean segmentActive(String imagePath) throws IOException {
+        throw new UnsupportedOperationException("Stub");
+    }
+
     // Cleanup the output of the recogniser
     // Remove trailing decimals, trim whitespace
     private static String clean(String input) {
