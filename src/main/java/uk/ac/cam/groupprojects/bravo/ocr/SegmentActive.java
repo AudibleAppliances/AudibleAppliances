@@ -1,46 +1,32 @@
 package uk.ac.cam.groupprojects.bravo.ocr;
 
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
-import java.io.File;
-
-import javax.imageio.ImageIO;
+import java.io.IOException;
 
 public class SegmentActive {
-    public static boolean segmentActive(BufferedImage img) {
-        return segmentActive(img, 500);
+    // "Threshold" is effectively the percentage (100% = 1.0) of the image that's blue
+    public static boolean segmentActive(BufferedImage img) throws IOException {
+        return segmentActive(img, 0.05); // 5% blue is a good default threshold
     }
-    public static boolean segmentActive(BufferedImage img, double threshold) {
-        return imageVariance(img) > threshold;
+    public static boolean segmentActive(BufferedImage img, double threshold) throws IOException {
+        return imageAverage(img) > threshold;
     }
 
-    public static double imageVariance(BufferedImage img) {
-        BufferedImage grey = makeGreyscale(img);
+    public static double imageAverage(BufferedImage img) throws IOException {
+        BufferedImage grey = Util.makeMonochrome(img);
         Raster raw = grey.getRaster();
 
         double sum = 0;
-        double squareSum = 0;
         for (int y = 0; y < raw.getHeight(); y++) {
-            for (int x = 0; x < raw.getHeight(); x++) {
-                double pixel = raw.getSampleDouble(x, y, 0);
-                sum += pixel;
-                squareSum += pixel * pixel;
+            for (int x = 0; x < raw.getWidth(); x++) {
+                sum += raw.getSampleDouble(x, y, 0);
             }
         }
+        sum /= 255.0; // Pixel values are 0-255 (not 0-1, even though they're as doubles)
 
-        double n = grey.getWidth() * grey.getHeight();
+        double n = raw.getWidth() * raw.getHeight();
         double average = sum / n;
-        double variance = (squareSum / n) - average * average;
-
-        return variance;
-    }
-    
-    private static BufferedImage makeGreyscale(BufferedImage img) {
-        BufferedImage out = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-        Graphics g = out.getGraphics();
-        g.drawImage(img, 0, 0, null);
-        g.dispose();
-        return out;
+        return 1.0 - average; // Make black = 0.0: it's more intuitive
     }
 }
