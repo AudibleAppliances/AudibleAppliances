@@ -3,7 +3,8 @@ package uk.ac.cam.groupprojects.bravo.main;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.CameraException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.PiCamera;
-import uk.ac.cam.groupprojects.bravo.model.menu.MenuScreen;
+import uk.ac.cam.groupprojects.bravo.model.menu.BikeScreen;
+import uk.ac.cam.groupprojects.bravo.model.menu.CyclingScreen;
 import uk.ac.cam.groupprojects.bravo.model.menu.ScreenEnum;
 import uk.ac.cam.groupprojects.bravo.model.menu.SelectionScreen1;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
@@ -23,11 +24,11 @@ import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
  */
 public class AudibleAppliances {
 
-    private static Map<ScreenEnum, MenuScreen> screens = new HashMap<>();
+    private static Map<ScreenEnum, BikeScreen> screens = new HashMap<>();
 
     private static Synthesiser synthesiser;
     private static ImageSegments segments;
-    private static MenuScreen currentScreen;
+    private static BikeScreen currentScreen;
     private static BikeStateTracker bikeStateTracker;
     private static boolean running = false;
 
@@ -128,9 +129,9 @@ public class AudibleAppliances {
                     bikeStateTracker.processNewImage( PiCamera.takeImage() );
 
                     float maxProb = 0.0f;
-                    MenuScreen maxScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
+                    BikeScreen maxScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
 
-                    for ( MenuScreen screen: screens.values() ){
+                    for ( BikeScreen screen: screens.values() ){
                         float prob = screen.screenProbability( bikeStateTracker );
                         if ( prob > maxProb ){
                             maxProb = screen.screenProbability( bikeStateTracker );
@@ -166,9 +167,11 @@ public class AudibleAppliances {
                         e.printStackTrace();
                 }
             }
+
+            synthesiser.speak("State established!");
         }
 
-        synthesiser.speak("State established!");
+
 
         while( running ){
             try {
@@ -181,15 +184,19 @@ public class AudibleAppliances {
 
             try {
                 bikeStateTracker.processNewImage( PiCamera.takeImage() );
+
             } catch (CameraException | UnrecognisedDigitException | IOException e) {
                 if ( DEBUG )
                     e.printStackTrace();
             }
 
-            if ( timeTracker == SPEAK_FREQ ){
+            if ( timeTracker == SPEAK_FREQ ) {
                 timeTracker = 0;
-                bikeStateTracker.speakItems();
+                if ( currentScreen.getEnum() == ScreenEnum.CYCLING_SCREEN ) {
+                    bikeStateTracker.speakItems();
+                }
             }
+            detectChangeState();
         }
         synthesiser.speak("Goodbye! Hope to see you again soon!");
         synthesiser.close();
@@ -219,6 +226,30 @@ public class AudibleAppliances {
         System.out.println("|----------------------------------------|");
         System.out.println("|---------- AUDIBLE APPLIANCES ----------|");
         System.out.println("|----------------------------------------|");
+    }
+
+    private static void detectChangeState(){
+        System.out.println();
+        System.out.println("DETECTING CHANGE SCREEN STATE");
+
+        float maxProb = 0.0f;
+        BikeScreen maxScreen = currentScreen;
+
+        for ( BikeScreen screen: screens.values() ){
+            float prob = screen.screenProbability( bikeStateTracker );
+            if ( prob > maxProb ){
+                maxProb = screen.screenProbability( bikeStateTracker );
+                maxScreen = screen;
+            }
+            System.out.println( screen.getEnum().toString() + " : " + prob );
+        }
+
+        if ( maxProb > ApplicationConstants.MIN_PROB ){
+            System.out.println("Establishing bike state is " + maxScreen.getEnum().toString() );
+            currentScreen = maxScreen;
+        }
+
+        System.out.println();
     }
 
 }
