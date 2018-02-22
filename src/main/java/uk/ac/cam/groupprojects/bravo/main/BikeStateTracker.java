@@ -32,6 +32,11 @@ public class BikeStateTracker {
     private ImageSegments segments;
     private ConfigData configData;
 
+    /**
+     *
+     * @param segments ImageSegments object to crop out parts of the image for processing
+     * @param configData Configuration that can be passed around with this object
+     */
     public BikeStateTracker(ImageSegments segments, ConfigData configData){
         activeText = new HashMap<>();
 
@@ -49,8 +54,16 @@ public class BikeStateTracker {
         currentFields.put(BikeField.WATT, new Watt());
     }
 
+    /**
+     * Given an image of the screen, updates the state from what is on the screen
+     *
+     * @param newImage Image of the full screen
+     * @throws IOException If there is a problem in checking if segment is active
+     * @throws UnrecognisedDigitException If the digit in any segment cannot be recognised
+     * @throws NumberFormatException If the digit recognised is not in a vlaid format
+     */
     public void updateState(BufferedImage newImage)
-                throws IOException,UnrecognisedDigitException, NumberFormatException {
+                throws IOException, UnrecognisedDigitException, NumberFormatException {
 
         HashMap<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
         HashMap<ScreenBox, Boolean> isActive = new HashMap<>();
