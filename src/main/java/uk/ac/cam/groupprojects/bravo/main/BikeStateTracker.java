@@ -1,13 +1,19 @@
 package uk.ac.cam.groupprojects.bravo.main;
 
+import uk.ac.cam.groupprojects.bravo.config.ConfigData;
+import uk.ac.cam.groupprojects.bravo.config.SpokenFields;
 import uk.ac.cam.groupprojects.bravo.graphProcessing.Graph;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxType;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
+import uk.ac.cam.groupprojects.bravo.model.Program;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
 import uk.ac.cam.groupprojects.bravo.model.screen.LCD;
+import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
+import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -25,6 +31,9 @@ public class BikeStateTracker {
     private Pulse currentPulse;
     private Speed currentSpeed;
     private Time currentTime;
+    private RPM currentRPM;
+    private Program currentProgram;
+    private Watt currentWatt;
 
     private LCD lcdScreen;
 
@@ -40,6 +49,9 @@ public class BikeStateTracker {
         currentPulse = new Pulse();
         currentSpeed = new Speed();
         currentTime = new Time();
+        currentRPM = new RPM();
+        currentProgram = new Program();
+        currentWatt = new Watt();
 
         lcdScreen = new LCD();
 
@@ -50,31 +62,68 @@ public class BikeStateTracker {
                 throws IOException,UnrecognisedDigitException, NumberFormatException {
         BufferedImage temp;
 
-        temp = segments.getImageBox( BoxType.SPEED, newImage );
+        // Read fixed boxes
+        temp = segments.getImageBox( BoxType.LCD2, newImage );
         currentSpeed.setValue(SegmentRecogniser.recogniseInt(temp));
 
-        temp = segments.getImageBox( BoxType.TIME, newImage );
+        temp = segments.getImageBox( BoxType.LCD1, newImage );
         currentTime.setValue(SegmentRecogniser.recogniseInt(temp));
 
-        temp = segments.getImageBox( BoxType.DISTANCE, newImage );
+        temp = segments.getImageBox( BoxType.LCD3, newImage );
         currentDistance.setValue(SegmentRecogniser.recogniseInt(temp));
 
-        temp = segments.getImageBox( BoxType.PROGRAM, newImage );
-        currentLevel.setValue(SegmentRecogniser.recogniseInt(temp));
-
-        temp = segments.getImageBox( BoxType.CAL, newImage );
+        temp = segments.getImageBox( BoxType.LCD4, newImage );
         currentCalories.setValue(SegmentRecogniser.recogniseInt(temp));
 
-        temp = segments.getImageBox( BoxType.PULSE, newImage );
+        temp = segments.getImageBox( BoxType.LCD7, newImage );
         currentPulse.setValue(SegmentRecogniser.recogniseInt(temp));
 
         temp = segments.getImageBox( BoxType.GRAPH, newImage );
         lcdScreen = new Graph( temp ).get();
+
+        // Read changing boxes
+        if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.WATT, newImage)) ) {
+            temp = segments.getImageBox( BoxType.LCD5, newImage );
+            //currentWATT.setValue(SegmentRecogniser.recogniseInt(temp));
+        }
+        else if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.RPM, newImage))) {
+            temp = segments.getImageBox( BoxType.LCD5, newImage );
+            currentRPM.setValue(SegmentRecogniser.recogniseInt(temp));
+        }
+
+        if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.PROGRAM, newImage)) ) {
+            temp = segments.getImageBox( BoxType.LCD6, newImage );
+            //currentProgram.setValue(SegmentRecogniser.recogniseInt(temp));
+        }
+        else if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.LEVEL, newImage)) ) {
+            temp = segments.getImageBox( BoxType.LCD6, newImage );
+            currentLevel.setValue(SegmentRecogniser.recogniseInt(temp));
+        }
     }
 
-    public void speakItems(){
-        //Will need to pass in some sort of config
+    /**
+     * Speaks the values out loud as set in the config file
+     *
+     * @param synthesiser The systhesiser to speak the words
+     * @param config Config holding which fields to be spoken
+     */
+    public void speakItems(Synthesiser synthesiser, ConfigData config) {
+
+        for (SpokenFields type : SpokenFields.values()) {
+            if (config.isSpokenField(type)) {
+                String speakVal = "";
+                switch (type) {
+                    case CAL: speakVal = currentCalories.speakValue(); break;
+                    case DISTANCE: speakVal = currentDistance.speakValue(); break;
+                    case LEVEL: speakVal = currentLevel.speakValue(); break;
+                    case PULSE: speakVal = currentPulse.speakValue(); break;
+                    case SPEED: speakVal = currentSpeed.speakValue(); break;
+                    case TIME: speakVal = currentTime.speakValue(); break;
+                    case PROGRAM: speakVal = currentProgram.speakValue(); break;
+                    case WATT: speakVal = currentWatt.speakValue(); break;
+                }
+                synthesiser.speak(speakVal);
+            }
+        }
     }
-
-
 }

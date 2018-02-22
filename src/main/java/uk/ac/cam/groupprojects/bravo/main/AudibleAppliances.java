@@ -1,5 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.main;
 
+import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.CameraException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.PiCamera;
@@ -19,6 +20,7 @@ import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
 public class AudibleAppliances {
 
     private static Synthesiser synthesiser;
+    private static ConfigData config;
     private static ImageSegments segments;
     private static BikeStateTracker bikeStateTracker;
     private static boolean running = false;
@@ -40,7 +42,8 @@ public class AudibleAppliances {
             synthesiser = new Synthesiser();
 
             System.out.println("Loading in config from " + PATH_TO_CONFIG );
-            //segments = new ImageSegments( PATH_TO_CONFIG );
+            config = new ConfigData(PATH_TO_CONFIG);
+            segments = new ImageSegments(config);
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
             bikeStateTracker = new BikeStateTracker( segments );
@@ -127,7 +130,7 @@ public class AudibleAppliances {
 
             if ( timeTracker == SPEAK_FREQ ){
                 timeTracker = 0;
-                bikeStateTracker.speakItems();
+                bikeStateTracker.speakItems(synthesiser, config);
             }
         }
         synthesiser.speak("Goodbye! Hope to see you again soon!");
