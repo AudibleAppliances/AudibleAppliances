@@ -11,6 +11,7 @@ public class SelectionScreen1 extends MenuScreen {
 
     @Override
     public float screenProbability(BikeStateTracker bikeStateTracker) {
+
         return 0;
     }
 

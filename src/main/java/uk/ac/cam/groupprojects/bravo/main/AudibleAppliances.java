@@ -123,6 +123,7 @@ public class AudibleAppliances {
         if ( running ){
             while ( !initialScreenEstablished ){
                 System.out.println("Establishing the state of the bike!");
+                synthesiser.speak("Please hold while we try and establish the state of the exercise bike");
                 try {
                     bikeStateTracker.processNewImage( PiCamera.takeImage() );
 
@@ -166,6 +167,8 @@ public class AudibleAppliances {
                 }
             }
         }
+
+        synthesiser.speak("State established!");
 
         while( running ){
             try {
