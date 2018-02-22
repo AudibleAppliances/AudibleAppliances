@@ -24,7 +24,7 @@ public class PiCamera {
 
             long startTime = System.currentTimeMillis();
 
-            String command = "raspistill -o -";
+            String command = "raspistill -t 300 -o  -";
             Process child = Runtime.getRuntime().exec(command);
 
             InputStream in = child.getInputStream();
