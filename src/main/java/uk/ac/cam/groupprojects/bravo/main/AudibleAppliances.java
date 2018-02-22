@@ -8,6 +8,7 @@ import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,7 +21,6 @@ import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
 public class AudibleAppliances {
 
     private static Synthesiser synthesiser;
-    private static ConfigData config;
     private static ImageSegments segments;
     private static BikeStateTracker bikeStateTracker;
     private static boolean running = false;
@@ -47,11 +47,10 @@ public class AudibleAppliances {
             camera.setupCamera();
 
             System.out.println("Loading in config from " + PATH_TO_CONFIG );
-            //config = new ConfigData(PATH_TO_CONFIG);
             //segments = new ImageSegments(config);
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
-            bikeStateTracker = new BikeStateTracker( segments, new ConfigData("TMP PATH") );
+            //bikeStateTracker = new BikeStateTracker( segments, new ConfigData( PATH_TO_CONFIG ) );
 
             System.out.println("Components set up successfully!");
 
@@ -130,7 +129,8 @@ public class AudibleAppliances {
             }
 
             try {
-                bikeStateTracker.updateState( camera.takeImageFile() );
+                BufferedImage image = camera.takeImageFile();
+                bikeStateTracker.updateState( image );
             } catch (CameraException | UnrecognisedDigitException | IOException e) {
                 if ( DEBUG )
                     e.printStackTrace();
@@ -138,7 +138,7 @@ public class AudibleAppliances {
 
             if ( timeTracker == SPEAK_FREQ ){
                 timeTracker = 0;
-                bikeStateTracker.speakItems(synthesiser, config);
+                bikeStateTracker.speakItems(synthesiser);
             }
         }
         synthesiser.speak("Goodbye! Hope to see you again soon!");

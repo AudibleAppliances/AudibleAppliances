@@ -92,10 +92,10 @@ public class BikeStateTracker {
      * @param synthesiser The systhesiser to speak the words
      * @param config Config holding which fields to be spoken
      */
-    public void speakItems(Synthesiser synthesiser, ConfigData config) {
+    public void speakItems(Synthesiser synthesiser) {
 
         for (BikeField field : BikeField.values()) {
-            if (config.isSpokenField(field)) {
+            if (configData.isSpokenField(field)) {
                 synthesiser.speak(currentFields.get(field).speakValue());
             }
         }
