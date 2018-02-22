@@ -44,12 +44,14 @@ public class PiCamera {
             long startTime = System.currentTimeMillis();
 
             String command = "pkill -SIGUSR1 raspistill";
+
             Runtime.getRuntime().exec(command);
-            BufferedImage image = ImageIO.read(new File("image.jpg"));
-
             long elapsedTime = System.currentTimeMillis() - startTime;
-
             System.out.println("Time taken to take picture: " + elapsedTime );
+
+            BufferedImage image = ImageIO.read(new File("image.jpg"));
+            elapsedTime = System.currentTimeMillis() - startTime;
+            System.out.println("Time taken to load picture: " + elapsedTime );
 
             return image;
         } catch (IOException e) {
