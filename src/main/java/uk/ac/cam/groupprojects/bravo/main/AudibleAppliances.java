@@ -3,10 +3,7 @@ package uk.ac.cam.groupprojects.bravo.main;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.CameraException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.PiCamera;
-import uk.ac.cam.groupprojects.bravo.model.menu.BikeScreen;
-import uk.ac.cam.groupprojects.bravo.model.menu.CyclingScreen;
-import uk.ac.cam.groupprojects.bravo.model.menu.ScreenEnum;
-import uk.ac.cam.groupprojects.bravo.model.menu.SelectionScreen1;
+import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
@@ -60,6 +57,9 @@ public class AudibleAppliances {
 
             //Need to initialise all of the screens
             screens.put( ScreenEnum.SELECTION_SCREEN_1, new SelectionScreen1() );
+            screens.put( ScreenEnum.SELECTION_SCREEN_2, new SelectionScreen2() );
+            screens.put( ScreenEnum.OFF_SCREEN, new StandByScreen() );
+            screens.put( ScreenEnum.CYCLING_SCREEN, new CyclingScreen() );
 
             //Created thread to track the bike
             Thread runThread = new Thread( runTracker );
@@ -190,11 +190,9 @@ public class AudibleAppliances {
                     e.printStackTrace();
             }
 
-            if ( timeTracker == SPEAK_FREQ ) {
+            if ( timeTracker == currentScreen.getSpeakDelay() ) {
                 timeTracker = 0;
-                if ( currentScreen.getEnum() == ScreenEnum.CYCLING_SCREEN ) {
-                    bikeStateTracker.speakItems();
-                }
+                currentScreen.speakItems( bikeStateTracker, synthesiser );
             }
             detectChangeState();
         }
