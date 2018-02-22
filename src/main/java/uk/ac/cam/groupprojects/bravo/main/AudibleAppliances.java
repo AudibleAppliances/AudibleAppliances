@@ -142,8 +142,9 @@ public class AudibleAppliances {
             }
         }
         synthesiser.speak("Goodbye! Hope to see you again soon!");
-        synthesiser.close();
         printFooter();
+        synthesiser.close();
+        camera.finish();
     };
 
     private static void printHeader(){
