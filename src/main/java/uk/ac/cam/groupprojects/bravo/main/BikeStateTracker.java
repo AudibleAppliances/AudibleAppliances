@@ -1,5 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.main;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.config.SpokenFields;
 import uk.ac.cam.groupprojects.bravo.graphProcessing.Graph;
@@ -16,6 +17,8 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by david on 13/02/2018.
@@ -35,6 +38,8 @@ public class BikeStateTracker {
     private Program currentProgram;
     private Watt currentWatt;
 
+    private Map<BoxType, Boolean> activeText;
+
     private LCD lcdScreen;
 
     /**
@@ -52,6 +57,8 @@ public class BikeStateTracker {
         currentRPM = new RPM();
         currentProgram = new Program();
         currentWatt = new Watt();
+
+        activeText = new HashMap<>();
 
         lcdScreen = new LCD();
 
@@ -83,19 +90,27 @@ public class BikeStateTracker {
 
         // Read changing boxes
         if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.WATT, newImage)) ) {
+            activeText.put(BoxType.WATT, true);
+            activeText.put(BoxType.RPM, false);
             temp = segments.getImageBox( BoxType.LCD5, newImage );
-            //currentWATT.setValue(SegmentRecogniser.recogniseInt(temp));
+            currentWatt.setValue(SegmentRecogniser.recogniseInt(temp));
         }
         else if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.RPM, newImage))) {
+            activeText.put(BoxType.RPM, true);
+            activeText.put(BoxType.WATT, false);
             temp = segments.getImageBox( BoxType.LCD5, newImage );
             currentRPM.setValue(SegmentRecogniser.recogniseInt(temp));
         }
 
         if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.PROGRAM, newImage)) ) {
+            activeText.put(BoxType.PROGRAM, true);
+            activeText.put(BoxType.LEVEL, false);
             temp = segments.getImageBox( BoxType.LCD6, newImage );
-            //currentProgram.setValue(SegmentRecogniser.recogniseInt(temp));
+            currentProgram.setValue(SegmentRecogniser.recogniseInt(temp));
         }
         else if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.LEVEL, newImage)) ) {
+            activeText.put(BoxType.LEVEL, true);
+            activeText.put(BoxType.PROGRAM, false);
             temp = segments.getImageBox( BoxType.LCD6, newImage );
             currentLevel.setValue(SegmentRecogniser.recogniseInt(temp));
         }
