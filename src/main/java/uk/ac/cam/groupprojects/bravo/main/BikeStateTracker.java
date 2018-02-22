@@ -104,4 +104,12 @@ public class BikeStateTracker {
     public ConfigData getConfig() {
         return configData;
     }
+
+    public ScreenNumber getFieldValue(BikeField field) {
+        return currentFields.get(field);
+    }
+
+    public boolean isBoxActive(ScreenBox box) {
+        return activeText.get(box);
+    }
 }
