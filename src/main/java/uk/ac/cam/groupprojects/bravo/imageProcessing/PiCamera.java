@@ -21,12 +21,19 @@ public class PiCamera {
 
         // Run command and get output
         try {
+
+            long startTime = System.currentTimeMillis();
+
             String command = "raspistill -o -";
             Process child = Runtime.getRuntime().exec(command);
 
             InputStream in = child.getInputStream();
             BufferedImage image = ImageIO.read(in);
             in.close();
+
+            long elapsedTime = System.currentTimeMillis() - startTime;
+
+            System.out.println("Time taken to take picture: " + elapsedTime );
 
             return image;
         } catch (IOException e) {
