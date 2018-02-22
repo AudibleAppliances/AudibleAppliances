@@ -46,7 +46,7 @@ public class AudibleAppliances {
             //segments = new ImageSegments(config);
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
-            bikeStateTracker = new BikeStateTracker( segments );
+            bikeStateTracker = new BikeStateTracker( segments, new ConfigData("TMP PATH") );
 
             System.out.println("Components set up successfully!");
 
@@ -116,7 +116,7 @@ public class AudibleAppliances {
             }
 
             try {
-                bikeStateTracker.processNewImage( PiCamera.takeImageFile() );
+                bikeStateTracker.updateState( PiCamera.takeImage() );
             } catch (CameraException e) {
                 if ( DEBUG )
                     e.printStackTrace();

@@ -30,7 +30,7 @@ public class ImageSegments {
      * @param image Image of exercise bike screen
      * @return Crop of BoxType from image
      */
-    public BufferedImage getImageBox(BoxType type, BufferedImage image) {
+    public BufferedImage getImageBox(ScreenBox type, BufferedImage image) {
         BoxInfo box = mConfigData.getBox(type);
 
         // Calculate coordinates
