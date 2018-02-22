@@ -11,4 +11,6 @@ public abstract class BikeScreen {
 
     public abstract void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser );
 
+    public abstract int getSpeakDelay();
+
 }
