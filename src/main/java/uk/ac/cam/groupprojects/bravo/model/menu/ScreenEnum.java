@@ -7,6 +7,7 @@ public enum ScreenEnum {
     SELECTION_SCREEN_1,
     SELECTION_SCREEN_2,
     SELECTION_SCREEN_3,
-    CYCLING_SCREEN
+    CYCLING_SCREEN,
+    OFF_SCREEN
 
 }

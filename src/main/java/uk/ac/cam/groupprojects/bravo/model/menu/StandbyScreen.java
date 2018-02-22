@@ -4,11 +4,9 @@ import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 /**
- * This screen is the initial screen of when we turn on the device.
- * The only screen available from this screen is SelectionScreen2
+ * Created by david on 22/02/2018.
  */
-public class SelectionScreen1 extends BikeScreen {
-
+public class StandByScreen extends BikeScreen {
 
     @Override
     public float screenProbability(BikeStateTracker bikeStateTracker) {
@@ -17,18 +15,16 @@ public class SelectionScreen1 extends BikeScreen {
 
     @Override
     public ScreenEnum getEnum() {
-        return ScreenEnum.SELECTION_SCREEN_1;
+        return ScreenEnum.OFF_SCREEN;
     }
 
     @Override
     public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
-        synthesiser.speak("Please click the start/stop button");
+        synthesiser.speak("The screen is currently off, please click any button to continue!");
     }
 
     @Override
     public int getSpeakDelay() {
-        return 1000;
+        return 10000;
     }
-
-
 }
