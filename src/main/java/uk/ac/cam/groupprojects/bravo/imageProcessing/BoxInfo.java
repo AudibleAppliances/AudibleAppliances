@@ -9,12 +9,12 @@ import java.awt.geom.Point2D;
  */
 public class BoxInfo {
 
-    private BoxType mType;
+    private ScreenBox mType;
     private Point2D.Double mCorner;
     private double mWidth;
     private double mHeight;
 
-    public BoxInfo(BoxType type, Point2D.Double corner, double width, double height) {
+    public BoxInfo(ScreenBox type, Point2D.Double corner, double width, double height) {
         mType = type;
         mCorner = corner;
         mWidth = width;
@@ -34,7 +34,7 @@ public class BoxInfo {
         return mCorner;
     }
 
-    public BoxType getType() {
+    public ScreenBox getType() {
         return mType;
     }
 }
