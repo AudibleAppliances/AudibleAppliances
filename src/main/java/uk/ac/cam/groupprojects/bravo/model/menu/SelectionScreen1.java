@@ -6,7 +6,7 @@ import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
  * This screen is the initial screen of when we turn on the device.
  * The only screen available from this screen is SelectionScreen2
  */
-public class SelectionScreen1 extends MenuScreen {
+public class SelectionScreen1 extends BikeScreen {
 
 
     @Override

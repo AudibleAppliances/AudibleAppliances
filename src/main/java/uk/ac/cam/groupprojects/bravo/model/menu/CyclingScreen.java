@@ -5,7 +5,7 @@ import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 /**
  * Created by david on 20/02/2018.
  */
-public class CyclingMenuScreen extends MenuScreen {
+public class CyclingScreen extends BikeScreen {
 
     public float screenProbability(){
         return 0.1f;
