@@ -24,6 +24,7 @@ public class AudibleAppliances {
     private static ImageSegments segments;
     private static BikeStateTracker bikeStateTracker;
     private static boolean running = false;
+    private static PiCamera camera;
 
     private static int timeTracker = 0;
 
@@ -40,6 +41,10 @@ public class AudibleAppliances {
              */
             System.out.println("Loading up speech library!");
             synthesiser = new Synthesiser();
+
+            System.out.println("Loading up the camera!");
+            camera = new PiCamera();
+            camera.setupCamera();
 
             System.out.println("Loading in config from " + PATH_TO_CONFIG );
             //config = new ConfigData(PATH_TO_CONFIG);
@@ -66,7 +71,16 @@ public class AudibleAppliances {
                 e.printStackTrace();
             System.out.println("FATAL ERROR: Could not load voice library!");
             printFooter();
-        } catch (Exception e) {
+        }  catch( CameraException e ){
+            if ( DEBUG )
+                e.printStackTrace();
+            System.out.println("FATAL ERROR: Could not load up camera!");
+            if ( synthesiser != null ){
+                synthesiser.speak("There was an error, please try again!");
+                synthesiser.close();
+            }
+            printFooter();
+        }catch (Exception e) {
             if ( DEBUG )
                 e.printStackTrace();
             System.out.println("FATAL ERROR: Could not load in config");
@@ -116,7 +130,7 @@ public class AudibleAppliances {
             }
 
             try {
-                bikeStateTracker.processNewImage( PiCamera.takeImageFile() );
+                bikeStateTracker.processNewImage( camera.takeImageFile() );
             } catch (CameraException e) {
                 if ( DEBUG )
                     e.printStackTrace();

@@ -1,5 +1,7 @@
 package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
+import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -13,42 +15,35 @@ import java.io.InputStream;
  */
 public class PiCamera {
 
+    private Process running;
+
+    public PiCamera(){
+
+    }
+
+    public void setupCamera() throws CameraException{
+        try {
+            String command = "raspistill -s -t 50 -o image.jpg";
+            running = Runtime.getRuntime().exec(command);
+        } catch (IOException e) {
+            if ( ApplicationConstants.DEBUG )
+                e.printStackTrace();
+        }
+
+    }
+
     /**
      * Takes an image using the pi camera and puts it in a BufferedImage (using raspistill)
      *
      * @return image taken as a BufferedImage
      */
-    public static BufferedImage takeImage() throws CameraException {
-
+    public BufferedImage takeImageFile() throws CameraException{
         // Run command and get output
         try {
 
             long startTime = System.currentTimeMillis();
 
-            String command = "raspistill -n -t 50 -o  -";
-            Process child = Runtime.getRuntime().exec(command);
-
-            InputStream in = child.getInputStream();
-            BufferedImage image = ImageIO.read(in);
-            in.close();
-
-            long elapsedTime = System.currentTimeMillis() - startTime;
-
-            System.out.println("Time taken to take picture: " + elapsedTime );
-
-            return image;
-        } catch (IOException e) {
-            throw new CameraException("Error reading from camera");
-        }
-    }
-
-    public static BufferedImage takeImageFile() throws CameraException{
-        // Run command and get output
-        try {
-
-            long startTime = System.currentTimeMillis();
-
-            String command = "raspistill -n -t 50 -o image.jpg";
+            String command = "pkill -SIGUSR1 raspistill";
             Runtime.getRuntime().exec(command);
             BufferedImage image = ImageIO.read(new File("image.jpg"));
 
@@ -61,4 +56,10 @@ public class PiCamera {
             throw new CameraException("Error reading from camera");
         }
     }
+
+    public void finish(){
+        running.destroyForcibly();
+    }
+
+
 }
