@@ -42,8 +42,8 @@ public class AudibleAppliances {
             synthesiser = new Synthesiser();
 
             System.out.println("Loading in config from " + PATH_TO_CONFIG );
-            config = new ConfigData(PATH_TO_CONFIG);
-            segments = new ImageSegments(config);
+            //config = new ConfigData(PATH_TO_CONFIG);
+            //segments = new ImageSegments(config);
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
             bikeStateTracker = new BikeStateTracker( segments );
