@@ -21,7 +21,7 @@ public class ConfigData {
 
     private final String configPath;
     private HashMap<BoxType, BoxInfo> mBoxes = new HashMap<>();
-    private HashMap<SpokenFields, Boolean> mSpokenFields = new HashMap<>();
+    private HashMap<BikeFields, Boolean> mSpokenFields = new HashMap<>();
     private String mVoice;
 
     /**
@@ -71,7 +71,7 @@ public class ConfigData {
             // Parse spoken_fileds
             JsonObject spoken_fields = config.getAsJsonObject("spoken_fields");
 
-            for (SpokenFields type : SpokenFields.values()) {
+            for (BikeFields type : BikeFields.values()) {
                 String typeName = type.name().toLowerCase();
                 JsonPrimitive field = spoken_fields.getAsJsonPrimitive(typeName);
                 mSpokenFields.put(type, field.getAsBoolean());
@@ -92,7 +92,7 @@ public class ConfigData {
        return mBoxes.get(type);
     }
 
-    public boolean isSpokenField(SpokenFields type) {
+    public boolean isSpokenField(BikeFields type) {
         return mSpokenFields.get(type);
     }
 }

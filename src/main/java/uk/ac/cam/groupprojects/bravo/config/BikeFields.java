@@ -5,6 +5,6 @@ package uk.ac.cam.groupprojects.bravo.config;
  *
  * @author Oliver Hope
  */
-public enum SpokenFields {
+public enum BikeFields {
     SPEED, TIME, DISTANCE, RPM, LEVEL, CAL, PULSE, GRAPH, PROGRAM, WATT
 }

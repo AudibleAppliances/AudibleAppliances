@@ -1,8 +1,7 @@
 package uk.ac.cam.groupprojects.bravo.main;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import uk.ac.cam.groupprojects.bravo.config.BikeFields;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
-import uk.ac.cam.groupprojects.bravo.config.SpokenFields;
 import uk.ac.cam.groupprojects.bravo.graphProcessing.Graph;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxType;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
@@ -14,7 +13,6 @@ import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,8 +44,9 @@ public class BikeStateTracker {
      * Other state
      */
     private ImageSegments segments;
+    private ConfigData configData;
 
-    public BikeStateTracker( ImageSegments segments ){
+    public BikeStateTracker(ImageSegments segments, ConfigData configData){
         currentCalories = new Calories();
         currentDistance = new Distance();
         currentLevel = new Level();
@@ -63,6 +62,7 @@ public class BikeStateTracker {
         lcdScreen = new LCD();
 
         this.segments = segments;
+        this.configData = configData;
     }
 
     public void processNewImage( BufferedImage newImage )
@@ -124,7 +124,7 @@ public class BikeStateTracker {
      */
     public void speakItems(Synthesiser synthesiser, ConfigData config) {
 
-        for (SpokenFields type : SpokenFields.values()) {
+        for (BikeFields type : BikeFields.values()) {
             if (config.isSpokenField(type)) {
                 String speakVal = "";
                 switch (type) {
@@ -140,5 +140,9 @@ public class BikeStateTracker {
                 synthesiser.speak(speakVal);
             }
         }
+    }
+
+    public ConfigData getConfig() {
+        return configData;
     }
 }
