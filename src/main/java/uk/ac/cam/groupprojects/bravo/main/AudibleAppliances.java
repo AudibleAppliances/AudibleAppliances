@@ -51,7 +51,7 @@ public class AudibleAppliances {
             //segments = new ImageSegments(config);
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
-            bikeStateTracker = new BikeStateTracker( segments );
+            bikeStateTracker = new BikeStateTracker( segments, new ConfigData("TMP PATH") );
 
             System.out.println("Components set up successfully!");
 
@@ -130,14 +130,8 @@ public class AudibleAppliances {
             }
 
             try {
-                bikeStateTracker.processNewImage( camera.takeImageFile() );
-            } catch (CameraException e) {
-                if ( DEBUG )
-                    e.printStackTrace();
-            } catch (UnrecognisedDigitException e) {
-                if ( DEBUG )
-                    e.printStackTrace();
-            } catch (IOException e) {
+                bikeStateTracker.updateState( camera.takeImageFile() );
+            } catch (CameraException | UnrecognisedDigitException | IOException e) {
                 if ( DEBUG )
                     e.printStackTrace();
             }

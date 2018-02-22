@@ -1,21 +1,19 @@
 package uk.ac.cam.groupprojects.bravo.main;
 
+import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
-import uk.ac.cam.groupprojects.bravo.config.SpokenFields;
-import uk.ac.cam.groupprojects.bravo.graphProcessing.Graph;
-import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxType;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
-import uk.ac.cam.groupprojects.bravo.model.Program;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
-import uk.ac.cam.groupprojects.bravo.model.screen.LCD;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by david on 13/02/2018.
@@ -25,81 +23,68 @@ public class BikeStateTracker {
     /**
      * Current state that we are tracking on the bike
      */
-    private Calories currentCalories;
-    private Distance currentDistance;
-    private Level currentLevel;
-    private Pulse currentPulse;
-    private Speed currentSpeed;
-    private Time currentTime;
-    private RPM currentRPM;
-    private Program currentProgram;
-    private Watt currentWatt;
-
-    private LCD lcdScreen;
+    private Map<BikeField, ScreenNumber> currentFields;
+    private Map<ScreenBox, Boolean> activeText;
 
     /**
      * Other state
      */
     private ImageSegments segments;
+    private ConfigData configData;
 
-    public BikeStateTracker( ImageSegments segments ){
-        currentCalories = new Calories();
-        currentDistance = new Distance();
-        currentLevel = new Level();
-        currentPulse = new Pulse();
-        currentSpeed = new Speed();
-        currentTime = new Time();
-        currentRPM = new RPM();
-        currentProgram = new Program();
-        currentWatt = new Watt();
-
-        lcdScreen = new LCD();
+    /**
+     *
+     * @param segments ImageSegments object to crop out parts of the image for processing
+     * @param configData Configuration that can be passed around with this object
+     */
+    public BikeStateTracker(ImageSegments segments, ConfigData configData){
+        activeText = new HashMap<>();
 
         this.segments = segments;
+        this.configData = configData;
+
+        // Initialise currentFields;
+        currentFields.put(BikeField.CAL, new Calories());
+        currentFields.put(BikeField.DISTANCE, new Distance());
+        currentFields.put(BikeField.LEVEL, new Level());
+        currentFields.put(BikeField.PULSE, new Pulse());
+        currentFields.put(BikeField.RPM, new RPM());
+        currentFields.put(BikeField.SPEED, new Speed());
+        currentFields.put(BikeField.TIME, new Time());
+        currentFields.put(BikeField.WATT, new Watt());
     }
 
-    public void processNewImage( BufferedImage newImage )
-                throws IOException,UnrecognisedDigitException, NumberFormatException {
-        BufferedImage temp;
+    /**
+     * Given an image of the screen, updates the state from what is on the screen
+     *
+     * @param newImage Image of the full screen
+     * @throws IOException If there is a problem in checking if segment is active
+     * @throws UnrecognisedDigitException If the digit in any segment cannot be recognised
+     * @throws NumberFormatException If the digit recognised is not in a vlaid format
+     */
+    public void updateState(BufferedImage newImage)
+                throws IOException, UnrecognisedDigitException, NumberFormatException {
 
-        // Read fixed boxes
-        temp = segments.getImageBox( BoxType.LCD2, newImage );
-        currentSpeed.setValue(SegmentRecogniser.recogniseInt(temp));
+        HashMap<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
+        HashMap<ScreenBox, Boolean> isActive = new HashMap<>();
 
-        temp = segments.getImageBox( BoxType.LCD1, newImage );
-        currentTime.setValue(SegmentRecogniser.recogniseInt(temp));
-
-        temp = segments.getImageBox( BoxType.LCD3, newImage );
-        currentDistance.setValue(SegmentRecogniser.recogniseInt(temp));
-
-        temp = segments.getImageBox( BoxType.LCD4, newImage );
-        currentCalories.setValue(SegmentRecogniser.recogniseInt(temp));
-
-        temp = segments.getImageBox( BoxType.LCD7, newImage );
-        currentPulse.setValue(SegmentRecogniser.recogniseInt(temp));
-
-        temp = segments.getImageBox( BoxType.GRAPH, newImage );
-        lcdScreen = new Graph( temp ).get();
-
-        // Read changing boxes
-        if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.WATT, newImage)) ) {
-            temp = segments.getImageBox( BoxType.LCD5, newImage );
-            //currentWATT.setValue(SegmentRecogniser.recogniseInt(temp));
-        }
-        else if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.RPM, newImage))) {
-            temp = segments.getImageBox( BoxType.LCD5, newImage );
-            currentRPM.setValue(SegmentRecogniser.recogniseInt(temp));
+        for (ScreenBox box : ScreenBox.values()) {
+            BufferedImage imgSeg = segments.getImageBox(box, newImage);
+            imgSegs.put(box, imgSeg);
+            isActive.put(box, SegmentActive.segmentActive(imgSeg));
         }
 
-        if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.PROGRAM, newImage)) ) {
-            temp = segments.getImageBox( BoxType.LCD6, newImage );
-            //currentProgram.setValue(SegmentRecogniser.recogniseInt(temp));
+        // Read in data
+        for (ScreenBox box : ScreenBox.values()) {
+            if (isActive.get(box)) {
+                for (BikeField field : box.getFields()) {
+                    if (isActive.get(field.getTitleBox())) {
+                        currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(newImage));
+                    }
+                }
+            }
         }
-        else if ( SegmentActive.segmentActive(segments.getImageBox( BoxType.LEVEL, newImage)) ) {
-            temp = segments.getImageBox( BoxType.LCD6, newImage );
-            currentLevel.setValue(SegmentRecogniser.recogniseInt(temp));
-        }
-    }
+   }
 
     /**
      * Speaks the values out loud as set in the config file
@@ -109,21 +94,22 @@ public class BikeStateTracker {
      */
     public void speakItems(Synthesiser synthesiser, ConfigData config) {
 
-        for (SpokenFields type : SpokenFields.values()) {
-            if (config.isSpokenField(type)) {
-                String speakVal = "";
-                switch (type) {
-                    case CAL: speakVal = currentCalories.speakValue(); break;
-                    case DISTANCE: speakVal = currentDistance.speakValue(); break;
-                    case LEVEL: speakVal = currentLevel.speakValue(); break;
-                    case PULSE: speakVal = currentPulse.speakValue(); break;
-                    case SPEED: speakVal = currentSpeed.speakValue(); break;
-                    case TIME: speakVal = currentTime.speakValue(); break;
-                    case PROGRAM: speakVal = currentProgram.speakValue(); break;
-                    case WATT: speakVal = currentWatt.speakValue(); break;
-                }
-                synthesiser.speak(speakVal);
+        for (BikeField field : BikeField.values()) {
+            if (config.isSpokenField(field)) {
+                synthesiser.speak(currentFields.get(field).speakValue());
             }
         }
+    }
+
+    public ConfigData getConfig() {
+        return configData;
+    }
+
+    public ScreenNumber getFieldValue(BikeField field) {
+        return currentFields.get(field);
+    }
+
+    public boolean isBoxActive(ScreenBox box) {
+        return activeText.get(box);
     }
 }
