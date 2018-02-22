@@ -116,7 +116,7 @@ public class AudibleAppliances {
             }
 
             try {
-                bikeStateTracker.processNewImage( PiCamera.takeImage() );
+                bikeStateTracker.processNewImage( PiCamera.takeImageFile() );
             } catch (CameraException e) {
                 if ( DEBUG )
                     e.printStackTrace();

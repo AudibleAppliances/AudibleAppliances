@@ -2,6 +2,7 @@ package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -24,12 +25,32 @@ public class PiCamera {
 
             long startTime = System.currentTimeMillis();
 
-            String command = "raspistill -n -t 300 -o  -";
+            String command = "raspistill -n -t 50 -o  -";
             Process child = Runtime.getRuntime().exec(command);
 
             InputStream in = child.getInputStream();
             BufferedImage image = ImageIO.read(in);
             in.close();
+
+            long elapsedTime = System.currentTimeMillis() - startTime;
+
+            System.out.println("Time taken to take picture: " + elapsedTime );
+
+            return image;
+        } catch (IOException e) {
+            throw new CameraException("Error reading from camera");
+        }
+    }
+
+    public static BufferedImage takeImageFile() throws CameraException{
+        // Run command and get output
+        try {
+
+            long startTime = System.currentTimeMillis();
+
+            String command = "raspistill -n -t 50 -o image.jpg";
+            Runtime.getRuntime().exec(command);
+            BufferedImage image = ImageIO.read(new File("image.jpg"));
 
             long elapsedTime = System.currentTimeMillis() - startTime;
 
