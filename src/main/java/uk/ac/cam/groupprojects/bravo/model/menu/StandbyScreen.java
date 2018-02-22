@@ -6,7 +6,7 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 /**
  * Created by david on 22/02/2018.
  */
-public class StandByScreen extends BikeScreen {
+public class StandbyScreen extends BikeScreen {
 
     @Override
     public float screenProbability(BikeStateTracker bikeStateTracker) {

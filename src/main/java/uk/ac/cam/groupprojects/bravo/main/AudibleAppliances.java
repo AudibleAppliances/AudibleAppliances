@@ -58,7 +58,7 @@ public class AudibleAppliances {
             //Need to initialise all of the screens
             screens.put( ScreenEnum.SELECTION_SCREEN_1, new SelectionScreen1() );
             screens.put( ScreenEnum.SELECTION_SCREEN_2, new SelectionScreen2() );
-            screens.put( ScreenEnum.OFF_SCREEN, new StandByScreen() );
+            screens.put( ScreenEnum.OFF_SCREEN, new StandbyScreen() );
             screens.put( ScreenEnum.CYCLING_SCREEN, new CyclingScreen() );
 
             //Created thread to track the bike
