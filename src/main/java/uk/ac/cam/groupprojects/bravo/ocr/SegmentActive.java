@@ -14,7 +14,7 @@ public class SegmentActive {
     }
 
     public static double imageAverage(BufferedImage img) throws IOException {
-        BufferedImage grey = Util.makeMonochrome(img);
+        BufferedImage grey = SSOCRUtil.makeMonochrome(img);
         Raster raw = grey.getRaster();
 
         double sum = 0;

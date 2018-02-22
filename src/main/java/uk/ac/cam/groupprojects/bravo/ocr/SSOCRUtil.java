@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-public class Util {
+public class SSOCRUtil {
     protected static final String IMG_TYPE = "png";
 
     public static File saveTempFile(BufferedImage img) throws IOException {

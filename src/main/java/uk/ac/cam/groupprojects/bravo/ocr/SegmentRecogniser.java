@@ -28,7 +28,7 @@ public class SegmentRecogniser {
     public static String recognise(BufferedImage img) throws IOException, UnrecognisedDigitException {
         File f = null;
         try {
-            f = Util.saveTempFile(img);
+            f = SSOCRUtil.saveTempFile(img);
             return recognise(f.getPath());
         }
         finally {
@@ -38,7 +38,7 @@ public class SegmentRecogniser {
     }
 
     public static String recognise(String imagePath) throws IOException, UnrecognisedDigitException {
-        Process p = Util.startRecognisingSSOCR(imagePath);
+        Process p = SSOCRUtil.startRecognisingSSOCR(imagePath);
 
         try (Scanner s = new Scanner(p.getInputStream())) {
             String output = s.nextLine();
@@ -50,7 +50,7 @@ public class SegmentRecogniser {
             return clean(output);
         }
         finally {
-            Util.waitFor(p);
+            SSOCRUtil.waitFor(p);
         }
     }
     // Cleanup the output of the recogniser
