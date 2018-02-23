@@ -23,7 +23,7 @@ public class PiCamera {
 
     public void setupCamera() throws CameraException{
         try {
-            String command = "raspistill -s -t 50 -o image.jpg";
+            String command = "raspistill -s -t 0 -o image.jpg";
             running = Runtime.getRuntime().exec(command);
         } catch (IOException e) {
             if ( ApplicationConstants.DEBUG )
