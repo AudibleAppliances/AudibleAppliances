@@ -1,9 +1,9 @@
 package uk.ac.cam.groupprojects.bravo.main;
 
-import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.CameraException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.PiCamera;
+import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
 
@@ -20,8 +22,11 @@ import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
  */
 public class AudibleAppliances {
 
+    private static Map<ScreenEnum, BikeScreen> screens = new HashMap<>();
+
     private static Synthesiser synthesiser;
     private static ImageSegments segments;
+    private static BikeScreen currentScreen;
     private static BikeStateTracker bikeStateTracker;
     private static boolean running = false;
     private static PiCamera camera;
@@ -55,6 +60,12 @@ public class AudibleAppliances {
             System.out.println("Components set up successfully!");
 
             running = true;
+
+            //Need to initialise all of the screens
+            screens.put( ScreenEnum.SELECTION_SCREEN_1, new SelectionScreen1() );
+            screens.put( ScreenEnum.SELECTION_SCREEN_2, new SelectionScreen2() );
+            screens.put( ScreenEnum.OFF_SCREEN, new StandbyScreen() );
+            screens.put( ScreenEnum.CYCLING_SCREEN, new CyclingScreen() );
 
             //Created thread to track the bike
             Thread runThread = new Thread( runTracker );
@@ -119,6 +130,64 @@ public class AudibleAppliances {
         System.out.println("Starting the bike state tracker! ");
         synthesiser.speak("Welcome to Audible Appliances");
 
+        //FIRST RUN CODE
+        /*
+            We need to establish which screen we are in.
+         */
+        boolean initialScreenEstablished = false;
+        int initialScreenCounter = 0;
+        if ( running ){
+            while ( !initialScreenEstablished ){
+                System.out.println("Establishing the state of the bike!");
+                synthesiser.speak("Please hold while we try and establish the state of the exercise bike");
+                try {
+                    bikeStateTracker.updateState( camera.takeImageFile() );
+
+                    float maxProb = 0.0f;
+                    BikeScreen maxScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
+
+                    for ( BikeScreen screen: screens.values() ){
+                        float prob = screen.screenProbability( bikeStateTracker );
+                        if ( prob > maxProb ){
+                            maxProb = screen.screenProbability( bikeStateTracker );
+                            maxScreen = screen;
+                        }
+                        System.out.println( screen.getEnum().toString() + " : " + prob );
+                    }
+
+                    System.out.println();
+
+                    if ( maxProb > ApplicationConstants.MIN_PROB ){
+                        currentScreen = maxScreen;
+                        initialScreenEstablished = true;
+                        System.out.println("Establishing bike state is " + currentScreen.getEnum().toString() );
+                    }
+
+                } catch (Exception e) {
+                    if ( DEBUG )
+                        e.printStackTrace();
+                }
+                initialScreenCounter++;
+                if ( initialScreenCounter > ApplicationConstants.MAX_INITIAL_TRIES ){
+                    //Default to SELECTION_SCREEN_1
+                    currentScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
+                    initialScreenEstablished = true;
+                    System.out.println(" INITIAL SCREEN COUNTER LIMIT REACHED defaulting to" + currentScreen.getEnum().toString() );
+                }
+                try {
+                    Thread.sleep( INITIAL_FREQ );
+                    timeTracker += INITIAL_FREQ;
+                } catch (InterruptedException e) {
+                    if ( DEBUG )
+                        e.printStackTrace();
+                }
+            }
+
+            synthesiser.speak("State established!");
+        }
+
+
+
         while( running ){
             try {
                 Thread.sleep( UPDATE_FREQ );
@@ -136,10 +205,11 @@ public class AudibleAppliances {
                     e.printStackTrace();
             }
 
-            if ( timeTracker == SPEAK_FREQ ){
+            if ( timeTracker == currentScreen.getSpeakDelay() ) {
                 timeTracker = 0;
-                bikeStateTracker.speakItems(synthesiser);
+                currentScreen.speakItems( bikeStateTracker, synthesiser );
             }
+            detectChangeState();
         }
         synthesiser.speak("Goodbye! Hope to see you again soon!");
         printFooter();
@@ -170,6 +240,30 @@ public class AudibleAppliances {
         System.out.println("|----------------------------------------|");
         System.out.println("|---------- AUDIBLE APPLIANCES ----------|");
         System.out.println("|----------------------------------------|");
+    }
+
+    private static void detectChangeState(){
+        System.out.println();
+        System.out.println("DETECTING CHANGE SCREEN STATE");
+
+        float maxProb = 0.0f;
+        BikeScreen maxScreen = currentScreen;
+
+        for ( BikeScreen screen: screens.values() ){
+            float prob = screen.screenProbability( bikeStateTracker );
+            if ( prob > maxProb ){
+                maxProb = screen.screenProbability( bikeStateTracker );
+                maxScreen = screen;
+            }
+            System.out.println( screen.getEnum().toString() + " : " + prob );
+        }
+
+        if ( maxProb > ApplicationConstants.MIN_PROB ){
+            System.out.println("Establishing bike state is " + maxScreen.getEnum().toString() );
+            currentScreen = maxScreen;
+        }
+
+        System.out.println();
     }
 
 }
