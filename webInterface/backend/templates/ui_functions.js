@@ -3,9 +3,13 @@ function change_font_size(by) {
     $("body").css("font-size", fontSize + by);
 }
 
+function reset_font_size() {
+    $("body").css("font-size", 16);
+}
+
 function change_page_color(background, text) {
-    change_background_color(background);
     change_text_color(text);
+    change_background_color(background);
 }
 
 function change_text_color(color) {
@@ -13,12 +17,14 @@ function change_text_color(color) {
     $(".container").css("border-color", color);
     $("#text_color_chooser").css("background-color", color);
     $(".button").css("background-color", color);
+    $(".button").css("border", "2px solid " + color);
 }
 
 function change_background_color(color) {
     $("body").css("background-color", color);
     $("#background_chooser").css("background-color", color);
     $(".button").css("color", color);
+    $(".selected").css("box-shadow", "0 0 0 3px " + color + " inset");
 }
 
 function choose_color(isText) {

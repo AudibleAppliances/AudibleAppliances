@@ -34,6 +34,7 @@ h1 {
     border-radius: 20px;
     padding: 0 2ch 0 2ch;
     box-shadow: none;
+    border: 2px solid black;
 }
 
 .button:hover {
@@ -106,7 +107,7 @@ h1 {
     margin: 2vh 0 2vh 3vw;
 }
 
-#voice_options {
+.options {
     display: grid;
     grid-template-columns: auto auto auto auto;
 }
@@ -115,3 +116,12 @@ h1 {
     padding: 1ch 0 1ch 0;
     margin: 0 1ch 0 1ch;
 }
+
+.selected_indicator {
+
+}
+
+/*
+.selected {
+    box-shadow: 0 0 0 3px white inset;
+} */

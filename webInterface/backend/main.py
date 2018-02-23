@@ -13,15 +13,27 @@ def gen(camera):
 
 @app.route('/')
 def index():
-    return render_template("div_test.html")
+    return render_template("index.html")
+
+@app.route('/select_components.html')
+def select_components():
+    return render_template("select_components.html")
 
 @app.route('/myStyle.css')
 def style():
     return render_template("myStyle.css")
 
 @app.route('/functions.js')
-def javascript():
+def javascript1():
     return render_template("functions.js")
+
+@app.route('/ui_functions.js')
+def javascript2():
+    return render_template("ui_functions.js")
+
+@app.route('/index_functions.js')
+def javascript3():
+    return render_template("index_functions.js")
 
 @app.route('/video_feed')
 def video_feed():
@@ -39,6 +51,39 @@ def new_box():
         json.dump(config, fp)
     return ("Box successfully created", 200, "")
 
+@app.route('/set_voice', methods=['POST'])
+def set_voice():
+    content = request.get_json(silent=False, force=True)
+    with open("boxes.json", 'r') as fp:
+        content_type = content.pop("voice", None)
+        config = json.load(fp)
+        config["voice"] = content_type
+    with open("boxes.json", 'w') as fp:
+        json.dump(config, fp)
+    return ("Voice successfully set", 200, "")
+
+@app.route('/get_voice', methods=['GET'])
+def get_voice():
+    with open("boxes.json", 'r') as fp:
+        config = json.load(fp)
+        return json.dumps({"voice" : config["voice"]})
+
+@app.route('/set_frequency', methods=['POST'])
+def set_frequency():
+    content = request.get_json(silent=False, force=True)
+    with open("boxes.json", 'r') as fp:
+        content_type = content.pop("frequency", None)
+        config = json.load(fp)
+        config["frequency"] = content_type
+    with open("boxes.json", 'w') as fp:
+        json.dump(config, fp)
+    return ("frequency successfully set", 200, "")
+
+@app.route('/get_frequency', methods=['GET'])
+def get_frequency():
+    with open("boxes.json", 'r') as fp:
+        config = json.load(fp)
+        return json.dumps({"frequency" : config["frequency"]})
 
 @app.route('/get_boxes')
 def get_boxes():
