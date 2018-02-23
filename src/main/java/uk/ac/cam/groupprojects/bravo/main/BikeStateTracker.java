@@ -44,6 +44,7 @@ public class BikeStateTracker {
         this.configData = configData;
 
         // Initialise currentFields;
+        currentFields = new HashMap<>();
         currentFields.put(BikeField.CAL, new Calories());
         currentFields.put(BikeField.DISTANCE, new Distance());
         currentFields.put(BikeField.LEVEL, new Level());
@@ -85,21 +86,6 @@ public class BikeStateTracker {
             }
         }
    }
-
-    /**
-     * Speaks the values out loud as set in the config file
-     *
-     * @param synthesiser The systhesiser to speak the words
-     * @param config Config holding which fields to be spoken
-     */
-    public void speakItems(Synthesiser synthesiser) {
-
-        for (BikeField field : BikeField.values()) {
-            if (configData.isSpokenField(field)) {
-                synthesiser.speak(currentFields.get(field).speakValue());
-            }
-        }
-    }
 
     public ConfigData getConfig() {
         return configData;
