@@ -141,7 +141,8 @@ public class AudibleAppliances {
                 System.out.println("Establishing the state of the bike!");
                 synthesiser.speak("Please hold while we try and establish the state of the exercise bike");
                 try {
-                    bikeStateTracker.updateState( camera.takeImageFile() );
+                    BufferedImage image = camera.takeImageFile();
+                    bikeStateTracker.updateState( image );
 
                     float maxProb = 0.0f;
                     BikeScreen maxScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
@@ -186,8 +187,6 @@ public class AudibleAppliances {
             synthesiser.speak("State established!");
         }
 
-
-
         while( running ){
             try {
                 Thread.sleep( UPDATE_FREQ );
@@ -212,6 +211,7 @@ public class AudibleAppliances {
             detectChangeState();
         }
         synthesiser.speak("Goodbye! Hope to see you again soon!");
+
         printFooter();
         synthesiser.close();
         camera.finish();
