@@ -137,9 +137,10 @@ public class AudibleAppliances {
         boolean initialScreenEstablished = false;
         int initialScreenCounter = 0;
         if ( running ){
+            System.out.println("Establishing the state of the bike!");
+            synthesiser.speak("Please hold while we try and establish the state of the exercise bike");
             while ( !initialScreenEstablished ){
-                System.out.println("Establishing the state of the bike!");
-                synthesiser.speak("Please hold while we try and establish the state of the exercise bike");
+                System.out.println("Try " + initialScreenCounter );
                 try {
                     bikeStateTracker.updateState( camera.takeImageFile() );
 
@@ -172,7 +173,7 @@ public class AudibleAppliances {
                     //Default to SELECTION_SCREEN_1
                     currentScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
                     initialScreenEstablished = true;
-                    System.out.println(" INITIAL SCREEN COUNTER LIMIT REACHED defaulting to" + currentScreen.getEnum().toString() );
+                    System.out.println(" INITIAL SCREEN COUNTER LIMIT REACHED defaulting to " + currentScreen.getEnum().toString() );
                 }
                 try {
                     Thread.sleep( INITIAL_FREQ );
