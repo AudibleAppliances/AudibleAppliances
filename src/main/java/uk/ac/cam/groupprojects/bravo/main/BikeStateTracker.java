@@ -79,7 +79,7 @@ public class BikeStateTracker {
         for (ScreenBox box : ScreenBox.values()) {
             if (isActive.get(box)) {
                 for (BikeField field : box.getFields()) {
-                    if (isActive.get(field.getTitleBox())) {
+                    if (field.getTitleBox() == null || isActive.get(field.getTitleBox())) {
                         currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(newImage));
                     }
                 }
