@@ -44,6 +44,7 @@ public class BikeStateTracker {
         this.configData = configData;
 
         // Initialise currentFields;
+        currentFields = new HashMap<>();
         currentFields.put(BikeField.CAL, new Calories());
         currentFields.put(BikeField.DISTANCE, new Distance());
         currentFields.put(BikeField.LEVEL, new Level());
