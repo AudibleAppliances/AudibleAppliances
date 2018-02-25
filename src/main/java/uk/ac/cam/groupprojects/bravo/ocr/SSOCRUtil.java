@@ -8,11 +8,13 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
+
 public class SSOCRUtil {
     protected static final String IMG_TYPE = "png";
 
     public static File saveTempFile(BufferedImage img) throws IOException {
-        File f = File.createTempFile("audible", "." + IMG_TYPE);
+        File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
         return saveFile(img, f);
     }
     public static File saveFile(BufferedImage img, File f) throws IOException {
