@@ -1,66 +1,43 @@
 package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
+import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
 
+/**
+ *  Segments the image from processing using a config file. Also performs preprocessing (thresholding) to make the OCR
+ *  more accurate
+ *
+ *  @author Oliver Hope
+ */
 public class ImageSegments {
 
-    private String mConfigPath;
-    private HashMap<BoxType, BoxInfo> mBoxes = new HashMap<>();
+    private ConfigData mConfigData;
 
-    public ImageSegments(String config) throws ConfigException {
-        mConfigPath = config;
-        readConfig();
+    /**
+     * Loads config file in to object
+     *
+     * @param config Config data to determine segments
+     */
+    public ImageSegments(ConfigData config) {
+        mConfigData = config;
     }
 
-    private void readConfig() throws ConfigException {
-
-        try {
-            JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(mConfigPath)));
-            JsonParser parser = new JsonParser();
-
-            JsonObject config = parser.parse(reader).getAsJsonObject();
-            JsonObject boxes = config.getAsJsonObject("boxes");
-
-            // Parse individual boxes
-            for (BoxType type : BoxType.values()) {
-                String typeName = type.name().toLowerCase();
-                JsonObject box = boxes.getAsJsonObject(typeName);
-
-                // Get box info
-                double boxWidth = box.get("width").getAsDouble();
-                double boxHeight = box.get("height").getAsDouble();
-                JsonArray corner = box.getAsJsonArray("corner");
-                double cornerX = corner.get(0).getAsDouble();
-                double cornerY = corner.get(1).getAsDouble();
-
-                // Create box info and place in data structure.
-                BoxInfo newBox = new BoxInfo(type, new Point2D.Double(cornerX, cornerY), boxWidth, boxHeight);
-                mBoxes.put(type, newBox);
-            }
-
-        } catch (FileNotFoundException e) {
-            throw new ConfigException("Could not read config file");
-        }
-    }
-
-    public BufferedImage getImageBox(BoxType type, BufferedImage image) {
-        BoxInfo box = mBoxes.get(type);
+    /**
+     * Takes and image and the type of box we want and returns just that box from the image
+     *
+     * @param type BoxType that we want to crop
+     * @param image Image of exercise bike screen
+     * @return Crop of BoxType from image
+     */
+    public BufferedImage getImageBox(ScreenBox type, BufferedImage image) {
+        BoxInfo box = mConfigData.getBox(type);
 
         // Calculate coordinates
-        int x = (int) Math.round(box.getCorner().x * image.getWidth());
-        int y = (int) Math.round(box.getCorner().y * image.getHeight());
-        int w = (int) Math.round(box.getWidth() * image.getWidth());
-        int h = (int) Math.round(box.getHeight() * image.getHeight());
+        int x = (int) Math.round(box.getCorner().x/100.0 * image.getWidth());
+        int y = (int) Math.round(box.getCorner().y/100.0 * image.getHeight());
+        int w = (int) Math.round(box.getWidth()/100.0 * image.getWidth());
+        int h = (int) Math.round(box.getHeight()/100.0 * image.getHeight());
 
         // Crop image and return
         return image.getSubimage(x, y, w, h);

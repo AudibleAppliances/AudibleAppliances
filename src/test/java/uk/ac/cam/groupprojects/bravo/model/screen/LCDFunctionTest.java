@@ -63,6 +63,9 @@ public class LCDFunctionTest {
             assertEquals( true, LCD.validateString( pattern ) );
         }
 
+        // Increment for random, as no relevant tests to run for it
+        noFunctionsTested++;
+
         noFunctionsTested++;
         for ( String pattern: LCDFunction.PLATEAU.getValues() ){
             assertEquals( true, LCD.validateString( pattern ) );
