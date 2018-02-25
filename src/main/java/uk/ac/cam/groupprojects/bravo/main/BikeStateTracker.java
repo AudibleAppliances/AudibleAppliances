@@ -76,7 +76,7 @@ public class BikeStateTracker {
     /**
      * Speaks the values out loud as set in the config file
      *
-     * @param synthesiser The systhesiser to speak the words
+     * @param synthesiser The synthesiser to speak the words
      */
     public void speakItems(Synthesiser synthesiser, ConfigData config) {
 
