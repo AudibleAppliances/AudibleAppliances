@@ -11,7 +11,7 @@ public class ApplicationConstants {
     public static final String PATH_TO_CONFIG = "/home/pi/config.json";
 
     // Directory mounted in RAM for fast access - used by all the application temp files
-    public static final String TMP_DIR_PATH = "/rd";
+    public static final String TMP_DIR_PATH = "/mnt/rd";
     public static final File TMP_DIR = new File(TMP_DIR_PATH);
 
     public static boolean DEBUG;
