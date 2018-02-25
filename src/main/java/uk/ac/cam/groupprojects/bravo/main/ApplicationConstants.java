@@ -8,6 +8,9 @@ public class ApplicationConstants {
     public static final String VERSION_NO = "0.1";
     public static final String PATH_TO_CONFIG = "/home/pi/config.json";
 
+    // Directory mounted in RAM for fast access - used by all the application temp files
+    public static final String TMP_DIR = "/rd";
+
     public static boolean DEBUG;
 
 
