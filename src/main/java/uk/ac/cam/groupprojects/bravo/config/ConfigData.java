@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonReader;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxInfo;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ConfigException;
+import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 
 import java.awt.geom.Point2D;
 import java.io.FileInputStream;
@@ -78,8 +79,12 @@ public class ConfigData {
             }
 
         } catch(FileNotFoundException e){
+            if ( ApplicationConstants.DEBUG )
+                e.printStackTrace();
             throw new ConfigException("Could not read config file");
         } catch(JsonParseException e2){
+            if ( ApplicationConstants.DEBUG )
+                e2.printStackTrace();
             throw new ConfigException("Error parsing JSON");
         }
     }

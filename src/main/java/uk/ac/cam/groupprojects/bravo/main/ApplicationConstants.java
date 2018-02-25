@@ -8,7 +8,7 @@ public class ApplicationConstants {
     public static final String VERSION_NO = "0.1";
     public static final String PATH_TO_CONFIG = "/home/pi/config.json";
 
-    public static final boolean DEBUG = false;
+    public static boolean DEBUG;
 
 
     //The probability that we are in a state, we need it to be at least this

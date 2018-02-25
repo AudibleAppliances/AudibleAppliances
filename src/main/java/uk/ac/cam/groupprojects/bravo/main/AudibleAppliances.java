@@ -38,6 +38,13 @@ public class AudibleAppliances {
     public static void main(String[] args) {
         printHeader();
 
+        //Turn debug mode off and on
+        if ( args.length > 0 && args[0].compareToIgnoreCase("-d") == 0 ){
+            DEBUG = true;
+        }else {
+            DEBUG = false;
+        }
+
         //Load config
 
         try {
