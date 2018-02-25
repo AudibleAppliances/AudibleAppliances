@@ -1,5 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.main;
 
+import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.CameraException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.PiCamera;
@@ -26,6 +27,7 @@ public class AudibleAppliances {
 
     private static Synthesiser synthesiser;
     private static ImageSegments segments;
+    private static ConfigData configData;
     private static BikeScreen currentScreen;
     private static BikeStateTracker bikeStateTracker;
     private static boolean running = false;
@@ -52,11 +54,11 @@ public class AudibleAppliances {
             camera.setupCamera();
 
             System.out.println("Loading in config from " + PATH_TO_CONFIG );
-            //segments = new ImageSegments(config);
+            configData = new ConfigData( PATH_TO_CONFIG );
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
-            //bikeStateTracker = new BikeStateTracker( segments, new ConfigData( PATH_TO_CONFIG ) );
-
+            segments = new ImageSegments( configData );
+            bikeStateTracker = new BikeStateTracker( segments, configData );
             System.out.println("Components set up successfully!");
 
             running = true;
