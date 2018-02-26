@@ -26,8 +26,6 @@ public class AudibleAppliances {
     private static Map<ScreenEnum, BikeScreen> screens = new HashMap<>();
 
     private static Synthesiser synthesiser;
-    private static ImageSegments segments;
-    private static ConfigData configData;
     private static BikeScreen currentScreen;
     private static BikeStateTracker bikeStateTracker;
     private static boolean running = false;
@@ -39,11 +37,7 @@ public class AudibleAppliances {
         printHeader();
 
         //Turn debug mode off and on
-        if ( args.length > 0 && args[0].compareToIgnoreCase("-d") == 0 ){
-            DEBUG = true;
-        }else {
-            DEBUG = false;
-        }
+        DEBUG = args.length > 0 && args[0].compareToIgnoreCase("-d") == 0;
 
         //Load config
 
@@ -61,11 +55,10 @@ public class AudibleAppliances {
             camera.setupCamera();
 
             System.out.println("Loading in config from " + PATH_TO_CONFIG );
-            configData = new ConfigData( PATH_TO_CONFIG );
+            ConfigData configData = new ConfigData(PATH_TO_CONFIG);
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
-            segments = new ImageSegments( configData );
-            bikeStateTracker = new BikeStateTracker( segments, configData );
+            bikeStateTracker = new BikeStateTracker( new ImageSegments(configData) , configData);
             System.out.println("Components set up successfully!");
 
             running = true;
@@ -145,10 +138,12 @@ public class AudibleAppliances {
          */
         boolean initialScreenEstablished = false;
         int initialScreenCounter = 0;
+        long startTime, elapsedTime;
         if ( running ){
             System.out.println("Establishing the state of the bike!");
             synthesiser.speak("Please hold while we try and establish the state of the exercise bike");
             while ( !initialScreenEstablished ){
+                startTime = System.currentTimeMillis();
                 System.out.println("Try " + initialScreenCounter );
                 try {
                     bikeStateTracker.updateState( camera.takeImageFile() );
@@ -162,7 +157,8 @@ public class AudibleAppliances {
                             maxProb = screen.screenProbability( bikeStateTracker );
                             maxScreen = screen;
                         }
-                        System.out.println( screen.getEnum().toString() + " : " + prob );
+                        if ( DEBUG )
+                            System.out.println( screen.getEnum().toString() + " : " + prob );
                     }
 
                     System.out.println();
@@ -191,13 +187,24 @@ public class AudibleAppliances {
                     if ( DEBUG )
                         e.printStackTrace();
                 }
+
+                //In case they type exit during this stage
+                if ( !running )
+                    initialScreenEstablished = true;
+
+                elapsedTime = System.currentTimeMillis() - startTime;
+                if ( ApplicationConstants.DEBUG )
+                    System.out.println("That cycle took " + elapsedTime + "ms ");
+
             }
 
-            synthesiser.speak("State established!");
+            //In case they type exit during this stage
+            if ( running )
+                synthesiser.speak("State established!");
         }
 
         while( running ){
-            long startTime = System.currentTimeMillis();
+            startTime = System.currentTimeMillis();
             try {
                 Thread.sleep( UPDATE_FREQ );
                 timeTracker += UPDATE_FREQ;
@@ -207,8 +214,7 @@ public class AudibleAppliances {
             }
 
             try {
-                BufferedImage image = camera.takeImageFile();
-                bikeStateTracker.updateState( image );
+                bikeStateTracker.updateState( camera.takeImageFile() );
             } catch (CameraException | UnrecognisedDigitException | IOException e) {
                 if ( DEBUG )
                     e.printStackTrace();
@@ -220,11 +226,12 @@ public class AudibleAppliances {
             }
             detectChangeState();
 
-            long elapsedTime = System.currentTimeMillis() - startTime;
+            elapsedTime = System.currentTimeMillis() - startTime;
             if ( ApplicationConstants.DEBUG )
                 System.out.println("That cycle took " + elapsedTime + "ms ");
 
         }
+
         synthesiser.speak("Goodbye! Hope to see you again soon!");
         printFooter();
         synthesiser.close();
@@ -283,5 +290,4 @@ public class AudibleAppliances {
 
         System.out.println();
     }
-
 }
