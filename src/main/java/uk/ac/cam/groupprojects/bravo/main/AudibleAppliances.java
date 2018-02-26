@@ -196,9 +196,8 @@ public class AudibleAppliances {
             synthesiser.speak("State established!");
         }
 
-
-
         while( running ){
+            long startTime = System.currentTimeMillis();
             try {
                 Thread.sleep( UPDATE_FREQ );
                 timeTracker += UPDATE_FREQ;
@@ -220,6 +219,11 @@ public class AudibleAppliances {
                 currentScreen.speakItems( bikeStateTracker, synthesiser );
             }
             detectChangeState();
+
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            if ( ApplicationConstants.DEBUG )
+                System.out.println("That cycle took " + elapsedTime + "ms ");
+
         }
         synthesiser.speak("Goodbye! Hope to see you again soon!");
         printFooter();
@@ -252,6 +256,9 @@ public class AudibleAppliances {
         System.out.println("|----------------------------------------|");
     }
 
+    /**
+     * This function detects if the screen has changed.
+     */
     private static void detectChangeState(){
         System.out.println();
         System.out.println("DETECTING CHANGE SCREEN STATE");
@@ -265,7 +272,8 @@ public class AudibleAppliances {
                 maxProb = screen.screenProbability( bikeStateTracker );
                 maxScreen = screen;
             }
-            System.out.println( screen.getEnum().toString() + " : " + prob );
+            if ( DEBUG )
+                System.out.println( screen.getEnum().toString() + " : " + prob );
         }
 
         if ( maxProb > ApplicationConstants.MIN_PROB ){
