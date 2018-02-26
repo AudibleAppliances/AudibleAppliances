@@ -1,12 +1,11 @@
 package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
-import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+
+import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
 
 /**
  * Uses the Pi camera to to take images and load into java
@@ -23,10 +22,10 @@ public class PiCamera {
 
     public void setupCamera() throws CameraException{
         try {
-            String command = "raspistill -s -n -w 1707 -h 1280 -th none -q 85 -t 0 -o /mnt/rd/image.jpg";
+            String command = "raspistill -s -n -w 1707 -h 1280 -th none -q 85 -t 0 -o " + TMP_DIR_PATH + "/image.jpg";
             running = Runtime.getRuntime().exec(command);
         } catch (IOException e) {
-            if ( ApplicationConstants.DEBUG )
+            if ( DEBUG )
                 e.printStackTrace();
         }
 
@@ -47,11 +46,15 @@ public class PiCamera {
 
             Runtime.getRuntime().exec(command);
             long elapsedTime = System.currentTimeMillis() - startTime;
-            System.out.println("Time taken to take picture: " + elapsedTime );
 
-            BufferedImage image = ImageIO.read(new File("/mnt/rd/image.jpg"));
+            if ( DEBUG )
+                System.out.println("Time taken to take picture: " + elapsedTime );
+
+            BufferedImage image = ImageIO.read(new File(TMP_DIR, "image.jpg"));
             elapsedTime = System.currentTimeMillis() - startTime;
-            System.out.println("Time taken to load picture: " + elapsedTime );
+
+            if ( DEBUG )
+                System.out.println("Time taken to load picture: " + elapsedTime );
 
             return image;
         } catch (IOException e) {
