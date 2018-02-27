@@ -22,7 +22,7 @@ public class ReadImage {
      */
     public static BufferedImage readImage() throws IOException {
 
-        Socket s = new Socket("127.0.0.1", 40000);
+        Socket s = new Socket("127.0.0.1", ApplicationConstants.DAEMON_PORT);
         DataInputStream in = new DataInputStream(s.getInputStream());
         OutputStream out = s.getOutputStream();
 
