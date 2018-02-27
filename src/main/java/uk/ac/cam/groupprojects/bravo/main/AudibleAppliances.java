@@ -1,15 +1,13 @@
 package uk.ac.cam.groupprojects.bravo.main;
 
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
-import uk.ac.cam.groupprojects.bravo.imageProcessing.CameraException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
-import uk.ac.cam.groupprojects.bravo.imageProcessing.PiCamera;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.ReadImage;
 import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,7 +27,6 @@ public class AudibleAppliances {
     private static BikeScreen currentScreen;
     private static BikeStateTracker bikeStateTracker;
     private static boolean running = false;
-    private static PiCamera camera;
 
     private static int timeTracker = 0;
 
@@ -49,10 +46,6 @@ public class AudibleAppliances {
              */
             System.out.println("Loading up speech library!");
             synthesiser = new Synthesiser();
-
-            System.out.println("Loading up the camera!");
-            camera = new PiCamera();
-            camera.setupCamera();
 
             System.out.println("Loading in config from " + PATH_TO_CONFIG );
             ConfigData configData = new ConfigData(PATH_TO_CONFIG);
@@ -82,15 +75,6 @@ public class AudibleAppliances {
             if ( DEBUG )
                 e.printStackTrace();
             System.out.println("FATAL ERROR: Could not load voice library!");
-            printFooter();
-        }  catch( CameraException e ){
-            if ( DEBUG )
-                e.printStackTrace();
-            System.out.println("FATAL ERROR: Could not load up camera!");
-            if ( synthesiser != null ){
-                synthesiser.speak("There was an error, please try again!");
-                synthesiser.close();
-            }
             printFooter();
         }catch (Exception e) {
             if ( DEBUG )
@@ -146,7 +130,7 @@ public class AudibleAppliances {
                 startTime = System.currentTimeMillis();
                 System.out.println("Try " + initialScreenCounter );
                 try {
-                    bikeStateTracker.updateState( camera.takeImageFile() );
+                    bikeStateTracker.updateState(ReadImage.readImage());
 
                     float maxProb = 0.0f;
                     BikeScreen maxScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
@@ -214,8 +198,8 @@ public class AudibleAppliances {
             }
 
             try {
-                bikeStateTracker.updateState( camera.takeImageFile() );
-            } catch (CameraException | UnrecognisedDigitException | IOException e) {
+                bikeStateTracker.updateState(ReadImage.readImage());
+            } catch (UnrecognisedDigitException | IOException e) {
                 if ( DEBUG )
                     e.printStackTrace();
             }
@@ -235,7 +219,6 @@ public class AudibleAppliances {
         synthesiser.speak("Goodbye! Hope to see you again soon!");
         printFooter();
         synthesiser.close();
-        camera.finish();
     };
 
     private static void printHeader(){
