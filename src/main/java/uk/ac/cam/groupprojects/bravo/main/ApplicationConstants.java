@@ -13,6 +13,7 @@ public class ApplicationConstants {
     // Directory mounted in RAM for fast access - used by all the application temp files
     public static final String TMP_DIR_PATH = "/mnt/rd";
     public static final File TMP_DIR = new File(TMP_DIR_PATH);
+    public static final String IMAGE_PATH = TMP_DIR_PATH + "/image.jpg";
 
     public static boolean DEBUG;
 
