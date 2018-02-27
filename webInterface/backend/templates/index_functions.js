@@ -36,13 +36,21 @@ $.getJSON("/get_frequency", function(data) {
     set_frequency(button, data.frequency);
 });
 
+function get_background_foreground_colors() {
+    return {foreground : $("body").css("color"),
+            background : $("body").css("background-color")};
+}
+
 function set_voice(button, voice_choice) {
+    colors = get_background_foreground_colors();
     $("#voice_options").children("div").each(function () {
         this.classList.remove("selected");
         this.classList.add("unselected");
+        $(this).css("box-shadow", "none");
     })
     button.classList.remove("unselected");
     button.classList.add("selected");
+    $(".selected").css("box-shadow", "0 0 0 3px " + colors.background + " inset");
     var arg = JSON.stringify({
         voice : voice_choice
     });
@@ -55,12 +63,15 @@ function set_voice(button, voice_choice) {
 }
 
 function set_frequency(button, frequency_choice) {
+    colors = get_background_foreground_colors();
     $("#frequency_options").children("div").each(function () {
         this.classList.remove("selected");
         this.classList.add("unselected");
+        $(this).css("box-shadow", "none");
     })
     button.classList.remove("unselected");
     button.classList.add("selected");
+    $(".selected").css("box-shadow", "0 0 0 3px " + colors.background + " inset");
     var arg = JSON.stringify({
         frequency : frequency_choice
     });
