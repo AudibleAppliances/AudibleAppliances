@@ -30,7 +30,7 @@ public class ReadImage {
         out.write(0);
 
         // Wait for ACK
-        if (in.readInt() == 1) {
+        if (in.readByte() == 1) {
 
             BufferedImage img = ImageIO.read(new File(ApplicationConstants.IMAGE_PATH));
 
