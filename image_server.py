@@ -31,7 +31,7 @@ while True:
     
     
     clientsocket, addr = server.accept()
-    data = clientsocket.read()
+    data = clientsocket.recv(1)
     if data == 1:
         if need_to_write:
             request_queue.append(clientsocket)
