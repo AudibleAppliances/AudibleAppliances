@@ -70,10 +70,8 @@ h1 {
     opacity: 0.9;
 }
 
-.picker {
+.picker, .spoken_choice {
     position: fixed;
-    display: grid;
-    grid-template-columns: auto auto auto;
     left: 25vw;
     width: 50vw;
     top: 25vh;
@@ -83,10 +81,25 @@ h1 {
     border: 2px solid black;
 }
 
-.color_choice {
+.picker {
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.color_choice, .speak {
     margin: 1ch;
     border-radius: 10px;
     border: 2px solid black;
+}
+
+.speak {
+    position: fixed;
+    color: white;
+    font-size: 2em;
+    width: 15vw;
+    top: 40vh;
+    padding: 3ch 0 3ch 0;
+    text-align: center;
 }
 
 #update_camera_button {
@@ -118,11 +131,40 @@ h1 {
     margin: 0 1ch 0 1ch;
 }
 
-.selected_indicator {
-
+#select_pane {
+    display: none;
 }
 
-/*
-.selected {
-    box-shadow: 0 0 0 3px white inset;
-} */
+#choose_component {
+    position: absolute;
+    background-color: black;
+    border-radius: 5vw;
+    width: 80vw;
+    height: 80vh;
+    left: 10vw;
+    top: 5vh;
+}
+
+.component {
+    position: absolute;
+    width: 20vw;
+    height: 18vh;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.component:hover {
+    opacity: 0.5;
+}
+
+.selected_banner {
+    position: absolute;
+    font-size: 2em;
+}
+
+#done_selection_button {
+    bottom: 3vh;
+    width: 20vw;
+    left: 40vw;
+    position: fixed;
+}

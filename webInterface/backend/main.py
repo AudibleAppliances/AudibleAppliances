@@ -44,9 +44,12 @@ def video_feed():
 def new_box():
     content = request.get_json(silent=False, force=True)
     with open("boxes.json", 'r') as fp:
-        content_type = content.pop("type", None)
+        content_box = content.pop("box", None)
+        content_type = content_box.pop("type", None)
+        spoken = content.pop("spoken", None)
         config = json.load(fp)
-        config["boxes"][content_type] = content
+        config["boxes"][content_type] = content_box
+        config["spoken_fields"][content_type] = spoken
     with open("boxes.json", 'w') as fp:
         json.dump(config, fp)
     return ("Box successfully created", 200, "")

@@ -7,8 +7,31 @@
 </head>
 
 <body>
-    <img src="/video_feed"></img>
-    <div onmousedown="mouse_down(event)" id="canvas"></div>
+    <div id=first_screen>
+        <div id="choose_component">
+            <div id="LCD1" class="component" style="left:5vw; top:7vh" onclick="do_select('LCD1')"></div>
+            <div id="LCD2" class="component" style="right:5vw; top:7vh"></div>
+            <div id="LCD3" class="component" style="left:5vw; top:32vh"></div>
+            <div id="LCD4" class="component" style="right:5vw; top:32vh"></div>
+            <div id="LCD5" class="component" style="left:5vw; bottom:5vh"></div>
+            <div id="LCD6" class="component" style="right:30vw; bottom:5vh; width:10vw"></div>
+            <div id="LCD7" class="component" style="right:5vw; bottom:5vh"></div>
+            <div id="Graph" class="component" style="right:30vw; top:10vh; height:30vh"></div>
+            <div id="Watt" class="component" style="left:5vw; bottom:24vh; height:4vh; width:10vw"></div>
+            <div id="Program" class="component" style="left:30vw; bottom:15vh; height:4vh; width:9vw"></div>
+            <div id="Level" class="component" style="left:30vw; bottom:9vh; height:4vh; width:9vw"></div>
+        </div>
+        <a href="/">
+            <div class="button" id="done_selection_button">
+                <h2>Done</h2>
+            </div>
+        </a>
+    </div>
+
+    <div id="select_pane">
+        <img src="/video_feed"></img>
+        <div onmousedown="mouse_down(event)" id="canvas"></div>
+    </div>
 </body>
 
 </html>
