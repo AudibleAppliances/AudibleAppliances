@@ -1,7 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.config;
 
 import org.junit.Test;
-import uk.ac.cam.groupprojects.bravo.imageProcessing.ConfigException;
 
 import java.io.IOException;
 import java.net.URLDecoder;
