@@ -7,11 +7,11 @@ import cv2
 assert cv2.__version__[0] == '3', 'The fisheye module needs opencv version 3'
 import numpy as np
 
-DIM=(720, 480)
-K=np.array([[367.9031945760577, 0.0, 355.23742564196584],
-            [0.0, 370.74439191610304, 254.26740477788147],
+DIM=(2592, 1944)
+K=np.array([[-1217315.2822407577, -0.0, 1432.2448011006538],
+            [0.0, -1164925.2770892496, 1028.049253108997],
             [0.0, 0.0, 1.0]])
-D=np.array([[-0.10733381367197396], [0.3374033541361976], [-0.4841315731348919], [0.23140318250430025]])
+D=np.array([[24382.846599116172], [-9262946.75372707], [-118555050724.20139], [256720115919336.12]])
 
 turn = Semaphore(value=1)
 writeGuard = Semaphore(value = 1)
@@ -37,7 +37,7 @@ def create_image():
         image = cv2.imdecode(data, 1)
 
         undistorted_img = cv2.fisheye.undistortImage(image, K, D, Knew=K, new_size=DIM)
-        cv2.imwrite('~/Downloads/test1234.jpg', image)
+        cv2.imwrite('~/Downloads/test1234.jpg', undistorted_img)
 
 
 def writer():
