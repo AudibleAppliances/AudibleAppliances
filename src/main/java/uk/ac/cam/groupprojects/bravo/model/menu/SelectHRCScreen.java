@@ -7,7 +7,7 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 /**
  * Created by david on 01/03/2018.
  */
-public class ProgramScreen extends BikeScreen {
+public class SelectHRCScreen extends BikeScreen {
     @Override
     public float screenProbability(BikeStateTracker bikeStateTracker) {
         return 0;
@@ -15,16 +15,16 @@ public class ProgramScreen extends BikeScreen {
 
     @Override
     public ScreenEnum getEnum() {
-        return ScreenEnum.PROGRAM;
+        return ScreenEnum.SELECT_HRC;
     }
 
     @Override
     public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
-        //We need to print what program it is
+        synthesiser.speak("Currently selecting HRC. Please click Start/Stop to start riding!");
     }
 
     @Override
     public int getSpeakDelay() {
-        return ApplicationConstants.DEFAULT_SPEAK_FREQ;
+        return ApplicationConstants.DEFAULT_SPEAK_FREQ / 2;
     }
 }

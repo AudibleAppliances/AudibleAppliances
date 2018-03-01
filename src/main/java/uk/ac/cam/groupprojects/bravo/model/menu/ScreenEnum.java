@@ -15,6 +15,7 @@ public enum ScreenEnum {
     PROGRAM,
     SELECT_MANUAL,
     SELECT_PROGRAM,
+    SELECT_USER_PROGRAM,
     SELECT_HRC,
     SELECT_WATTS
 

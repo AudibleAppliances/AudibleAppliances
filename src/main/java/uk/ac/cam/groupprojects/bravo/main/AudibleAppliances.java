@@ -224,9 +224,10 @@ public class AudibleAppliances {
 
         screens.put( ScreenEnum.ERROR_SCREEN, new ErrorScreen() );
         screens.put( ScreenEnum.INITIAL_SCREEN, new InitialScreen() );
-
         screens.put( ScreenEnum.RUNNING_SCREEN, new RunningScreen() );
         screens.put( ScreenEnum.PAUSED_SCREEN, new PausedScreen() );
+
+        screens.put( ScreenEnum.SELECT_MANUAL, new SelectManualScreen() );
     }
 
     private static void printHeader(){
