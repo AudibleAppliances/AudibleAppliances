@@ -17,8 +17,12 @@ public class Time extends ScreenNumber {
         seconds = new LowerTimeDigit();
     }
 
-    public boolean setValue( int value ){
-        return value > 0 && setValue( value / 60, value % 60 );
+    public boolean setValue( int value ) {
+        if (value > 0 && value < 60) {
+            return setValue(0, value);
+        } else {
+            return value > 0 && setValue(value / 100, value % 100);
+        }
     }
 
     public boolean setValue( int minutes, int seconds ){
