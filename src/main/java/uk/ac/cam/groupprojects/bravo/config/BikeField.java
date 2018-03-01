@@ -12,7 +12,6 @@ public enum BikeField {
     TIME,
     DISTANCE,
     RPM(ScreenBox.RPM),
-    LEVEL,
     CAL,
     PULSE,
     GRAPH,
