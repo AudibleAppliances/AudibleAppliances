@@ -46,6 +46,16 @@
       "width": 10,
       "height": 20
     },
+    "text": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
+    "speed": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
     "watt": {
       "corner": [20, 12],
       "width": 10,
@@ -56,12 +66,7 @@
       "width": 10,
       "height": 20
     },
-    "program": {
-      "corner": [20, 12],
-      "width": 10,
-      "height": 20
-    },
-    "level": {
+    "load": {
       "corner": [20, 12],
       "width": 10,
       "height": 20
@@ -72,11 +77,11 @@
     "time": false,
     "distance": true,
     "rpm": false,
-    "level": false,
     "cal": true,
     "pulse": false,
     "graph": false,
     "program": true,
-    "watt": true
+    "watt": true,
+    "load": true
   }
 }
