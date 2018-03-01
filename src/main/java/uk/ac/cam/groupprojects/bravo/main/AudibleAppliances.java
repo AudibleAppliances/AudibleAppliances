@@ -221,7 +221,15 @@ public class AudibleAppliances {
         screens.put( ScreenEnum.RUNNING_SCREEN, new RunningScreen() );
         screens.put( ScreenEnum.PAUSED_SCREEN, new PausedScreen() );
 
+        screens.put( ScreenEnum.TIME_SELECT, new TimeSelectScreen() );
+        screens.put( ScreenEnum.PROGRAM, new ProgramScreen() );
+
         screens.put( ScreenEnum.SELECT_MANUAL, new SelectManualScreen() );
+        screens.put( ScreenEnum.SELECT_HRC, new SelectHRCScreen() );
+        screens.put( ScreenEnum.SELECT_USER_PROGRAM, new SelectUserProgramScreen() );
+        screens.put( ScreenEnum.SELECT_WATTS, new SelectWattScreen() );
+        screens.put( ScreenEnum.SELECT_PROGRAM, new SelectProgramScreen() );
+
     }
 
     private static void printHeader(){
