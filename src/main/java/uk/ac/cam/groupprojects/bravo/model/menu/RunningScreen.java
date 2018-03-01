@@ -8,7 +8,7 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 /**
  * Created by david on 20/02/2018.
  */
-public class CyclingScreen extends BikeScreen {
+public class RunningScreen extends BikeScreen {
 
     @Override
     public float screenProbability(BikeStateTracker bikeStateTracker) {
@@ -17,7 +17,7 @@ public class CyclingScreen extends BikeScreen {
 
     @Override
     public ScreenEnum getEnum() {
-        return ScreenEnum.CYCLING_SCREEN;
+        return ScreenEnum.RUNNING_SCREEN;
     }
 
     @Override
