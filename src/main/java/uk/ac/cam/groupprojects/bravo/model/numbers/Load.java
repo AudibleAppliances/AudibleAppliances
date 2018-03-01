@@ -6,7 +6,7 @@ package uk.ac.cam.groupprojects.bravo.model.numbers;
 public class Load extends ScreenNumber {
 
     public Load(){
-        super(0, 8);
+        super(1, 16);
     }
 
     @Override
