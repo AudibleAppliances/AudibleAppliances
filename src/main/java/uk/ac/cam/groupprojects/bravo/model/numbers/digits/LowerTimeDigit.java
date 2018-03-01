@@ -2,9 +2,12 @@ package uk.ac.cam.groupprojects.bravo.model.numbers.digits;
 
 import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
 
-public class TimeDigit extends ScreenNumber {
+/**
+ * Created by david on 01/03/2018.
+ */
+public class LowerTimeDigit extends ScreenNumber {
 
-    public TimeDigit() {
+    public LowerTimeDigit() {
         super(0, 59);
     }
 
