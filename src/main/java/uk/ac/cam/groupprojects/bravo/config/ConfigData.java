@@ -4,7 +4,6 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxInfo;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
-import uk.ac.cam.groupprojects.bravo.imageProcessing.ConfigException;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 
 import java.awt.geom.Point2D;

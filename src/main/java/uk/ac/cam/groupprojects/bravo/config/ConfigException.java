@@ -1,4 +1,4 @@
-package uk.ac.cam.groupprojects.bravo.imageProcessing;
+package uk.ac.cam.groupprojects.bravo.config;
 
 /**
  * Holds a message of what has gone wrong during the reading or loading of the config file
