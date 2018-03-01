@@ -3,21 +3,22 @@ package uk.ac.cam.groupprojects.bravo.config;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 
 /**
- * Fields of the screen that can hold data (and the title active when shown on the display.
+ * Fields of the screen that can hold data (and the title active when shown on the display).
  *
  * @author Oliver Hope
  */
 public enum BikeField {
-    SPEED,
+    SPEED(ScreenBox.SPEED),
     TIME,
     DISTANCE,
     RPM(ScreenBox.RPM),
-    LEVEL(ScreenBox.LEVEL),
+    LEVEL,
     CAL,
     PULSE,
     GRAPH,
-    PROGRAM(ScreenBox.PROGRAM),
-    WATT(ScreenBox.WATT);
+    PROGRAM,
+    WATT(ScreenBox.WATT),
+    LOAD(ScreenBox.LOAD);
 
     // Boxes containing titles showing if the display is active
     private ScreenBox[] titleBoxes;
