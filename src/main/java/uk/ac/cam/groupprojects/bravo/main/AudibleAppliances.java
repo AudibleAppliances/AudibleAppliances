@@ -175,7 +175,7 @@ public class AudibleAppliances {
                 //In case they type exit during this stage
                 if ( !running )
                     initialScreenEstablished = true;
-
+                
                 elapsedTime = System.currentTimeMillis() - startTime;
                 if ( ApplicationConstants.DEBUG )
                     System.out.println("That cycle took " + elapsedTime + "ms ");
@@ -186,7 +186,6 @@ public class AudibleAppliances {
             if ( running )
                 synthesiser.speak("State established!");
         }
-
         while( running ){
             startTime = System.currentTimeMillis();
             try {
@@ -217,6 +216,7 @@ public class AudibleAppliances {
         }
 
         synthesiser.speak("Goodbye! Hope to see you again soon!");
+
         printFooter();
         synthesiser.close();
     };

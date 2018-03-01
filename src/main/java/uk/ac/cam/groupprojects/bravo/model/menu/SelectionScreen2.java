@@ -1,5 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
+import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
@@ -21,7 +22,8 @@ public class SelectionScreen2 extends BikeScreen {
 
     @Override
     public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
-
+        synthesiser.speak( bikeStateTracker.getFieldValue(BikeField.PROGRAM ).speakValue() );
+        synthesiser.speak("Please click the start/stop button");
     }
 
     @Override

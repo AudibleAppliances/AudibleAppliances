@@ -1,5 +1,7 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
+import uk.ac.cam.groupprojects.bravo.config.BikeField;
+import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
@@ -20,7 +22,12 @@ public class CyclingScreen extends BikeScreen {
 
     @Override
     public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
-
+        ConfigData configData = bikeStateTracker.getConfig();
+        for (BikeField field : BikeField.values()) {
+            if (configData.isSpokenField(field)) {
+                synthesiser.speak( bikeStateTracker.getFieldValue(field).speakValue() );
+            }
+        }
     }
 
     @Override
