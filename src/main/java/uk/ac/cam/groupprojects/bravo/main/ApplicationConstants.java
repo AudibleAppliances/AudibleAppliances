@@ -30,6 +30,8 @@ public class ApplicationConstants {
     public static final int INITIAL_FREQ = 1000;
 
     public static final int UPDATE_FREQ = 1000;
-    public static final int SPEAK_FREQ = 10000;
+
+
+    public static final int DEFAULT_SPEAK_FREQ = 1000;
 
 }

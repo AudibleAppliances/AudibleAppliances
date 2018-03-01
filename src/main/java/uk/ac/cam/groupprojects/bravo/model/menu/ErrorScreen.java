@@ -1,5 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
+import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
@@ -20,12 +21,12 @@ public class ErrorScreen extends BikeScreen {
 
     @Override
     public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
-
+        synthesiser.speak("The bike is currently loading up, please wait!");
     }
 
     @Override
     public int getSpeakDelay() {
-        return 0;
+        return ApplicationConstants.DEFAULT_SPEAK_FREQ;
     }
 
 }

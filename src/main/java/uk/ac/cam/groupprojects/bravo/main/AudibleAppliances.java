@@ -56,11 +56,7 @@ public class AudibleAppliances {
 
             running = true;
 
-            //Need to initialise all of the screens
-            screens.put( ScreenEnum.SELECTION_SCREEN_1, new SelectionScreen1() );
-            screens.put( ScreenEnum.SELECTION_SCREEN_2, new SelectionScreen2() );
-            screens.put( ScreenEnum.OFF_SCREEN, new StandbyScreen() );
-            screens.put( ScreenEnum.CYCLING_SCREEN, new CyclingScreen() );
+            addScreens( screens );
 
             //Created thread to track the bike
             Thread runThread = new Thread( runTracker );
@@ -133,11 +129,13 @@ public class AudibleAppliances {
                     bikeStateTracker.updateState(ReadImage.readImage());
 
                     float maxProb = 0.0f;
-                    BikeScreen maxScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
+                    BikeScreen maxScreen = screens.get( ScreenEnum.INITIAL_SCREEN );
 
                     for ( BikeScreen screen: screens.values() ){
                         float prob = screen.screenProbability( bikeStateTracker );
-                        if ( prob > maxProb ){
+
+                        //We don't want to be in the error screen
+                        if ( screen.getEnum() != ScreenEnum.ERROR_SCREEN && prob > maxProb ){
                             maxProb = screen.screenProbability( bikeStateTracker );
                             maxScreen = screen;
                         }
@@ -160,7 +158,7 @@ public class AudibleAppliances {
                 initialScreenCounter++;
                 if ( initialScreenCounter > ApplicationConstants.MAX_INITIAL_TRIES ){
                     //Default to SELECTION_SCREEN_1
-                    currentScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
+                    currentScreen = screens.get( ScreenEnum.INITIAL_SCREEN );
                     initialScreenEstablished = true;
                     System.out.println(" INITIAL SCREEN COUNTER LIMIT REACHED defaulting to " + currentScreen.getEnum().toString() );
                 }
@@ -220,6 +218,16 @@ public class AudibleAppliances {
         printFooter();
         synthesiser.close();
     };
+
+    public static void addScreens( Map<ScreenEnum, BikeScreen> screens ){
+        screens.put( ScreenEnum.OFF_SCREEN, new OffScreen() );
+
+        screens.put( ScreenEnum.ERROR_SCREEN, new ErrorScreen() );
+        screens.put( ScreenEnum.INITIAL_SCREEN, new InitialScreen() );
+
+        screens.put( ScreenEnum.RUNNING_SCREEN, new RunningScreen() );
+        screens.put( ScreenEnum.PAUSED_SCREEN, new PausedScreen() );
+    }
 
     private static void printHeader(){
         System.out.println("|----------------------------------------|");
