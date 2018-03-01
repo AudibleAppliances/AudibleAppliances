@@ -3,124 +3,232 @@ package uk.ac.cam.groupprojects.bravo.graphProcessing;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
-import uk.ac.cam.groupprojects.bravo.model.screen.LCD;
+//import uk.ac.cam.groupprojects.bravo.model.screen.LCD;
 
 public class Graph {
 
-    private BufferedImage i;
-    private int w, h;
-    private double a = 0.2; // proportion of cells to not be checked (padding)
+	private int w, h;
+	private double a = 0.4; // proportion of cell width to not be checked (padding)
+	private double b = 0.3; // proportion of cell height ''
 
-    private static int graphW = 10;
-    private static int graphH = 8;
-    private boolean[][] g = new boolean[graphW][graphH];
+	private static int graphW = 8;
+	private static int graphH = 8;
+	private int[] g = new int[graphW];
+	private int[] og = new int[graphW];
+	private static boolean[] d = new boolean[graphW];
+	private int flashing = -1;
 
-    public Graph(BufferedImage in) {
+	public Graph(BufferedImage in) {
 
-        i = in;
+		w = in.getWidth();
+		h = in.getHeight();
 
-        w = i.getWidth();
-        h = i.getHeight();
+		for (int i = 0; i < graphW; i ++) g[i] = 0;
 
-        for (int i = 0; i < graphW; i ++) {
+		read(in);
 
-            for (int j = 0; j < graphH; j ++) {
+	}
 
-                g[i][j] = false;
+	public void read(BufferedImage i) {
+		
+		//og = g.clone();
+		
+		for (int j = 0; j < graphW; j ++) og[j] = g[j];
 
-            }
+		// for now assumes threshold to make image b/w
+		// assumes that the green (lit up parts) appear white, and the background is black
+		// so far seems to work best on enlarged images - the original resolution is probably too small to deal with doubles for boundaries
 
-        }
+		double cellW = Math.floor(w / graphW);
+		double cellH = Math.floor(h / graphH);
 
-        read();
+		double p = 0.05 * (1 - 2 * a) * (1 - 2 * b) * cellW * cellH;
 
-    }
+		for (int col = 0; col < graphW; col ++) {
+			
+			g[col] = 0;
 
-    private void read() {
+			for (int row = 0; row < graphH; row ++) {
 
-        // for now assumes threshold to make image b/w
-        // assumes that the green (lit up parts) appear white, and the background is black
-        // so far seems to work best on enlarged images - the original resolution is probably too small to deal with doubles for boundaries
+				int n = 0;
 
-        double cellW = Math.floor(w / graphW);
-        double cellH = Math.floor(h / graphH);
+				for (double x = a * cellW; x < (1 - a) * cellW; x ++) {
 
-        double b = 0.05 * (1 - 2 * a) * (1 - 2 * a) * cellW * cellH;
+					for (double y = b * cellH; y < (1 - b) * cellH; y ++) {
 
-        for (int col = 0; col < 10; col ++) {
+						int colour = i.getRGB((int) (col * cellW + x), (int) (row * cellH + y));
+						if (testColour(colour)) n += 1;
 
-            for (int row = 0; row < 8; row ++) {
+					}
 
-                int n = 0;
+				}
 
-                for (double x = a * cellW; x < (1 - a) * cellW; x ++) {
+				if (n > p) g[col] += (1 << row);
 
-                    for (double y = a * cellH; y < (1 - a) * cellH; y ++) {
+			}
 
-                        int colour = i.getRGB((int) (col * cellW + x), (int) (row * cellH + y));
-                        if (meanRGB(colour) > 0xf0) n += 1;
+		}
+		
+		//System.out.println(Arrays.toString(g));
+		//System.out.println(Arrays.toString(og));
+		
+		updateD();
 
-                    }
+	}
+	
+	private void updateD() {
+		
+		flashing = -1;
+		
+		for (int col = 0; col < graphW; col ++) {
+			
+			d[col] = false;
+			
+			if (g[col] != og[col]) {
+				
+				d[col] = true;
+				if (g[col] == 0 || og[col] == 0) flashing = col;
+				
+			}
+			
+		}
+		
+	}
 
-                }
+	public int[] get() {
+		
+		// return copy of most recent graph
 
-                if (n > b) g[col][row] = true;
+		return g.clone();
 
-            }
+	}
+	
+	public int[] getOld() {
+		
+		// return copy of penultimate graph
+		
+		return og.clone();
+		
+	}
+	
+	public boolean cell(int x, int y) {
+		
+		// true if cell at column x, row y is lit
+		
+		return (((g[x] >> y) & 1) != 0);
+		
+	}
+	
+	public int barHeight(int x) {
+		
+		// height of the bar at column x
+		
+		int r = 0;
+		
+		for (int i = 0; i < graphH; i ++) r += ((g[x] >> i) & 1);
+		
+		return r;
+		
+	}
+	
+	public boolean[] delta() {
+		
+		// index of array is whether that column changed in value or not
+		
+		return d;
+		
+	}
+	
+	public int flashing() {
+		
+		// returns the column that is flashing, -1 if no column is
+		
+		return flashing;
+		
+	}
 
-        }
+	public static void main(String[] args) {
+		
+		// general testing
 
-    }
+		Graph testGraph;
+		File fa = new File("src/test/resources/graph/test4.jpg");
+		BufferedImage testa;
+		try {
 
-    public LCD get() {
+			testa = ImageIO.read(fa);
+			testGraph = new Graph(testa);
 
-        return new LCD(g);
+			for (int i = 0; i < graphH; i ++) {
 
-    }
+				for (int j = 0; j < graphW; j ++) {
 
-    public static void main(String[] args) {
-    	
-    	// general testing
+					if (testGraph.cell(j, i)) System.out.print("-");
+					else System.out.print("X");
+					System.out.print(" ");
 
-        File f = new File("test resources/graph/test4.jpg");
-        BufferedImage test;
-        try {
+				}
 
-            test = ImageIO.read(f);
+				System.out.println("");
 
-            Graph testGraph = new Graph(test);
+			}
+			
+			System.out.println(Arrays.toString(d));
+			
+			System.out.println("");
+			
+			File fb = new File("src/test/resources/graph/test5.jpg");
+			BufferedImage testb;
+			try {
 
-            LCD r = testGraph.get();
+				testb = ImageIO.read(fb);
+				testGraph.read(testb);
 
-            for (int i = 0; i < graphH; i ++) {
+				for (int i = 0; i < graphH; i ++) {
 
-                for (int j = 0; j < graphW; j ++) {
+					for (int j = 0; j < graphW; j ++) {
 
-                    if (r.get(j, i)) System.out.print("-");
-                    else System.out.print("X");
-                    System.out.print(" ");
+						if (testGraph.cell(j, i)) System.out.print("-");
+						else System.out.print("X");
+						System.out.print(" ");
 
-                }
+					}
 
-                System.out.println("");
+					System.out.println("");
 
-            }
+				}
+				
+				System.out.println(Arrays.toString(d));
 
-        } catch (IOException e) {
+			} catch (IOException e) {
 
-            e.printStackTrace();
+				e.printStackTrace();
 
-        }
+			}
 
-    }
+		} catch (IOException e) {
 
-    private int meanRGB(int c) {
+			e.printStackTrace();
 
-        return (((c & 0x00ff0000) >> 16) + ((c & 0x0000ff00) >> 8) + (c & 0x000000ff)) / 3;
+		}
 
-    }
+	}
+
+	private boolean testColour(int c) {
+		
+		int mean = (((c & 0x00ff0000) >> 16) + ((c & 0x0000ff00) >> 8) + (c & 0x000000ff)) / 3;
+		int green = (c & 0x0000ff00) >> 8;
+		
+		//System.out.print(mean);
+		//System.out.print(" ");
+		//System.out.println((c & 0x0000ff00) >> 8);
+
+		return (mean > 30) && (green > 50);
+
+	}
 
 }
