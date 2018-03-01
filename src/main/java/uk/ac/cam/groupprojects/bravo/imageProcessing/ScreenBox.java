@@ -14,7 +14,7 @@ public enum ScreenBox {
     LCD4(BikeField.DISTANCE),
     LCD5(BikeField.WATT, BikeField.LOAD),
     LCD6(BikeField.CAL),
-    GRAPH, GRAPH_TEXT, SPEED, RPM, WATT, LOAD;
+    GRAPH, TEXT, SPEED, RPM, WATT, LOAD;
 
     private BikeField[] fields;
 
