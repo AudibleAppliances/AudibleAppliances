@@ -1,0 +1,3 @@
+[submodule "DiskImages"]
+	path = DiskImages
+	url = https://github.com/AudibleAppliances/DiskImages

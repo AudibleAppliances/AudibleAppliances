@@ -1,0 +1,77 @@
+{
+  "voice": "male",
+  "boxes": {
+    "lcd1": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
+    "lcd2": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
+    "lcd3": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
+    "lcd4": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
+    "lcd5": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
+    "lcd6": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
+    "graph": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
+    "text": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
+    "speed": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
+    "watt": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
+    "rpm": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    },
+    "load": {
+      "corner": [20, 12],
+      "width": 10,
+      "height": 20
+    }
+  },
+  "spoken_fields": {
+    "speed": false,
+    "time": false,
+    "distance": true,
+    "rpm": false,
+    "cal": true,
+    "pulse": false,
+    "graph": false,
+    "program": true,
+    "watt": true,
+    "load": true
+  }
+}

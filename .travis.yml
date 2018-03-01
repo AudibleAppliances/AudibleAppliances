@@ -1,0 +1,23 @@
+language: java
+jdk: openjdk8
+sudo: false
+
+script: mvn package
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_289780662e1b_key -iv $encrypted_289780662e1b_iv -in audible_travis.enc -out /tmp/audible_travis -d
+
+addons:
+  ssh_known_hosts: shell.srcf.net
+
+before_deploy:
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/audible_travis
+- ssh-add /tmp/audible_travis
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: rsync -r --delete-after --quiet target/audible-1.0-SNAPSHOT-jar-with-dependencies.jar oh260@shell.srcf.net:~/public_html/AudibleAppliances/builds/
+  on:
+    branch: master

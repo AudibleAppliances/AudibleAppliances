@@ -22,3 +22,7 @@ target/
 # Build/Run scripts
 build
 run
+/bin/
+
+# OCR Tool Directory
+/ssocr

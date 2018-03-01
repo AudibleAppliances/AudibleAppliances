@@ -1,0 +1,12 @@
+#!/bin/bash
+
+sudo apt install libimlib2-dev &&
+
+wget -q https://www.unix-ag.uni-kl.de/~auerswal/ssocr/ssocr-2.18.0.tar.bz2 -O ssocr.tar.bz2 &&
+mkdir -p ssocr
+tar xf ssocr.tar.bz2 -C ssocr --strip-components=1 &&
+
+cd ssocr &&
+make &&
+make deb && # Make and install a .deb so it's easier to uninstall
+sudo dpkg -i ssocr/ssocr_*.deb
