@@ -27,4 +27,9 @@ public class ProgramScreen extends BikeScreen {
     public int getSpeakDelay() {
         return ApplicationConstants.DEFAULT_SPEAK_FREQ;
     }
+
+    @Override
+    public boolean isSpeakFirst() {
+        return false;
+    }
 }

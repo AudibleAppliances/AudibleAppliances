@@ -29,4 +29,9 @@ public class ErrorScreen extends BikeScreen {
         return ApplicationConstants.DEFAULT_SPEAK_FREQ;
     }
 
+    @Override
+    public boolean isSpeakFirst() {
+        return true;
+    }
+
 }
