@@ -19,90 +19,90 @@ public class LCDFunctionTest {
         int noFunctionsTested = 0;
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.MANUAL.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.MANUAL.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.STEPS.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.STEPS.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.HILL.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.HILL.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.ROLLING.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.ROLLING.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.VALLEY.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.VALLEY.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.FAT_BURN.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.FAT_BURN.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.RAMP.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.RAMP.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.MOUNTAIN.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.MOUNTAIN.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.INTERVALS.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.INTERVALS.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.PLATEAU.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.PLATEAU.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.FARTLEK.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.FARTLEK.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.PRECIPCE.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.PRECIPCE.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.USER_1.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.USER_1.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.USER_2.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.USER_2.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.USER_3.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.USER_3.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++;
-        for ( String pattern: LCDFunction.USER_4.getValues() ){
-            assertEquals( true, LCD.validateString( pattern ) );
+        for ( String pattern: LCDFunction_.USER_4.getValues() ){
+            assertEquals( true, LCD_.validateString( pattern ) );
         }
 
         noFunctionsTested++; //Added for NO_DEF
         /*
             In case a new function is added but not added above
          */
-        assertEquals( noFunctionsTested, LCDFunction.values().length );
+        assertEquals( noFunctionsTested, LCDFunction_.values().length );
 
 
     }
@@ -134,11 +134,11 @@ public class LCDFunctionTest {
         testScreen1[9] = new boolean[]{ true, true, true, true, false, false, false, false };
 
 
-        LCD lcd1 = new LCD();
+        LCD_ lcd1 = new LCD_();
         assertEquals( true, lcd1.updateScreen( testScreen ) );
-        assertEquals( LCDFunction.MANUAL, lcd1.matchSettings() );
+        assertEquals( LCDFunction_.MANUAL, lcd1.matchSettings() );
 
         assertEquals( true, lcd1.updateScreen( testScreen1 ) );
-        assertEquals( LCDFunction.MANUAL, lcd1.matchSettings() );
+        assertEquals( LCDFunction_.MANUAL, lcd1.matchSettings() );
     }
 }

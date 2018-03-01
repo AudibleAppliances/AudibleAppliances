@@ -45,7 +45,7 @@ public class LCDTest {
         testScreen2[8] = new boolean[]{ true, true, true, false, false, false, false, false };
         testScreen2[9] = new boolean[]{ true, true, true, false, false, false, false, false };
 
-        LCD lcd1 = new LCD();
+        LCD_ lcd1 = new LCD_();
 
         assertEquals( false, lcd1.updateScreen( testScreen ) );
         assertEquals( false, lcd1.updateScreen( testScreen1 ) );
@@ -55,14 +55,14 @@ public class LCDTest {
     @Test
     public void testStringValidation(){
         assertEquals( true,
-                LCD.validateString("10000000 10000000 10000000 10000000 " +
+                LCD_.validateString("10000000 10000000 10000000 10000000 " +
                         "10000000 10000000 10000000 10000000 10000000 10000000") );
         assertEquals( false,
-                LCD.validateString("10000000 10000000 10000000 10000000 " +
+                LCD_.validateString("10000000 10000000 10000000 10000000 " +
                         "20000000 10000000 10000000 10000000 10000000 10000000") );
 
         assertEquals( false,
-                LCD.validateString("1000000 10000000 10000000 10000000 " +
+                LCD_.validateString("1000000 10000000 10000000 10000000 " +
                         "10000000 10000000 10000000 10000000 10000000 10000000") );
     }
 
@@ -92,7 +92,7 @@ public class LCDTest {
         testScreen1[8] = new boolean[]{ true, true, true, false, false, false, false, false };
         testScreen1[9] = new boolean[]{ true, true, true, false, false, false, false };
 
-        LCD lcd1 = new LCD();
+        LCD_ lcd1 = new LCD_();
         assertEquals( "00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000", lcd1.returnString() );
         assertEquals( true, lcd1.updateScreen( testScreen ) );
         assertEquals( "11100000 11100000 11100000 11100000 11100000 11100000 11100000 11100000 11100000 11100000", lcd1.returnString() );
