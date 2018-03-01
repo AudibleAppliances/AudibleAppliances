@@ -14,7 +14,8 @@ public class SSOCRUtil {
     protected static final String IMG_TYPE = "png";
 
     public static File saveTempFile(BufferedImage img) throws IOException {
-        File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
+        //File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
+        File f = File.createTempFile("audible", "." + IMG_TYPE);
         return saveFile(img, f);
     }
     public static File saveFile(BufferedImage img, File f) throws IOException {
@@ -67,7 +68,15 @@ public class SSOCRUtil {
 
         // Perform thresholding only on green channel. This means that white/green text is
         // saved, while the blue background is deleted.
+
+        args.add("-t");
+        args.add("15");
         args.add("g_threshold");
+
+        //args.add("dynamic_threshold");
+        //args.add("50");
+        //args.add("50");
+        
         args.add("invert"); // Invert to get black text on a white background (as required by SSOCR)
         args.add("-o");
         args.add(outputPath);

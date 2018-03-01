@@ -2,6 +2,7 @@ package uk.ac.cam.groupprojects.bravo.ocr;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
+import java.io.File;
 import java.io.IOException;
 
 public class SegmentActive {
@@ -15,6 +16,7 @@ public class SegmentActive {
 
     public static double imageAverage(BufferedImage img) throws IOException {
         BufferedImage grey = SSOCRUtil.makeMonochrome(img);
+        try { SSOCRUtil.saveFile(grey, new File("out.jpg")); } catch (Exception e) {}
         Raster raw = grey.getRaster();
 
         double sum = 0;
