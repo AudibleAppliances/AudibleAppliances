@@ -1,15 +1,13 @@
+boxes = {}
+
 $.getJSON("/get_boxes", function(data) {
     $.each(data.boxes, function(key, val) {
-        var box = document.createElement("div");
-        box.className = "square";
-        box.style.borderColor = allowed_colours[Math.floor(Math.random() * allowed_colours.length)];
-        $(box).css({
-            "left": $("#canvas").position().left + val.corner[0] * $("#canvas").width(),
-            "top": $("#canvas").position().top + val.corner[1] * $("#canvas").height(),
-            "width": val.width * $("#canvas").width(),
-            "height": val.height * $("#canvas").height()
-        });
-        $("#canvas").append(box);
+        boxes[key] = {
+            left_percentage: val.corner[0],
+            top_percentage: val.corner[1],
+            width: val.width * $("#canvas").width(),
+            height: val.height * $("#canvas").height()
+        }
     });
 });
 
@@ -56,8 +54,23 @@ function do_select(component_name) {
         };
         document.getElementById('canvas').addEventListener("mouseup", mouse_up_and_clean_up);
     }
-    $("#first_screen").toggle();
+
     $("#select_pane").toggle();
+    $("#first_screen").toggle();
+
+    if (boxes[component_name] != null) {
+        var box = document.createElement("div");
+        box.className = "square";
+        box.style.borderColor = allowed_colours[Math.floor(Math.random() * allowed_colours.length)];
+        console.log(boxes[component_name].top_percentage);
+        $(box).css({
+            left: (0.1 * window.innerWidth) + (boxes[component_name].left_percentage) * $("#canvas").width(),
+            top: (0.1 * window.innerHeight) + (boxes[component_name].top_percentage) * $("#canvas").height(),
+            width: boxes[component_name].width,
+            height: boxes[component_name].height
+        });
+        $("#canvas").append(box);
+    }
 }
 
 function speek(commit_box) {
@@ -92,8 +105,8 @@ function speek(commit_box) {
         location.reload();
     });
     picker.appendChild(no_speak);
-document.body.appendChild(mask);
-document.body.appendChild(picker);
+    document.body.appendChild(mask);
+    document.body.appendChild(picker);
 }
 
 function update_box(box, top_x_coord, top_y_coord, e) {
