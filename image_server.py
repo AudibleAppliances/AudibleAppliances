@@ -1,47 +1,86 @@
+from threading import Semaphore, Thread
 import socket
 import time
+import picamera
+import io
+import cv2
+assert cv2.__version__[0] == '3', 'The fisheye module needs opencv version 3'
+import numpy as np
 
-request_queue = []
-number_of_active_requests = 0
+DIM=(720, 480)
+K=np.array([[367.9031945760577, 0.0, 355.23742564196584],
+            [0.0, 370.74439191610304, 254.26740477788147],
+            [0.0, 0.0, 1.0]])
+D=np.array([[-0.10733381367197396], [0.3374033541361976], [-0.4841315731348919], [0.23140318250430025]])
+
+turn = Semaphore(value=1)
+writeGuard = Semaphore(value = 1)
+waitingReaders = Semaphore(value = 2)
+activeReaders = 0
+threads = []
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(("localhost", 40000))
 server.listen(5)
 
 def create_image():
-    print "Image created"
+    stream = io.BytesIO()
 
-def need_to_write():
-    return last_time_read + 0.5 < time.time()
+    with picamera.PiCamera() as camera:
+        time.sleep(0.1)
+        camera.rotation = 180
+        camera.awb_mode = 'fluorescent'
+        camera.exposure_mode = 'backlight'
+        camera.capture(stream, format='jpeg')
 
-create_image()
-last_time_read = time.time()
+        data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+        image = cv2.imdecode(data, 1)
 
+        undistorted_img = cv2.fisheye.undistortImage(image, K, D, Knew=K, new_size=DIM)
+        cv2.imwrite('~/Downloads/test1234.jpg', image)
+
+
+def writer():
+    while True:
+        time.sleep(0.5)
+        turn.acquire()
+        writeGuard.acquire()
+        create_image()
+        writeGuard.release()
+        turn.release()
+
+def reader(clientsocket):
+    global activeReaders
+    while True:
+        data = clientsocket.recv(1)
+        if data == '\x00':
+            turn.acquire()
+            turn.release()
+
+            waitingReaders.acquire()
+            if activeReaders == 0:
+                writeGuard.acquire()
+            activeReaders += 1
+            waitingReaders.release()
+
+            clientsocket.send('\x01')
+            clientsocket.recv(1)
+
+            waitingReaders.acquire()
+            activeReaders -= 1
+            if activeReaders == 0:
+                writeGuard.release()
+            waitingReaders.release()
+
+
+t = Thread(target=writer)
+t.start()
+threads.append(t)
 
 while True:
-    if need_to_write and number_of_active_requests == 0:
-        create_image()
-        last_time_read = time.time()
-        for s in request_queue:
-            bytes = bytearray()
-            bytes.append(1)
-            s.send(bytes)
-            number_of_active_requests += 1
-        request_queue = []
-    
-    
     clientsocket, addr = server.accept()
-    data = clientsocket.recv(1)
-    if data == 1:
-        if need_to_write:
-            request_queue.append(clientsocket)
-        else:
-            number_of_active_requests += 1
-            bytes = bytearray()
-            bytes.append(1)
-            clientsocket.send(bytes)
-    elif data == 0:
-        number_of_active_requests -= 1
+    read_thread = Thread(target=reader, args=(clientsocket,))
+    read_thread.start()
+    threads.append(read_thread)
 
 
-    clientsocket.close()
