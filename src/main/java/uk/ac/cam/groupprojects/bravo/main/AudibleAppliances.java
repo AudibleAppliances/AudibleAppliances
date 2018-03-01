@@ -175,7 +175,7 @@ public class AudibleAppliances {
                 //In case they type exit during this stage
                 if ( !running )
                     initialScreenEstablished = true;
-                
+
                 elapsedTime = System.currentTimeMillis() - startTime;
                 if ( ApplicationConstants.DEBUG )
                     System.out.println("That cycle took " + elapsedTime + "ms ");

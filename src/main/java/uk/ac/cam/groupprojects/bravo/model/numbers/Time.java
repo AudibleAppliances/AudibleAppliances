@@ -1,6 +1,7 @@
 package uk.ac.cam.groupprojects.bravo.model.numbers;
 
-import uk.ac.cam.groupprojects.bravo.model.numbers.digits.TimeDigit;
+import uk.ac.cam.groupprojects.bravo.model.numbers.digits.HigherTimeDigit;
+import uk.ac.cam.groupprojects.bravo.model.numbers.digits.LowerTimeDigit;
 
 /**
  * Created by david on 06/02/2018.
@@ -12,8 +13,8 @@ public class Time extends ScreenNumber {
 
     public Time() {
         super(0, 0);
-        minutes = new TimeDigit();
-        seconds = new TimeDigit();
+        minutes = new HigherTimeDigit();
+        seconds = new LowerTimeDigit();
     }
 
     public boolean setValue( int value ){
