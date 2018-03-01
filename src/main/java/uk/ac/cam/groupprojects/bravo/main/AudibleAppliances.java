@@ -28,7 +28,8 @@ public class AudibleAppliances {
     private static BikeStateTracker bikeStateTracker;
     private static boolean running = false;
 
-    private static int timeTracker = 0;
+    private static long lastSpeakTime = 0;
+
 
     public static void main(String[] args) {
         printHeader();
@@ -164,7 +165,7 @@ public class AudibleAppliances {
                 }
                 try {
                     Thread.sleep( INITIAL_FREQ );
-                    timeTracker += INITIAL_FREQ;
+                    //timeTracker += INITIAL_FREQ;
                 } catch (InterruptedException e) {
                     if ( DEBUG )
                         e.printStackTrace();
@@ -186,13 +187,6 @@ public class AudibleAppliances {
         }
         while( running ){
             startTime = System.currentTimeMillis();
-            try {
-                Thread.sleep( UPDATE_FREQ );
-                timeTracker += UPDATE_FREQ;
-            } catch (InterruptedException e) {
-                if ( DEBUG )
-                    e.printStackTrace();
-            }
 
             try {
                 bikeStateTracker.updateState(ReadImage.readImage());
@@ -201,9 +195,9 @@ public class AudibleAppliances {
                     e.printStackTrace();
             }
 
-            if ( timeTracker == currentScreen.getSpeakDelay() ) {
-                timeTracker = 0;
+            if ( ( System.currentTimeMillis() - lastSpeakTime ) > currentScreen.getSpeakDelay() ){
                 currentScreen.speakItems( bikeStateTracker, synthesiser );
+                lastSpeakTime = System.currentTimeMillis();
             }
             detectChangeState();
 
@@ -263,6 +257,7 @@ public class AudibleAppliances {
         System.out.println("DETECTING CHANGE SCREEN STATE");
 
         float maxProb = 0.0f;
+        BikeScreen oldScreen = currentScreen;
         BikeScreen maxScreen = currentScreen;
 
         for ( BikeScreen screen: screens.values() ){
@@ -275,9 +270,13 @@ public class AudibleAppliances {
                 System.out.println( screen.getEnum().toString() + " : " + prob );
         }
 
-        if ( maxProb > ApplicationConstants.MIN_PROB ){
+        if ( oldScreen != maxScreen && maxProb > ApplicationConstants.MIN_PROB ){
             System.out.println("Establishing bike state is " + maxScreen.getEnum().toString() );
             currentScreen = maxScreen;
+            if ( currentScreen.isSpeakFirst() ){
+                currentScreen.speakItems( bikeStateTracker, synthesiser );
+                lastSpeakTime = System.currentTimeMillis();
+            }
         }
 
         System.out.println();
