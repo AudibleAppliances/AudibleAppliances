@@ -17,21 +17,21 @@ public enum ScreenBox {
     GRAPH, TEXT, SPEED, RPM, WATT, LOAD,
 
     //This is disgusting but desperate times
-    TEXT_BOX_1,
-    TEXT_BOX_2,
-    TEXT_BOX_3,
-    TEXT_BOX_4,
-    TEXT_BOX_5_TOP,
-    TEXT_BOX_5_BOTTOM,
-    TEXT_BOX_6,
-    TEXT_BOX_7_TOP,
-    TEXT_BOX_7_BOTTOM,
-    TEXT_BOX_8,
-    TEXT_BOX_9_TOP,
-    TEXT_BOX_9_BOTTOM,
-    TEXT_BOX_10,
-    TEXT_BOX_11,
-    TEXT_BOX_12;
+    LCD_TEXT_1,
+    LCD_TEXT_2,
+    LCD_TEXT_3,
+    LCD_TEXT_4,
+    LCD_TEXT_5_TOP,
+    LCD_TEXT_5_BOTTOM,
+    LCD_TEXT_6,
+    LCD_TEXT_7_TOP,
+    LCD_TEXT_7_BOTTOM,
+    LCD_TEXT_8,
+    LCD_TEXT_9_TOP,
+    LCD_TEXT_9_BOTTOM,
+    LCD_TEXT_10,
+    LCD_TEXT_11,
+    LCD_TEXT_12;
 
     private BikeField[] fields;
 
