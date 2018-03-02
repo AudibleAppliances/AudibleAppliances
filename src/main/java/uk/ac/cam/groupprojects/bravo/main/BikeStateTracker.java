@@ -4,6 +4,7 @@ import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
+import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
@@ -25,11 +26,11 @@ import java.util.Set;
 public class BikeStateTracker {
     class StateTime {
         public LocalDateTime addedTime;
-        public Set<ScreenBox> activeText;
+        public Set<ScreenBox> activeBoxes;
 
-        public StateTime(LocalDateTime addedTime, Set<ScreenBox> activeText) {
+        public StateTime(LocalDateTime addedTime, Set<ScreenBox> activeBoxes) {
             this.addedTime = addedTime;
-            this.activeText = activeText;
+            this.activeBoxes = activeBoxes;
         }
     }
 
@@ -37,7 +38,11 @@ public class BikeStateTracker {
      * Current state that we are tracking on the bike
      */
     private Map<BikeField, ScreenNumber> currentFields;
+    // Back of the list is the most recent state added
     private final LinkedList<StateTime> history;
+
+    // State over time of the LCDs - 
+    private final Map<ScreenBox, LCDState> boxStates;
 
     /**
      * Other state
@@ -50,8 +55,9 @@ public class BikeStateTracker {
      * @param segments ImageSegments object to crop out parts of the image for processing
      * @param configData Configuration that can be passed around with this object
      */
-    public BikeStateTracker(ImageSegments segments, ConfigData configData){
+    public BikeStateTracker(ImageSegments segments, ConfigData configData) {
         history = new LinkedList<>();
+        boxStates = new HashMap<>();
 
         this.segments = segments;
         this.configData = configData;
@@ -75,7 +81,7 @@ public class BikeStateTracker {
         throw new UnsupportedOperationException();
     }
     
-    public void updateState(BufferedImage newImage)
+    private void updateState(BufferedImage newImage)
                 throws IOException, UnrecognisedDigitException, NumberFormatException {
 
         LocalDateTime updateTime = LocalDateTime.now();
@@ -104,15 +110,55 @@ public class BikeStateTracker {
             }
         }
         
-        // 
-        while (true) {
+        // Remove state information that's older than one complete blink cycle ago
+        while (history.size() > 0) {
             Duration timeSpan = Duration.between(history.getFirst().addedTime, updateTime);
-            if (timeSpan.toMillis() < 2 * BLINK_FREQ) {
-
-            }
+            if (timeSpan.toMillis() > 2 * ApplicationConstants.BLINK_FREQ) {
+                history.removeFirst();
+            } else {
+                break;
+            }                
         }
 
+        // Store the new state
         history.add(new StateTime(updateTime, activeSegs));
+
+        // Update which LCDs we know are solid/blinking
+        updateSolidBlinking();
+    }
+
+    // Update which boxes are blinking and which are solid
+    private void updateSolidBlinking() {
+        // Reset all
+        boxStates.clear();
+
+        for (ScreenBox box : ScreenBox.values()) {
+            // Default to each box being solid off
+            boolean blinking = false;
+            boolean active = false;
+
+            // Loop over all the state we have
+            if (history.size() > 0) {
+                boolean currentlyActive = isBoxActiveNow(box);
+                boolean historyMatches = history.stream()
+                                                .allMatch(s ->
+                                                    s.activeBoxes.contains(box) == currentlyActive);
+
+                if (!historyMatches) { // Changes over time => blinking
+                    blinking = true;
+                } else {
+                    active = currentlyActive;
+                }
+            }
+
+            if (blinking) {
+                boxStates.put(box, LCDState.BLINKING);
+            } else if (active) {
+                boxStates.put(box, LCDState.SOLID_ON);
+            } else {
+                boxStates.put(box, LCDState.SOLID_OFF);
+            }
+        }
     }
 
     public ConfigData getConfig() {
@@ -123,8 +169,20 @@ public class BikeStateTracker {
         return currentFields.get(field);
     }
 
+    public Map<ScreenBox, LCDState> getBoxStates() {
+        return boxStates;
+    }
+
+    public int boxStateIndicator(ScreenBox box, LCDState state) {
+        if (getBoxStates().get(box) == state) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
     // Returns true iff the given box is lit in the latest received image
-    public boolean isBoxActive(ScreenBox box) {
-        return history.getLast().activeText.contains(box);
+    public boolean isBoxActiveNow(ScreenBox box) {
+        return history.getLast().activeBoxes.contains(box);
     }
 }

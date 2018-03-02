@@ -1,17 +1,24 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
+import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
+import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 /**
  * Created by david on 22/02/2018.
  */
 public class OffScreen extends BikeScreen {
-
     @Override
-    public float screenProbability(BikeStateTracker bikeStateTracker) {
-        return 0;
+    public float screenActiveProbability(BikeStateTracker state) {
+        int matching = 0;
+
+        for (ScreenBox box : ScreenBox.values()) {
+            matching += state.boxStateIndicator(box, LCDState.SOLID_OFF);
+        }
+
+        return (float)matching / (float)ScreenBox.values().length;
     }
 
     @Override
