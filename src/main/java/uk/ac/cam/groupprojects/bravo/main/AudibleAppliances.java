@@ -66,6 +66,7 @@ public class AudibleAppliances {
 
             //Created thread to read from command line
             Thread inputThread = new Thread( handleInput );
+            inputThread.setDaemon(true);
             inputThread.start();
 
         } catch( FestivalMissingException e ){
