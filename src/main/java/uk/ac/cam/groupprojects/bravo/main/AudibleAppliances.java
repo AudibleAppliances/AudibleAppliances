@@ -124,11 +124,12 @@ public class AudibleAppliances {
                     e.printStackTrace();
             }
 
+            detectState();
             if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
                 currentScreen.speakItems(bikeStateTracker, synthesiser);
                 lastSpeakTime = System.currentTimeMillis();
             }
-            detectState();
+
 
             long elapsedTime = System.currentTimeMillis() - loopStartTime;
             if (ApplicationConstants.DEBUG)
