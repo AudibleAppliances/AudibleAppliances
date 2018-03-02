@@ -68,15 +68,7 @@ public class SSOCRUtil {
 
         // Perform thresholding only on green channel. This means that white/green text is
         // saved, while the blue background is deleted.
-
-        args.add("-t");
-        args.add("15");
         args.add("g_threshold");
-
-        //args.add("dynamic_threshold");
-        //args.add("50");
-        //args.add("50");
-        
         args.add("invert"); // Invert to get black text on a white background (as required by SSOCR)
         args.add("-o");
         args.add(outputPath);
