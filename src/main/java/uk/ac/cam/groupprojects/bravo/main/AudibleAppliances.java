@@ -115,25 +115,17 @@ public class AudibleAppliances {
         synthesiser.speak("Welcome to Audible Appliances");
 
         while(running.get()) {
-            long loopStartTime = System.currentTimeMillis();
-
             try {
+                long loopStartTime = System.currentTimeMillis();
                 Thread imageThread = new Thread( new ProcessImageThread( ReadImage.readImage( ApplicationConstants.IMAGE_PATH ) ) );
                 imageThread.start();
+                long elapsedTime = System.currentTimeMillis() - loopStartTime;
+                if (ApplicationConstants.DEBUG)
+                    System.out.println("Time taken to spawn image process thread (time to take photo) " + elapsedTime + "ms ");
             } catch ( IOException e) {
                 if (DEBUG)
                     e.printStackTrace();
             }
-
-            detectState();
-            if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
-                currentScreen.speakItems(bikeStateTracker, synthesiser);
-                lastSpeakTime = System.currentTimeMillis();
-            }
-
-            long elapsedTime = System.currentTimeMillis() - loopStartTime;
-            if (ApplicationConstants.DEBUG)
-                System.out.println("That cycle took " + elapsedTime + "ms ");
         }
 
         synthesiser.speak("Goodbye! Hope to see you again soon!");
@@ -153,7 +145,16 @@ public class AudibleAppliances {
         @Override
         public void run() {
             try {
+                long loopStartTime = System.currentTimeMillis();
                 bikeStateTracker.updateState(image);
+                detectState();
+                if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
+                    currentScreen.speakItems(bikeStateTracker, synthesiser);
+                    lastSpeakTime = System.currentTimeMillis();
+                }
+                long elapsedTime = System.currentTimeMillis() - loopStartTime;if (ApplicationConstants.DEBUG)
+                    System.out.println("Time taken to run image process thread (time to process photo) " + elapsedTime + "ms ");
+
             } catch (IOException | UnrecognisedDigitException e) {
                 if (DEBUG)
                     e.printStackTrace();
