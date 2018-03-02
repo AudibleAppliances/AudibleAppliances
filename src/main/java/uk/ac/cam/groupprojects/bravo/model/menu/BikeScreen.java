@@ -13,4 +13,7 @@ public abstract class BikeScreen {
 
     public abstract int getSpeakDelay();
 
+    //When we change to this screen, do we immediately want to notify the user
+    public abstract boolean isSpeakFirst();
+
 }

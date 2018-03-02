@@ -13,7 +13,7 @@ public class TimeTest {
     @Test
     public void testBounds(){
         Time time = new Time();
-        assertEquals( false, time.setValue(10, 30) );
+        assertEquals( true, time.setValue(10, 30) );
         assertEquals( false, time.setValue(2, -50) );
         assertEquals( true, time.setValue(4, 50) );
     }

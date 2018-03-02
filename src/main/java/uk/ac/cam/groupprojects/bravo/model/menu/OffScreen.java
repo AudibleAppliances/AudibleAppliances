@@ -1,5 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
+import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
@@ -25,6 +26,11 @@ public class OffScreen extends BikeScreen {
 
     @Override
     public int getSpeakDelay() {
-        return 10000;
+        return ApplicationConstants.DEFAULT_SPEAK_FREQ;
+    }
+
+    @Override
+    public boolean isSpeakFirst() {
+        return true;
     }
 }

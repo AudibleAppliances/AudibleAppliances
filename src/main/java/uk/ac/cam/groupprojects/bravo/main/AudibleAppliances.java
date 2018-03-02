@@ -28,7 +28,8 @@ public class AudibleAppliances {
     private static BikeStateTracker bikeStateTracker;
     private static boolean running = false;
 
-    private static int timeTracker = 0;
+    private static long lastSpeakTime = 0;
+
 
     public static void main(String[] args) {
         printHeader();
@@ -56,11 +57,7 @@ public class AudibleAppliances {
 
             running = true;
 
-            //Need to initialise all of the screens
-            screens.put( ScreenEnum.SELECTION_SCREEN_1, new SelectionScreen1() );
-            screens.put( ScreenEnum.SELECTION_SCREEN_2, new SelectionScreen2() );
-            screens.put( ScreenEnum.OFF_SCREEN, new StandbyScreen() );
-            screens.put( ScreenEnum.CYCLING_SCREEN, new CyclingScreen() );
+            addScreens( screens );
 
             //Created thread to track the bike
             Thread runThread = new Thread( runTracker );
@@ -158,7 +155,7 @@ public class AudibleAppliances {
                 }
                 try {
                     Thread.sleep( INITIAL_FREQ );
-                    timeTracker += INITIAL_FREQ;
+                    //timeTracker += INITIAL_FREQ;
                 } catch (InterruptedException e) {
                     if ( DEBUG )
                         e.printStackTrace();
@@ -180,13 +177,6 @@ public class AudibleAppliances {
         }
         while( running ){
             startTime = System.currentTimeMillis();
-            try {
-                Thread.sleep( UPDATE_FREQ );
-                timeTracker += UPDATE_FREQ;
-            } catch (InterruptedException e) {
-                if ( DEBUG )
-                    e.printStackTrace();
-            }
 
             try {
                 bikeStateTracker.updateState(ReadImage.readImage());
@@ -195,9 +185,9 @@ public class AudibleAppliances {
                     e.printStackTrace();
             }
 
-            if ( timeTracker == currentScreen.getSpeakDelay() ) {
-                timeTracker = 0;
+            if ( ( System.currentTimeMillis() - lastSpeakTime ) > currentScreen.getSpeakDelay() ){
                 currentScreen.speakItems( bikeStateTracker, synthesiser );
+                lastSpeakTime = System.currentTimeMillis();
             }
             detectChangeState();
 
@@ -212,6 +202,25 @@ public class AudibleAppliances {
         printFooter();
         synthesiser.close();
     };
+
+    public static void addScreens( Map<ScreenEnum, BikeScreen> screens ){
+        screens.put( ScreenEnum.OFF_SCREEN, new OffScreen() );
+
+        screens.put( ScreenEnum.ERROR_SCREEN, new ErrorScreen() );
+        screens.put( ScreenEnum.INITIAL_SCREEN, new InitialScreen() );
+        screens.put( ScreenEnum.RUNNING_SCREEN, new RunningScreen() );
+        screens.put( ScreenEnum.PAUSED_SCREEN, new PausedScreen() );
+
+        screens.put( ScreenEnum.TIME_SELECT, new TimeSelectScreen() );
+        screens.put( ScreenEnum.PROGRAM, new ProgramScreen() );
+
+        screens.put( ScreenEnum.SELECT_MANUAL, new SelectManualScreen() );
+        screens.put( ScreenEnum.SELECT_HRC, new SelectHRCScreen() );
+        screens.put( ScreenEnum.SELECT_USER_PROGRAM, new SelectUserProgramScreen() );
+        screens.put( ScreenEnum.SELECT_WATTS, new SelectWattScreen() );
+        screens.put( ScreenEnum.SELECT_PROGRAM, new SelectProgramScreen() );
+
+    }
 
     private static void printHeader(){
         System.out.println("|----------------------------------------|");

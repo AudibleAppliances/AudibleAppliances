@@ -7,8 +7,7 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 /**
  * Created by david on 01/03/2018.
  */
-public class ErrorScreen extends BikeScreen {
-
+public class TimeSelectScreen extends BikeScreen {
     @Override
     public float screenProbability(BikeStateTracker bikeStateTracker) {
         return 0;
@@ -16,12 +15,12 @@ public class ErrorScreen extends BikeScreen {
 
     @Override
     public ScreenEnum getEnum() {
-        return ScreenEnum.ERROR_SCREEN;
+        return ScreenEnum.TIME_SELECT;
     }
 
     @Override
     public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
-        synthesiser.speak("The bike is currently loading up, please wait!");
+
     }
 
     @Override
@@ -31,7 +30,6 @@ public class ErrorScreen extends BikeScreen {
 
     @Override
     public boolean isSpeakFirst() {
-        return true;
+        return false;
     }
-
 }
