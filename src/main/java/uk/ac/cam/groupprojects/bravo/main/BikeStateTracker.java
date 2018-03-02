@@ -8,7 +8,6 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.*;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
-import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -24,6 +23,7 @@ public class BikeStateTracker {
      * Current state that we are tracking on the bike
      */
     private Map<BikeField, ScreenNumber> currentFields;
+    private Map<ScreenBox, Boolean> previousActiveText;
     private Map<ScreenBox, Boolean> activeText;
 
     /**

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
 
@@ -21,15 +22,14 @@ import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
  */
 public class AudibleAppliances {
 
-    private static Map<ScreenEnum, BikeScreen> screens = new HashMap<>();
+    private static final Map<ScreenEnum, BikeScreen> screens = new HashMap<>();
 
     private static Synthesiser synthesiser;
     private static BikeScreen currentScreen;
     private static BikeStateTracker bikeStateTracker;
-    private static boolean running = false;
+    private static final AtomicBoolean running = new AtomicBoolean(false);
 
     private static long lastSpeakTime = 0;
-
 
     public static void main(String[] args) {
         printHeader();
@@ -55,9 +55,9 @@ public class AudibleAppliances {
             bikeStateTracker = new BikeStateTracker( new ImageSegments(configData) , configData);
             System.out.println("Components set up successfully!");
 
-            running = true;
+            running.set(true);
 
-            addScreens( screens );
+            addScreens(screens);
 
             //Created thread to track the bike
             Thread runThread = new Thread( runTracker );
@@ -65,7 +65,6 @@ public class AudibleAppliances {
 
             //Created thread to read from command line
             Thread inputThread = new Thread( handleInput );
-            inputThread.setDaemon(true);
             inputThread.start();
 
         } catch( FestivalMissingException e ){
@@ -88,113 +87,50 @@ public class AudibleAppliances {
     static Runnable handleInput = () -> {
         try {
             System.out.println("Type 'exit' to close the application");
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader( System.in ) );
-            while ( running ){
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            while (running.get()) {
                 String input = reader.readLine();
-                if ( input.trim().length() > 0 && input.compareToIgnoreCase("exit") == 0 ){
-                    running = false;
+                if (input.trim().length() > 0 && input.compareToIgnoreCase("exit") == 0){
+                    running.set(false);
                     System.out.println("ENDING Audible Appliances");
-                }else {
+                    return;
+                } else {
                     System.out.println("Type 'exit' to close the application!");
                 }
             }
             System.out.println("DONE1");
-        }catch( IOException e ){
-            if ( DEBUG )
+        } catch (IOException e) {
+            if (DEBUG)
                 e.printStackTrace();
             System.out.println("FATAL ERROR: Cannot read from System.in");
             printFooter();
         }
     };
 
-    static Runnable runTracker = () ->{
+    static Runnable runTracker = () -> {
         System.out.println();
         System.out.println("Starting the bike state tracker! ");
         synthesiser.speak("Welcome to Audible Appliances");
 
-        //FIRST RUN CODE
-        /*
-            We need to establish which screen we are in.
-         */
-        boolean initialScreenEstablished = false;
-        int initialScreenCounter = 0;
-        long startTime, elapsedTime;
-        if (running) {
-            System.out.println("Establishing the state of the bike!");
-            synthesiser.speak("Please hold while we try and establish the state of the exercise bike");
-            while (!initialScreenEstablished) {
-                startTime = System.currentTimeMillis();
-                System.out.println("Try " + initialScreenCounter );
-                try {
-                    bikeStateTracker.updateState(ReadImage.readImage());
-
-                    currentScreen = screens.get(ScreenEnum.OFF_SCREEN);
-
-                    for (BikeScreen screen: screens.values()) {
-                        boolean active = screen.screenActive( bikeStateTracker );
-                        if (active){
-                            currentScreen = screen;
-                        }
-                    }
-
-                    System.out.println();
-                    initialScreenEstablished = true;
-                    System.out.println("Establishing bike state is " + currentScreen.getEnum().toString() );
-
-                } catch (Exception e) {
-                    if ( DEBUG )
-                        e.printStackTrace();
-                }
-                initialScreenCounter++;
-                if (initialScreenCounter > ApplicationConstants.MAX_INITIAL_TRIES){
-                    //Default to OFF_SCREEN
-                    currentScreen = screens.get(ScreenEnum.OFF_SCREEN );
-                    initialScreenEstablished = true;
-                    System.out.println(" INITIAL SCREEN COUNTER LIMIT REACHED defaulting to " + currentScreen.getEnum().toString() );
-                }
-                try {
-                    Thread.sleep( INITIAL_FREQ );
-                    //timeTracker += INITIAL_FREQ;
-                } catch (InterruptedException e) {
-                    if ( DEBUG )
-                        e.printStackTrace();
-                }
-
-                //In case they type exit during this stage
-                if ( !running )
-                    initialScreenEstablished = true;
-
-                elapsedTime = System.currentTimeMillis() - startTime;
-                if ( ApplicationConstants.DEBUG )
-                    System.out.println("That cycle took " + elapsedTime + "ms ");
-
-            }
-
-            //In case they type exit during this stage
-            if ( running )
-                synthesiser.speak("State established!");
-        }
-        while( running ){
-            startTime = System.currentTimeMillis();
+        while(running.get()) {
+            long loopStartTime = System.currentTimeMillis();
 
             try {
                 bikeStateTracker.updateState(ReadImage.readImage());
             } catch (UnrecognisedDigitException | IOException e) {
-                if ( DEBUG )
+                if (DEBUG)
                     e.printStackTrace();
             }
 
-            if ( ( System.currentTimeMillis() - lastSpeakTime ) > currentScreen.getSpeakDelay() ){
-                currentScreen.speakItems( bikeStateTracker, synthesiser );
+            if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
+                currentScreen.speakItems(bikeStateTracker, synthesiser);
                 lastSpeakTime = System.currentTimeMillis();
             }
-            detectChangeState();
+            detectState();
 
-            elapsedTime = System.currentTimeMillis() - startTime;
-            if ( ApplicationConstants.DEBUG )
+            long elapsedTime = System.currentTimeMillis() - loopStartTime;
+            if (ApplicationConstants.DEBUG)
                 System.out.println("That cycle took " + elapsedTime + "ms ");
-
         }
 
         synthesiser.speak("Goodbye! Hope to see you again soon!");
@@ -204,22 +140,41 @@ public class AudibleAppliances {
     };
 
     public static void addScreens( Map<ScreenEnum, BikeScreen> screens ){
-        screens.put( ScreenEnum.OFF_SCREEN, new OffScreen() );
+        screens.put(ScreenEnum.OFF_SCREEN, new OffScreen());
 
-        screens.put( ScreenEnum.ERROR_SCREEN, new ErrorScreen() );
-        screens.put( ScreenEnum.INITIAL_SCREEN, new InitialScreen() );
-        screens.put( ScreenEnum.RUNNING_SCREEN, new RunningScreen() );
-        screens.put( ScreenEnum.PAUSED_SCREEN, new PausedScreen() );
+        screens.put(ScreenEnum.ERROR_SCREEN, new ErrorScreen());
+        screens.put(ScreenEnum.INITIAL_SCREEN, new InitialScreen());
+        screens.put(ScreenEnum.RUNNING_SCREEN, new RunningScreen());
+        screens.put(ScreenEnum.PAUSED_SCREEN, new PausedScreen());
 
-        screens.put( ScreenEnum.TIME_SELECT, new TimeSelectScreen() );
-        screens.put( ScreenEnum.PROGRAM, new ProgramScreen() );
+        screens.put(ScreenEnum.TIME_SELECT, new TimeSelectScreen());
+        screens.put(ScreenEnum.PROGRAM, new ProgramScreen());
 
-        screens.put( ScreenEnum.SELECT_MANUAL, new SelectManualScreen() );
-        screens.put( ScreenEnum.SELECT_HRC, new SelectHRCScreen() );
-        screens.put( ScreenEnum.SELECT_USER_PROGRAM, new SelectUserProgramScreen() );
-        screens.put( ScreenEnum.SELECT_WATTS, new SelectWattScreen() );
-        screens.put( ScreenEnum.SELECT_PROGRAM, new SelectProgramScreen() );
+        screens.put(ScreenEnum.SELECT_MANUAL, new SelectManualScreen());
+        screens.put(ScreenEnum.SELECT_HRC, new SelectHRCScreen());
+        screens.put(ScreenEnum.SELECT_USER_PROGRAM, new SelectUserProgramScreen());
+        screens.put(ScreenEnum.SELECT_WATTS, new SelectWattScreen());
+        screens.put(ScreenEnum.SELECT_PROGRAM, new SelectProgramScreen());
+    }
 
+    private static void detectState(){
+        System.out.println();
+        System.out.println("DETECTING CHANGE SCREEN STATE");
+
+        BikeScreen bestScreen = screens.get(ScreenEnum.OFF_SCREEN);
+        float bestScreenProb = 0;
+        for (BikeScreen screen: screens.values()) {
+            float prob = screen.screenActiveProbability(bikeStateTracker);
+
+            if (prob > bestScreenProb) {
+                bestScreen = screen;
+                bestScreenProb = prob;
+            }
+        }
+        currentScreen = bestScreen;
+
+        System.out.println("Establishing bike state is " + currentScreen.getEnum().toString());
+        System.out.println();
     }
 
     private static void printHeader(){
@@ -245,24 +200,5 @@ public class AudibleAppliances {
         System.out.println("|----------------------------------------|");
         System.out.println("|---------- AUDIBLE APPLIANCES ----------|");
         System.out.println("|----------------------------------------|");
-    }
-
-    /**
-     * This function detects if the screen has changed.
-     */
-    private static void detectChangeState(){
-        System.out.println();
-        System.out.println("DETECTING CHANGE SCREEN STATE");
-
-        for (BikeScreen screen: screens.values()) {
-            boolean active = screen.screenActive(bikeStateTracker);
-
-            if (active) {
-                currentScreen = screen;
-                break;
-            }
-        }
-        System.out.println("Establishing bike state is " + currentScreen.getEnum().toString());
-        System.out.println();
     }
 }
