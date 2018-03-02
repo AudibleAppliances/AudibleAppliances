@@ -8,6 +8,7 @@ import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -116,8 +117,9 @@ public class AudibleAppliances {
             long loopStartTime = System.currentTimeMillis();
 
             try {
-                bikeStateTracker.updateState(ReadImage.readImage());
-            } catch (UnrecognisedDigitException | IOException e) {
+                Thread imageThread = new Thread( new ProcessImageThread( ReadImage.readImage( ApplicationConstants.IMAGE_PATH ) ) );
+                imageThread.start();
+            } catch ( IOException e) {
                 if (DEBUG)
                     e.printStackTrace();
             }
@@ -138,6 +140,25 @@ public class AudibleAppliances {
         printFooter();
         synthesiser.close();
     };
+
+    public static class ProcessImageThread implements Runnable{
+
+        private BufferedImage image;
+
+        public ProcessImageThread( BufferedImage image ){
+            this.image = image;
+        }
+
+        @Override
+        public void run() {
+            try {
+                bikeStateTracker.updateState( image );
+            } catch (IOException | UnrecognisedDigitException e) {
+                if ( DEBUG )
+                    e.printStackTrace();
+            }
+        }
+    }
 
     public static void addScreens( Map<ScreenEnum, BikeScreen> screens ){
         screens.put(ScreenEnum.OFF_SCREEN, new OffScreen());
