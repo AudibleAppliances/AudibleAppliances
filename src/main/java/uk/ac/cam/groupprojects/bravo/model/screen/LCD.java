@@ -1,9 +1,14 @@
 package uk.ac.cam.groupprojects.bravo.model.screen;
 
+import uk.ac.cam.groupprojects.bravo.graphProcessing.Graph;
+
 /**
  * Created by david on 12/02/2018.
  */
 public class LCD {
+
+    public static final int SCREEN_WIDTH = Graph.graphW;
+    public static final int SCREEN_HEIGHT = Graph.graphH;
 
     /*
         Used to store the state of the screen
@@ -13,7 +18,7 @@ public class LCD {
     private boolean[][] screen;
 
     public LCD(){
-        screen = new boolean[10][8];
+        screen = new boolean[SCREEN_WIDTH][SCREEN_HEIGHT];
     }
 
     public LCD( boolean[][] newScreen ){
@@ -45,7 +50,7 @@ public class LCD {
      */
     public static boolean validateString( String string ){
         String[] parts = string.split(" ");
-        if ( parts.length != 10 )
+        if ( parts.length != 8 )
             return false;
         for ( String s : parts ){
             if ( !s.matches("^[01]{8}$") ){
@@ -65,7 +70,7 @@ public class LCD {
      * @return Whether the array passed the validation tests
      */
     private boolean validate( boolean[][] newScreen ){
-        if ( newScreen.length != 10 )
+        if ( newScreen.length != SCREEN_WIDTH )
             return false;
 
         for (boolean[] aNewScreen : newScreen) {
@@ -126,12 +131,6 @@ public class LCD {
     public String speakSetting(){
         return "You are currently on the " +
                 matchSettings().getAudibleName() + " mode";
-    }
-    
-    public boolean get(int x, int y) {
-    	
-    	return screen[Math.min(9, Math.max(0, x))][Math.min(9, Math.max(0, y))];
-    	
     }
 
 }

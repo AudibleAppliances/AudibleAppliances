@@ -15,8 +15,8 @@ public class Graph {
 	private double a = 0.4; // proportion of cell width to not be checked (padding)
 	private double b = 0.3; // proportion of cell height ''
 
-	private static int graphW = 8;
-	private static int graphH = 8;
+	public static int graphW = 8;
+	public static int graphH = 8;
 	private int[] g = new int[graphW];
 	private int[] og = new int[graphW];
 	private static boolean[] d = new boolean[graphW];
