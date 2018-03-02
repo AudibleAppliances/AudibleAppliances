@@ -3,6 +3,7 @@ from flask import Flask, render_template, Response, request
 from camera import VideoCamera
 import json
 
+config_file = "/home/pi/config.json"
 app = Flask(__name__)
 
 def gen(camera):
@@ -43,54 +44,54 @@ def video_feed():
 @app.route('/new_box', methods=['POST'])
 def new_box():
     content = request.get_json(silent=False, force=True)
-    with open("boxes.json", 'r') as fp:
+    with open(config_file, 'r') as fp:
         content_box = content.pop("box", None)
         content_type = content_box.pop("type", None)
         spoken = content.pop("spoken", None)
         config = json.load(fp)
         config["boxes"][content_type] = content_box
         config["spoken_fields"][content_type] = spoken
-    with open("boxes.json", 'w') as fp:
+    with open(config_file, 'w') as fp:
         json.dump(config, fp)
     return ("Box successfully created", 200, "")
 
 @app.route('/set_voice', methods=['POST'])
 def set_voice():
     content = request.get_json(silent=False, force=True)
-    with open("boxes.json", 'r') as fp:
+    with open(config_file, 'r') as fp:
         content_type = content.pop("voice", None)
         config = json.load(fp)
         config["voice"] = content_type
-    with open("boxes.json", 'w') as fp:
+    with open(config_file, 'w') as fp:
         json.dump(config, fp)
     return ("Voice successfully set", 200, "")
 
 @app.route('/get_voice', methods=['GET'])
 def get_voice():
-    with open("boxes.json", 'r') as fp:
+    with open(config_file, 'r') as fp:
         config = json.load(fp)
         return json.dumps({"voice" : config["voice"]})
 
 @app.route('/set_frequency', methods=['POST'])
 def set_frequency():
     content = request.get_json(silent=False, force=True)
-    with open("boxes.json", 'r') as fp:
+    with open(config_file, 'r') as fp:
         content_type = content.pop("frequency", None)
         config = json.load(fp)
         config["frequency"] = content_type
-    with open("boxes.json", 'w') as fp:
+    with open(config_file, 'w') as fp:
         json.dump(config, fp)
     return ("frequency successfully set", 200, "")
 
 @app.route('/get_frequency', methods=['GET'])
 def get_frequency():
-    with open("boxes.json", 'r') as fp:
+    with open(config_file, 'r') as fp:
         config = json.load(fp)
         return json.dumps({"frequency" : config["frequency"]})
 
 @app.route('/get_boxes')
 def get_boxes():
-    with open("boxes.json", 'r') as fp:
+    with open(config_file, 'r') as fp:
         return json.dumps({"boxes" : json.load(fp)["boxes"]})
 
 
