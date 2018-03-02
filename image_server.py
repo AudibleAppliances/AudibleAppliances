@@ -7,7 +7,7 @@ import cv2
 assert cv2.__version__[0] == '3', 'The fisheye module needs opencv version 3'
 import numpy as np
 
-DIM=(2592, 1944)
+DIM=(1280, 720)
 K=np.array([[-1217315.2822407577, -0.0, 1432.2448011006538],
             [0.0, -1164925.2770892496, 1028.049253108997],
             [0.0, 0.0, 1.0]])
@@ -31,6 +31,7 @@ def create_image():
         time.sleep(0.1)
         camera.rotation = 180
         camera.awb_mode = 'fluorescent'
+        camera.resolution = (1280, 720)
         camera.exposure_mode = 'backlight'
         camera.capture(stream, format='jpeg')
 
@@ -38,7 +39,7 @@ def create_image():
         image = cv2.imdecode(data, 1)
 
         undistorted_img = cv2.fisheye.undistortImage(image, K, D, Knew=K, new_size=DIM)
-        cv2.imwrite('~/Downloads/test1234.jpg', undistorted_img)
+        cv2.imwrite('/mnt/rd/test.jpg', undistorted_img)
 
 
 def writer():
@@ -80,9 +81,7 @@ threads.append(t)
 
 while True:
     clientsocket, addr = server.accept() 
-    print "New reader - " str(addr)
+    print "New reader"
     read_thread = Thread(target=reader, args=(clientsocket,))
     read_thread.start()
     threads.append(read_thread)
-
-
