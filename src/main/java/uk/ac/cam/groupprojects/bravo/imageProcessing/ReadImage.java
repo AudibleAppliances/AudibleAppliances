@@ -38,6 +38,9 @@ public class ReadImage {
             out.write(1);
             s.close();
 
+            if (ApplicationConstants.DEBUG )
+                System.out.println("Returned image!");
+
             return img;
         }
         // Exception if incorrect reply
