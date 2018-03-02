@@ -15,8 +15,9 @@ public class PausedScreen extends BikeScreen {
     public float screenActiveProbability(BikeStateTracker bikeStateTracker) {
         int matching = 0;
 
+        return 0;
         // Need to look at the time to see if it's changing
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
 
         //return (float)matching / (float)ScreenBox.values().length;
     }

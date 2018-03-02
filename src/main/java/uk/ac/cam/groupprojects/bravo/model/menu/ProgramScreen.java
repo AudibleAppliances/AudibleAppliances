@@ -14,7 +14,8 @@ public class ProgramScreen extends BikeScreen {
     public float screenActiveProbability(BikeStateTracker bikeStateTracker) {
         int matching = 0;
 
-        throw new UnsupportedOperationException("Ew");
+        return 0;
+        //throw new UnsupportedOperationException("Ew");
 
         //return (float)matching / (float)ScreenBox.values().length;
     }
