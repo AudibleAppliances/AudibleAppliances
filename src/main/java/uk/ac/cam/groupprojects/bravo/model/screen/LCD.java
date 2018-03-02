@@ -3,7 +3,7 @@ package uk.ac.cam.groupprojects.bravo.model.screen;
 /**
  * Created by david on 12/02/2018.
  */
-public class LCD_ {
+public class LCD {
 
     /*
         Used to store the state of the screen
@@ -12,11 +12,11 @@ public class LCD_ {
      */
     private boolean[][] screen;
 
-    public LCD_(){
+    public LCD(){
         screen = new boolean[10][8];
     }
 
-    public LCD_( boolean[][] newScreen ){
+    public LCD( boolean[][] newScreen ){
         this();
         updateScreen( newScreen );
     }
@@ -106,16 +106,16 @@ public class LCD_ {
      *
      * @return the LCDFunction_
      */
-    public LCDFunction_ matchSettings(){
+    public LCDFunction matchSettings(){
         String toTest = returnString();
-        for ( LCDFunction_ function: LCDFunction_.values() ){
+        for ( LCDFunction function: LCDFunction.values() ){
             for ( String pattern : function.getValues() ){
                 if ( pattern.compareTo( toTest ) == 0 ){
                     return function;
                 }
             }
         }
-        return LCDFunction_.NOT_DEF;
+        return LCDFunction.NOT_DEF;
     }
 
     /**

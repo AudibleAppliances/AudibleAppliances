@@ -3,7 +3,7 @@ package uk.ac.cam.groupprojects.bravo.model.screen;
 /**
  * Created by david on 12/02/2018.
  */
-public enum LCDFunction_ {
+public enum LCDFunction {
     MANUAL(
             "manual",
             "10000000 10000000 10000000 10000000 10000000 10000000 10000000 10000000 10000000 10000000",
@@ -108,7 +108,7 @@ public enum LCDFunction_ {
     private String audibleName;
     private String[] values;
 
-    LCDFunction_( String audibleName, String... values ){
+    LCDFunction( String audibleName, String... values ){
         this.audibleName = audibleName;
         this.values = values;
     }
