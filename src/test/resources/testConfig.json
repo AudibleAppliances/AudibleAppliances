@@ -61,77 +61,77 @@
 				"width": 10,
 				"height": 20
 			},
-			"text_box_1": {
+			"lcd_text_1": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_2": {
+			"lcd_text_2": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_3": {
+			"lcd_text_3": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_4": {
+			"lcd_text_4": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_5_top": {
+			"lcd_text_5_top": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_5_bottom": {
+			"lcd_text_5_bottom": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_6": {
+			"lcd_text_6": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_7_top": {
+			"lcd_text_7_top": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_7_bottom": {
+			"lcd_text_7_bottom": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_8": {
+			"lcd_text_8": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_9_top": {
+			"lcd_text_9_top": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_9_bottom": {
+			"lcd_text_9_bottom": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_10": {
+			"lcd_text_10": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_11": {
+			"lcd_text_11": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
 			},
-			"text_box_12": {
+			"lcd_text_12": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
