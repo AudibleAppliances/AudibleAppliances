@@ -80,14 +80,7 @@ public class BikeStateTracker {
         currentFields.put(BikeField.WATT, new Watt());
     }
 
-    public void updateBlinkingState(BufferedImage img) {
-        throw new UnsupportedOperationException();
-    }
-    public void updateRecognisableState(BufferedImage img) {
-        throw new UnsupportedOperationException();
-    }
-    
-    private void updateState(BufferedImage newImage)
+    public void updateState(BufferedImage newImage)
                 throws IOException, UnrecognisedDigitException, NumberFormatException {
 
         LocalDateTime currentTime = LocalDateTime.now();

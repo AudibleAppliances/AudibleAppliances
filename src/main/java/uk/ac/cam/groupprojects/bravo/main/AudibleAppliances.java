@@ -152,9 +152,9 @@ public class AudibleAppliances {
         @Override
         public void run() {
             try {
-                bikeStateTracker.updateState( image );
+                bikeStateTracker.updateState(image);
             } catch (IOException | UnrecognisedDigitException e) {
-                if ( DEBUG )
+                if (DEBUG)
                     e.printStackTrace();
             }
         }

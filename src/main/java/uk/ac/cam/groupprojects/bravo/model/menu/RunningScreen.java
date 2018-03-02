@@ -14,8 +14,9 @@ public class RunningScreen extends BikeScreen {
     private boolean loadTip = false;
 
     @Override
-    public float screenProbability(BikeStateTracker bikeStateTracker) {
-        return 0;
+    public float screenActiveProbability(BikeStateTracker bikeStateTracker) {
+        // TODO
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override

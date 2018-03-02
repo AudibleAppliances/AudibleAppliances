@@ -9,8 +9,9 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
  */
 public class TimeSelectScreen extends BikeScreen {
     @Override
-    public float screenProbability(BikeStateTracker bikeStateTracker) {
-        return 0;
+    public float screenActiveProbability(BikeStateTracker bikeStateTracker) {
+        // TODO    
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
