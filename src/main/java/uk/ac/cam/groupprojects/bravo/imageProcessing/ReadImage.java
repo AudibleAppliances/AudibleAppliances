@@ -27,7 +27,7 @@ public class ReadImage {
         OutputStream out = s.getOutputStream();
 
         // Send REQ
-        out.write(0);
+        out.write(2);
 
         // Wait for ACK
         if (in.readByte() == 1) {
