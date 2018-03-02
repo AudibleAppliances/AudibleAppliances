@@ -32,6 +32,9 @@ public class ReadImage {
         // Wait for ACK
         if (in.readByte() == 1) {
 
+            if ( ApplicationConstants.DEBUG )
+                System.out.println("Attempting to read image from: " + imagePath );
+
             BufferedImage img = ImageIO.read(new File(imagePath));
 
             // Send DONE
