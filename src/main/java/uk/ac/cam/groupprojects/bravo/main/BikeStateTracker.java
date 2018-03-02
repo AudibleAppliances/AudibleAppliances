@@ -11,26 +11,39 @@ import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by david on 13/02/2018.
  */
 public class BikeStateTracker {
+    class StateTime {
+        public LocalDateTime addedTime;
+        public Set<ScreenBox> activeText;
+
+        public StateTime(LocalDateTime addedTime, Set<ScreenBox> activeText) {
+            this.addedTime = addedTime;
+            this.activeText = activeText;
+        }
+    }
 
     /**
      * Current state that we are tracking on the bike
      */
     private Map<BikeField, ScreenNumber> currentFields;
-    private Map<ScreenBox, Boolean> previousActiveText;
-    private Map<ScreenBox, Boolean> activeText;
+    private final LinkedList<StateTime> history;
 
     /**
      * Other state
      */
-    private ImageSegments segments;
-    private ConfigData configData;
+    private final ImageSegments segments;
+    private final ConfigData configData;
 
     /**
      *
@@ -38,7 +51,7 @@ public class BikeStateTracker {
      * @param configData Configuration that can be passed around with this object
      */
     public BikeStateTracker(ImageSegments segments, ConfigData configData){
-        activeText = new HashMap<>();
+        history = new LinkedList<>();
 
         this.segments = segments;
         this.configData = configData;
@@ -55,37 +68,52 @@ public class BikeStateTracker {
         currentFields.put(BikeField.WATT, new Watt());
     }
 
-    /**
-     * Given an image of the screen, updates the state from what is on the screen
-     *
-     * @param newImage Image of the full screen
-     * @throws IOException If there is a problem in checking if segment is active
-     * @throws UnrecognisedDigitException If the digit in any segment cannot be recognised
-     * @throws NumberFormatException If the digit recognised is not in a vlaid format
-     */
+    public void updateBlinkingState(BufferedImage img) {
+        throw new UnsupportedOperationException();
+    }
+    public void updateRecognisableState(BufferedImage img) {
+        throw new UnsupportedOperationException();
+    }
+    
     public void updateState(BufferedImage newImage)
                 throws IOException, UnrecognisedDigitException, NumberFormatException {
 
-        HashMap<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
-        HashMap<ScreenBox, Boolean> isActive = new HashMap<>();
+        LocalDateTime updateTime = LocalDateTime.now();
+        Set<ScreenBox> activeSegs = new HashSet<>();
 
+        // Map each screen region to the image of that region
+        // Compute which LCD segments are lit up (active)
+        HashMap<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
         for (ScreenBox box : ScreenBox.values()) {
             BufferedImage imgSeg = segments.getImageBox(box, newImage);
             imgSegs.put(box, imgSeg);
-            isActive.put(box, SegmentActive.segmentActive(imgSeg));
+            if (SegmentActive.segmentActive(imgSeg)) {
+                activeSegs.add(box);
+            }
         }
 
-        // Read in data
+        // Recognise the text in each region of the screen
+        // TODO (Keith): Maybe compute this lazily to improve performance?
         for (ScreenBox box : ScreenBox.values()) {
-            if (isActive.get(box)) {
+            if (activeSegs.contains(box)) {
                 for (BikeField field : box.getFields()) {
-                    if (field.getTitleBox() == null || isActive.get(field.getTitleBox())) {
+                    if (field.getTitleBox() == null || activeSegs.contains(field.getTitleBox())) {
                         currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(newImage));
                     }
                 }
             }
         }
-   }
+        
+        // 
+        while (true) {
+            Duration timeSpan = Duration.between(history.getFirst().addedTime, updateTime);
+            if (timeSpan.toMillis() < 2 * BLINK_FREQ) {
+
+            }
+        }
+
+        history.add(new StateTime(updateTime, activeSegs));
+    }
 
     public ConfigData getConfig() {
         return configData;
@@ -95,7 +123,8 @@ public class BikeStateTracker {
         return currentFields.get(field);
     }
 
+    // Returns true iff the given box is lit in the latest received image
     public boolean isBoxActive(ScreenBox box) {
-        return activeText.get(box);
+        return history.getLast().activeText.contains(box);
     }
 }
