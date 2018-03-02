@@ -14,7 +14,6 @@ public class InitialScreen extends BikeScreen {
     public float screenActiveProbability(BikeStateTracker state) {
         int matching = 0;
         matching += state.boxStateIndicator(ScreenBox.WATT, LCDState.SOLID_OFF);
-        matching += state.boxStateIndicator(ScreenBox.WATT, LCDState.SOLID_OFF);
         matching += state.boxStateIndicator(ScreenBox.LOAD, LCDState.SOLID_OFF);
         matching += state.boxStateIndicator(ScreenBox.SPEED, LCDState.SOLID_OFF);
         matching += state.boxStateIndicator(ScreenBox.RPM, LCDState.SOLID_OFF);
@@ -35,7 +34,6 @@ public class InitialScreen extends BikeScreen {
         matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_12, LCDState.SOLID_ON);
 
         // Some of the text ones are on
-        matching += state.boxStateIndicator(ScreenBox.TEXT, LCDState.SOLID_ON);
         matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_5_TOP, LCDState.SOLID_ON);
         matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_5_BOTTOM, LCDState.SOLID_ON);
         matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_6, LCDState.SOLID_ON);
