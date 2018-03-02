@@ -20,7 +20,7 @@ public class ReadImage {
      * @return Image read
      * @throws IOException If there is a problem reading or communicating with daemon
      */
-    public static BufferedImage readImage() throws IOException {
+    public static BufferedImage readImage( String imagePath ) throws IOException {
 
         Socket s = new Socket("127.0.0.1", ApplicationConstants.DAEMON_PORT);
         DataInputStream in = new DataInputStream(s.getInputStream());
@@ -32,7 +32,7 @@ public class ReadImage {
         // Wait for ACK
         if (in.readByte() == 1) {
 
-            BufferedImage img = ImageIO.read(new File(ApplicationConstants.IMAGE_PATH));
+            BufferedImage img = ImageIO.read(new File(imagePath));
 
             // Send DONE
             out.write(1);
@@ -46,4 +46,7 @@ public class ReadImage {
             throw new IOException();
         }
     }
+
+
+
 }

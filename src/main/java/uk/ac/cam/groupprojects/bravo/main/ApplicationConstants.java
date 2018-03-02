@@ -14,6 +14,7 @@ public class ApplicationConstants {
     public static final String TMP_DIR_PATH = "/mnt/rd";
     public static final File TMP_DIR = new File(TMP_DIR_PATH);
     public static final String IMAGE_PATH = TMP_DIR_PATH + "/image.jpg";
+    public static final String DE_FISH_EYE = TMP_DIR_PATH + "/defish_image.jpg";
 
     public static final int DAEMON_PORT = 40000;
 
