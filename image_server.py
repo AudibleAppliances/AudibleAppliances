@@ -24,6 +24,7 @@ server.bind(("localhost", 40000))
 server.listen(5)
 
 def create_image():
+    print "Created image"
     stream = io.BytesIO()
 
     with picamera.PiCamera() as camera:
@@ -78,7 +79,8 @@ t.start()
 threads.append(t)
 
 while True:
-    clientsocket, addr = server.accept()
+    clientsocket, addr = server.accept() 
+    print "New reader - " str(addr)
     read_thread = Thread(target=reader, args=(clientsocket,))
     read_thread.start()
     threads.append(read_thread)
