@@ -5,7 +5,7 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 public abstract class BikeScreen {
 
-    public abstract float screenProbability( BikeStateTracker bikeStateTracker );
+    public abstract boolean screenActive( BikeStateTracker bikeStateTracker );
 
     public abstract ScreenEnum getEnum();
 

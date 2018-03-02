@@ -123,44 +123,36 @@ public class AudibleAppliances {
         boolean initialScreenEstablished = false;
         int initialScreenCounter = 0;
         long startTime, elapsedTime;
-        if ( running ){
+        if (running) {
             System.out.println("Establishing the state of the bike!");
             synthesiser.speak("Please hold while we try and establish the state of the exercise bike");
-            while ( !initialScreenEstablished ){
+            while (!initialScreenEstablished) {
                 startTime = System.currentTimeMillis();
                 System.out.println("Try " + initialScreenCounter );
                 try {
                     bikeStateTracker.updateState(ReadImage.readImage());
 
-                    float maxProb = 0.0f;
-                    BikeScreen maxScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
+                    currentScreen = screens.get(ScreenEnum.OFF_SCREEN);
 
-                    for ( BikeScreen screen: screens.values() ){
-                        float prob = screen.screenProbability( bikeStateTracker );
-                        if ( prob > maxProb ){
-                            maxProb = screen.screenProbability( bikeStateTracker );
-                            maxScreen = screen;
+                    for (BikeScreen screen: screens.values()) {
+                        boolean active = screen.screenActive( bikeStateTracker );
+                        if (active){
+                            currentScreen = screen;
                         }
-                        if ( DEBUG )
-                            System.out.println( screen.getEnum().toString() + " : " + prob );
                     }
 
                     System.out.println();
-
-                    if ( maxProb > ApplicationConstants.MIN_PROB ){
-                        currentScreen = maxScreen;
-                        initialScreenEstablished = true;
-                        System.out.println("Establishing bike state is " + currentScreen.getEnum().toString() );
-                    }
+                    initialScreenEstablished = true;
+                    System.out.println("Establishing bike state is " + currentScreen.getEnum().toString() );
 
                 } catch (Exception e) {
                     if ( DEBUG )
                         e.printStackTrace();
                 }
                 initialScreenCounter++;
-                if ( initialScreenCounter > ApplicationConstants.MAX_INITIAL_TRIES ){
-                    //Default to SELECTION_SCREEN_1
-                    currentScreen = screens.get( ScreenEnum.SELECTION_SCREEN_1 );
+                if (initialScreenCounter > ApplicationConstants.MAX_INITIAL_TRIES){
+                    //Default to OFF_SCREEN
+                    currentScreen = screens.get(ScreenEnum.OFF_SCREEN );
                     initialScreenEstablished = true;
                     System.out.println(" INITIAL SCREEN COUNTER LIMIT REACHED defaulting to " + currentScreen.getEnum().toString() );
                 }
@@ -253,24 +245,15 @@ public class AudibleAppliances {
         System.out.println();
         System.out.println("DETECTING CHANGE SCREEN STATE");
 
-        float maxProb = 0.0f;
-        BikeScreen maxScreen = currentScreen;
+        for (BikeScreen screen: screens.values()) {
+            boolean active = screen.screenActive(bikeStateTracker);
 
-        for ( BikeScreen screen: screens.values() ){
-            float prob = screen.screenProbability( bikeStateTracker );
-            if ( prob > maxProb ){
-                maxProb = screen.screenProbability( bikeStateTracker );
-                maxScreen = screen;
+            if (active) {
+                currentScreen = screen;
+                break;
             }
-            if ( DEBUG )
-                System.out.println( screen.getEnum().toString() + " : " + prob );
         }
-
-        if ( maxProb > ApplicationConstants.MIN_PROB ){
-            System.out.println("Establishing bike state is " + maxScreen.getEnum().toString() );
-            currentScreen = maxScreen;
-        }
-
+        System.out.println("Establishing bike state is " + currentScreen.getEnum().toString());
         System.out.println();
     }
 }

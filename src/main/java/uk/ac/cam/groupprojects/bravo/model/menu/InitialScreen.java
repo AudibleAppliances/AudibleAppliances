@@ -9,7 +9,7 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 public class InitialScreen extends BikeScreen {
 
     @Override
-    public float screenProbability(BikeStateTracker bikeStateTracker) {
+    public boolean screenActive(BikeStateTracker bikeStateTracker) {
         return 0;
     }
 
