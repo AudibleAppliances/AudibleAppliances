@@ -14,7 +14,7 @@ public class ProgramScreen extends BikeScreen {
     public float screenActiveProbability(BikeStateTracker bikeStateTracker) {
         int matching = 0;
 
-
+        
 
         return (float)matching / (float)ScreenBox.values().length;
     }

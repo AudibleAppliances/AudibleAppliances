@@ -24,15 +24,15 @@ public class InitialScreen extends BikeScreen {
         matching += state.boxStateIndicator(ScreenBox.LCD3, LCDState.SOLID_OFF);
         matching += state.boxStateIndicator(ScreenBox.LCD4, LCDState.SOLID_OFF);
         matching += state.boxStateIndicator(ScreenBox.LCD5, LCDState.SOLID_OFF);
-        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_1, LCDState.SOLID_ON);
-        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_2, LCDState.SOLID_ON);
-        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_3, LCDState.SOLID_ON);
-        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_4, LCDState.SOLID_ON);
-        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_9_TOP, LCDState.SOLID_ON);
-        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_9_BOTTOM, LCDState.SOLID_ON);
-        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_10, LCDState.SOLID_ON);
-        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_11, LCDState.SOLID_ON);
-        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_12, LCDState.SOLID_ON);
+        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_1, LCDState.SOLID_OFF);
+        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_2, LCDState.SOLID_OFF);
+        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_3, LCDState.SOLID_OFF);
+        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_4, LCDState.SOLID_OFF);
+        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_9_TOP, LCDState.SOLID_OFF);
+        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_9_BOTTOM, LCDState.SOLID_OFF);
+        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_10, LCDState.SOLID_OFF);
+        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_11, LCDState.SOLID_OFF);
+        matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_12, LCDState.SOLID_OFF);
 
         // Some of the text ones are on
         matching += state.boxStateIndicator(ScreenBox.TEXT, LCDState.SOLID_ON);

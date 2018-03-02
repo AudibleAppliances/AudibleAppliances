@@ -27,8 +27,9 @@ public class BikeStateTracker {
     class StateTime {
         public LocalDateTime addedTime;
         public Set<ScreenBox> activeBoxes;
+        public int recognisedTime;
 
-        public StateTime(LocalDateTime addedTime, Set<ScreenBox> activeBoxes) {
+        public StateTime(LocalDateTime addedTime, Set<ScreenBox> activeBoxes, int recognisedTime) {
             this.addedTime = addedTime;
             this.activeBoxes = activeBoxes;
         }
@@ -39,10 +40,14 @@ public class BikeStateTracker {
      */
     private Map<BikeField, ScreenNumber> currentFields;
     // Back of the list is the most recent state added
+    // We keep 2 seconds of state, so we can determine if time is changing
+    // We only look at 1 second of the state to determine if a segment is blinking,
+    // otherwise we introduce a lot of latency when changing state
     private final LinkedList<StateTime> history;
 
     // State over time of the LCDs - 
     private final Map<ScreenBox, LCDState> boxStates;
+    private boolean timeChanging;
 
     /**
      * Other state
@@ -58,6 +63,7 @@ public class BikeStateTracker {
     public BikeStateTracker(ImageSegments segments, ConfigData configData) {
         history = new LinkedList<>();
         boxStates = new HashMap<>();
+        timeChanging = false;
 
         this.segments = segments;
         this.configData = configData;
@@ -84,7 +90,7 @@ public class BikeStateTracker {
     private void updateState(BufferedImage newImage)
                 throws IOException, UnrecognisedDigitException, NumberFormatException {
 
-        LocalDateTime updateTime = LocalDateTime.now();
+        LocalDateTime currentTime = LocalDateTime.now();
         Set<ScreenBox> activeSegs = new HashSet<>();
 
         // Map each screen region to the image of that region
@@ -110,25 +116,25 @@ public class BikeStateTracker {
             }
         }
         
-        // Remove state information that's older than one complete blink cycle ago
+        // Remove state information that's older than two complete blink cycle ago
         while (history.size() > 0) {
-            Duration timeSpan = Duration.between(history.getFirst().addedTime, updateTime);
-            if (timeSpan.toMillis() > 2 * ApplicationConstants.BLINK_FREQ) {
+            if (olderThanBy(history.getFirst().addedTime, currentTime, 4 * ApplicationConstants.BLINK_FREQ)) {
                 history.removeFirst();
             } else {
                 break;
             }                
         }
 
-        // Store the new state
-        history.add(new StateTime(updateTime, activeSegs));
+        // Store the new state, with the time we recognised at the moment
+        history.add(new StateTime(currentTime, activeSegs, currentFields.get(BikeField.TIME).getValue()));
 
         // Update which LCDs we know are solid/blinking
-        updateSolidBlinking();
+        updateSolidBlinking(currentTime);
+        updateTimeChanging();
     }
 
     // Update which boxes are blinking and which are solid
-    private void updateSolidBlinking() {
+    private void updateSolidBlinking(LocalDateTime currentTime) {
         // Reset all
         boxStates.clear();
 
@@ -137,12 +143,15 @@ public class BikeStateTracker {
             boolean blinking = false;
             boolean active = false;
 
-            // Loop over all the state we have
+            // Loop over the last second of history we have
             if (history.size() > 0) {
                 boolean currentlyActive = isBoxActiveNow(box);
-                boolean historyMatches = history.stream()
-                                                .allMatch(s ->
-                                                    s.activeBoxes.contains(box) == currentlyActive);
+                boolean historyMatches =
+                        history.stream()
+                               .filter(s ->
+                                   !olderThanBy(s.addedTime, currentTime, 2 * ApplicationConstants.BLINK_FREQ))
+                               .allMatch(s ->
+                                   s.activeBoxes.contains(box) == currentlyActive);
 
                 if (!historyMatches) { // Changes over time => blinking
                     blinking = true;
@@ -159,6 +168,21 @@ public class BikeStateTracker {
                 boxStates.put(box, LCDState.SOLID_OFF);
             }
         }
+    }
+
+    private void updateTimeChanging() {
+        if (history.size() == 0) {
+            return;
+        }
+
+        int currentTime = history.getLast().recognisedTime;
+        timeChanging = history.stream()
+                              .allMatch(s -> s.recognisedTime == currentTime);
+    }
+
+    private boolean olderThanBy(LocalDateTime early, LocalDateTime late, long milliseconds) {
+        Duration timeSpan = Duration.between(early, late);
+        return timeSpan.toMillis() > milliseconds;
     }
 
     public ConfigData getConfig() {
