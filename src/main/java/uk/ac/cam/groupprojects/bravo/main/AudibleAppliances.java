@@ -128,7 +128,6 @@ public class AudibleAppliances {
                 currentScreen.speakItems(bikeStateTracker, synthesiser);
                 lastSpeakTime = System.currentTimeMillis();
             }
-            detectState();
 
             long elapsedTime = System.currentTimeMillis() - loopStartTime;
             if (ApplicationConstants.DEBUG)

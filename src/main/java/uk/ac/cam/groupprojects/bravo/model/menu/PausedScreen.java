@@ -15,9 +15,10 @@ public class PausedScreen extends BikeScreen {
     public float screenActiveProbability(BikeStateTracker bikeStateTracker) {
         int matching = 0;
 
-        // TODO: We need to know if the graph is blinking.......
+        // Need to look at the time to see if it's changing
+        throw new UnsupportedOperationException();
 
-        return (float)matching / (float)ScreenBox.values().length;
+        //return (float)matching / (float)ScreenBox.values().length;
     }
 
     @Override

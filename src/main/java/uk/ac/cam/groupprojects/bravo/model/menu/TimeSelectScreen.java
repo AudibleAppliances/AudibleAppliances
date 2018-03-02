@@ -11,7 +11,8 @@ public class TimeSelectScreen extends BikeScreen {
     @Override
     public float screenActiveProbability(BikeStateTracker bikeStateTracker) {
         // TODO    
-        throw new UnsupportedOperationException("Not yet implemented");
+        return 0;
+        //throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override

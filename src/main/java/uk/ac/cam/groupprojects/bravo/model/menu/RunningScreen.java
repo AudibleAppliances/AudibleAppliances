@@ -2,6 +2,7 @@ package uk.ac.cam.groupprojects.bravo.model.menu;
 
 import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
@@ -15,8 +16,11 @@ public class RunningScreen extends BikeScreen {
 
     @Override
     public float screenActiveProbability(BikeStateTracker bikeStateTracker) {
-        // TODO
-        throw new UnsupportedOperationException("Not implemented");
+        int matching = 0;
+        
+        return 0;
+        //throw new UnsupportedOperationException("Not implemented");
+        //return (float)matching / (float)ScreenBox.values().length;
     }
 
     @Override

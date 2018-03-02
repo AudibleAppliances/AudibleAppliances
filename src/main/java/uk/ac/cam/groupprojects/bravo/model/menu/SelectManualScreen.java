@@ -15,6 +15,7 @@ public class SelectManualScreen extends BikeScreen {
     public float screenActiveProbability(BikeStateTracker state) {
         int matching = 0;
 
+        // Watt xor Load can be on
         matching += state.boxStateIndicator(ScreenBox.WATT, LCDState.SOLID_ON);
         matching += state.boxStateIndicator(ScreenBox.LOAD, LCDState.SOLID_OFF);
         matching += state.boxStateIndicator(ScreenBox.SPEED, LCDState.SOLID_OFF);
