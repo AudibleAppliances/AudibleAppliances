@@ -22,12 +22,12 @@ public class SelectManualScreen extends BikeScreen {
 
         matching += state.boxStateIndicator(ScreenBox.GRAPH, LCDState.SOLID_ON);
 
-        matching += state.boxStateIndicator(ScreenBox.LCD1, LCDState.SOLID_OFF);
-        matching += state.boxStateIndicator(ScreenBox.LCD2, LCDState.SOLID_OFF);
-        matching += state.boxStateIndicator(ScreenBox.LCD3, LCDState.SOLID_OFF);
-        matching += state.boxStateIndicator(ScreenBox.LCD4, LCDState.SOLID_OFF);
-        matching += state.boxStateIndicator(ScreenBox.LCD5, LCDState.SOLID_OFF);
-        matching += state.boxStateIndicator( ScreenBox.LCD6, LCDState.SOLID_ON );
+        matching += state.boxStateIndicator(ScreenBox.LCD1, LCDState.SOLID_ON);
+        matching += state.boxStateIndicator(ScreenBox.LCD2, LCDState.SOLID_ON);
+        matching += state.boxStateIndicator(ScreenBox.LCD3, LCDState.SOLID_ON);
+        matching += state.boxStateIndicator(ScreenBox.LCD4, LCDState.SOLID_ON);
+        matching += state.boxStateIndicator(ScreenBox.LCD5, LCDState.SOLID_ON);
+        matching += state.boxStateIndicator(ScreenBox.LCD6, LCDState.SOLID_ON);
 
 
         matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_1, LCDState.SOLID_OFF);
