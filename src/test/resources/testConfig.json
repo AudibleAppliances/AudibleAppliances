@@ -2,9 +2,9 @@
 	"voice": "male",
 		"boxes": {
 			"lcd1": {
-				"corner": [20, 12],
-				"width": 10,
-				"height": 20
+				"corner": [20, 9],
+				"width": 28,
+				"height": 17
 			},
 			"lcd2": {
 				"corner": [20, 12],
