@@ -131,7 +131,6 @@ public class AudibleAppliances {
                 lastSpeakTime = System.currentTimeMillis();
             }
 
-
             long elapsedTime = System.currentTimeMillis() - loopStartTime;
             if (ApplicationConstants.DEBUG)
                 System.out.println("That cycle took " + elapsedTime + "ms ");
