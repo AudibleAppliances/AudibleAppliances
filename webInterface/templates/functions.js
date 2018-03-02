@@ -8,6 +8,7 @@ $.getJSON("/get_boxes", function(data) {
             width: val.width * $("#canvas").width(),
             height: val.height * $("#canvas").height()
         }
+        $(document.getElementById(key)).children(".config").html("Configured");
     });
 });
 
