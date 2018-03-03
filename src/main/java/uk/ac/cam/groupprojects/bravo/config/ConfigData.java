@@ -73,22 +73,26 @@ public class ConfigData {
 
             for (BikeField type : BikeField.values()) {
                 //Load is the exception
-                if ( type != BikeField.LOAD ){
+                if (type != BikeField.LOAD) {
                     String typeName = type.name().toLowerCase();
                     JsonPrimitive field = spoken_fields.getAsJsonPrimitive(typeName);
                     mSpokenFields.put(type, field.getAsBoolean());
-                }else {
+                } else {
                     mSpokenFields.put(BikeField.LOAD, false);
                 }
             }
 
-        } catch(FileNotFoundException e){
-            if ( ApplicationConstants.DEBUG )
+        } catch (FileNotFoundException e) {
+            if (ApplicationConstants.DEBUG)
                 e.printStackTrace();
             throw new ConfigException("Could not read config file");
-        } catch(JsonParseException e2){
-            if ( ApplicationConstants.DEBUG )
+        } catch (JsonParseException e2) {
+            if (ApplicationConstants.DEBUG)
                 e2.printStackTrace();
+            throw new ConfigException("Error parsing JSON");
+        } catch (NullPointerException e3) {
+            if (ApplicationConstants.DEBUG)
+                e3.printStackTrace();
             throw new ConfigException("Error parsing JSON");
         }
     }
