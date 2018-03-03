@@ -3,6 +3,7 @@ package uk.ac.cam.groupprojects.bravo.model.menu;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
+import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 /**
@@ -11,13 +12,14 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 // This is the screen where the user selects which program they want to use
 public class ProgramScreen extends BikeScreen {
     @Override
-    public float screenActiveProbability(BikeStateTracker bikeStateTracker) {
-        int matching = 0;
+    public boolean getFeatures(BikeStateTracker state) {
 
-        return 0;
-        //throw new UnsupportedOperationException("Ew");
-
-        //return (float)matching / (float)ScreenBox.values().length;
+        return !state.isTimeChanging() &&
+               state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
+               state.getBoxState(ScreenBox.LCD_TEXT_3) == LCDState.BLINKING &&
+               state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.BLINKING &&
+               state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.BLINKING &&
+               state.getBoxState(ScreenBox.LCD_TEXT_9) == LCDState.SOLID_OFF;
     }
 
     @Override

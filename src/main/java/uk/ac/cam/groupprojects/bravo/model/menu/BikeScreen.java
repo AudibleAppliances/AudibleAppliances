@@ -1,14 +1,10 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
-import java.util.HashMap;
-
-import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
-import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 public abstract class BikeScreen {
-    public abstract HashMap<ScreenBox, LCDState> getFeatures(BikeStateTracker state);
+    public abstract boolean getFeatures(BikeStateTracker state);
 
     public abstract ScreenEnum getEnum();
 

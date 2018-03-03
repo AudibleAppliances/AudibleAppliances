@@ -24,11 +24,9 @@ public enum ScreenBox {
     LCD_TEXT_5_TOP,
     LCD_TEXT_5_BOTTOM,
     LCD_TEXT_6,
-    LCD_TEXT_7_TOP,
-    LCD_TEXT_7_BOTTOM,
+    LCD_TEXT_7,
     LCD_TEXT_8,
-    LCD_TEXT_9_TOP,
-    LCD_TEXT_9_BOTTOM,
+    LCD_TEXT_9,
     LCD_TEXT_10,
     LCD_TEXT_11,
     LCD_TEXT_12;

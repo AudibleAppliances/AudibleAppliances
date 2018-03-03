@@ -5,6 +5,7 @@ import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
+import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 /**
@@ -12,14 +13,13 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
  */
 public class PausedScreen extends BikeScreen {
     @Override
-    public float screenActiveProbability(BikeStateTracker bikeStateTracker) {
-        int matching = 0;
+    public boolean getFeatures(BikeStateTracker state) {
 
-        return 0;
-        // Need to look at the time to see if it's changing
-        //throw new UnsupportedOperationException();
-
-        //return (float)matching / (float)ScreenBox.values().length;
+        return !state.isTimeChanging() &&
+               state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
+               state.getBoxState(ScreenBox.LCD_TEXT_3) == LCDState.SOLID_ON &&
+               state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.SOLID_ON &&
+               state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON;
     }
 
     @Override

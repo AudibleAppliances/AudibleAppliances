@@ -11,15 +11,14 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
  */
 public class ErrorScreen extends BikeScreen {
     @Override
-    public Map<ScreenBox, LCDState> getFeatures(BikeStateTracker state) {
-        int matching = 0;
+    public boolean getFeatures(BikeStateTracker state) {
 
-        // In the error screen, we've just booted up and everything's turned on
-        for (ScreenBox box : ScreenBox.values()) {
-            matching += state.boxStateIndicator(box, LCDState.SOLID_ON);
-        }
-
-        return (float)matching / (float)ScreenBox.values().length;
+        return state.isTimeChanging() &&
+               state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_ON &&
+               state.getBoxState(ScreenBox.LCD_TEXT_3) == LCDState.SOLID_ON &&
+               state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.SOLID_ON &&
+               state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON &&
+               state.getBoxState(ScreenBox.LCD_TEXT_9) == LCDState.SOLID_ON;
     }
 
     @Override

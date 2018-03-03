@@ -173,7 +173,6 @@ public class AudibleAppliances {
         screens.put(ScreenEnum.RUNNING_SCREEN, new RunningScreen());
         screens.put(ScreenEnum.PAUSED_SCREEN, new PausedScreen());
 
-        screens.put(ScreenEnum.TIME_SELECT, new TimeSelectScreen());
         screens.put(ScreenEnum.PROGRAM, new ProgramScreen());
 
         screens.put(ScreenEnum.SELECT_MANUAL, new SelectManualScreen());
@@ -189,9 +188,9 @@ public class AudibleAppliances {
 
         BikeScreen newScreen = null;
         for (BikeScreen screen : screens.values()) {
-            Map<ScreenBox, LCDState> features = screen.getFeatures(bikeStateTracker);
+            boolean inState = screen.getFeatures(bikeStateTracker);
 
-            if (bikeStateTracker.getBoxStates().entrySet().containsAll(features.entrySet())) {
+            if (inState) {
                 newScreen = screen;
                 break;
             }
