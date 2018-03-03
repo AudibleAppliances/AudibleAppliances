@@ -46,12 +46,15 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>uk.ac.cam.groupprojects.bravo.main.AudibleAppliances</mainClass>
+                                </transformer>
+                            </transformers>
                             <artifactSet>
-                                <excludes>
-                                    <exclude>junit:junit</exclude>
-                                    <exclude>org.bytedeco:*</exclude>
-                                    <exclude>org.bytedeco.*:*</exclude>
-                                </excludes>
+                                <includes>
+                                    <include>com.google.code.gson:gson</include>
+                                </includes>
                             </artifactSet>
                         </configuration>
                     </execution>
