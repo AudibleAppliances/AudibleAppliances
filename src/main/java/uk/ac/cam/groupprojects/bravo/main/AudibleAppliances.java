@@ -9,6 +9,7 @@ import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.ConnectException;
@@ -43,6 +44,7 @@ public class AudibleAppliances {
 
         //Turn debug mode off and on
         DEBUG = args.length > 0 && args[0].compareToIgnoreCase("-d") == 0;
+        ImageIO.setUseCache(false);
 
         try {
             /*

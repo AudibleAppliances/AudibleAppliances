@@ -6,20 +6,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
+import uk.ac.cam.groupprojects.bravo.util.FastImageIO;
 
 public class SSOCRUtil {
     protected static final String IMG_TYPE = "png";
 
     public static File saveTempFile(BufferedImage img) throws IOException {
-        //File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
-        File f = File.createTempFile("audible", "." + IMG_TYPE);
+        File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
+        //File f = File.createTempFile("audible", "." + IMG_TYPE);
         return saveFile(img, f);
     }
     public static File saveFile(BufferedImage img, File f) throws IOException {
-        ImageIO.write(img, IMG_TYPE, f);
+        FastImageIO.write(img, IMG_TYPE, f);
         return f;
     }
 
@@ -55,7 +54,7 @@ public class SSOCRUtil {
         try {
             f = saveTempFile(image);
             makeMonochrome(f.getPath(), f.getPath());
-            BufferedImage result = ImageIO.read(f);
+            BufferedImage result = FastImageIO.read(f);
             return result;
         }
         finally {
