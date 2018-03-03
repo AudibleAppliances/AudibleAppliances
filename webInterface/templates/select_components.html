@@ -1,0 +1,37 @@
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="myStyle.css">
+    <script src="functions.js"></script>
+</head>
+
+<body>
+    <div id=first_screen>
+        <div id="choose_component">
+            <div id="LCD1" class="component" style="left:5vw; top:7vh" onclick="do_select('LCD1')"></div>
+            <div id="LCD2" class="component" style="right:5vw; top:7vh" onclick="do_select('LCD2')"></div>
+            <div id="LCD3" class="component" style="left:5vw; top:32vh" onclick="do_select('LCD3')"></div>
+            <div id="LCD4" class="component" style="right:5vw; top:32vh" onclick="do_select('LCD4')"></div>
+            <div id="LCD5" class="component" style="left:5vw; bottom:5vh" onclick="do_select('LCD5')"></div>
+            <div id="LCD6" class="component" style="right:30vw; bottom:5vh; width:10vw" onclick="do_select('LCD6')"></div>
+            <div id="LCD7" class="component" style="right:5vw; bottom:5vh" onclick="do_select('LCD7')"></div>
+            <div id="Graph" class="component" style="right:30vw; top:10vh; height:30vh" onclick="do_select('graph')"></div>
+            <div id="Watt" class="component" style="left:5vw; bottom:24vh; height:4vh; width:10vw" onclick="do_select('watt')"></div>
+            <div id="Program" class="component" style="left:30vw; bottom:15vh; height:4vh; width:9vw" onclick="do_select('program')"></div>
+            <div id="Level" class="component" style="left:30vw; bottom:9vh; height:4vh; width:9vw" onclick="do_select('level')"></div>
+        </div>
+        <a href="/">
+            <div class="button" id="done_selection_button">
+                <h2>Done</h2>
+            </div>
+        </a>
+    </div>
+
+    <div id="select_pane">
+        <img src="/video_feed"></img>
+        <div onmousedown="mouse_down(event)" id="canvas"></div>
+    </div>
+</body>
+
+</html>

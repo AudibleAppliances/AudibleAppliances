@@ -1,0 +1,73 @@
+<html>
+
+<head>
+    <title>Audible Applicances</title>
+    <link rel="stylesheet" type="text/css" href="myStyle.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="ui_functions.js"></script>
+    <script src="index_functions.js"></script>
+</head>
+
+<body>
+    <h1>Configuration</h1>
+
+    <div class="container" id="accessibility_options">
+        <h2>Accessibility</h2>
+        <div class="grid-container">
+            <button title="Increase font size" class="accessibility_button" onclick="change_font_size(-1)">A-</button>
+            <button title="Text to speech" class="accessibility_button" onclick="reset_font_size()"><b>A</b></button>
+            <button title="Decrease font size" class="accessibility_button" onclick="change_font_size(1)">A+</button>
+            <button title="Yellow on black" style="background-color:black; color:yellow" class="accessibility_button" onclick="change_page_color('black', 'yellow')">A</button>
+            <button title="Black on white" style="background-color:white; color:black" class="accessibility_button" onclick="change_page_color('white', 'black')">A</button>
+            <button title="Black on brown" style="background-color:#BA4A00; color:black" class="accessibility_button" onclick="change_page_color('#BA4A00', 'black')">A</button>
+            <span style="grid-column: 1 / 3; padding:0.7ch; font-weight:bold">background:</span>
+            <button id="background_chooser" title="Custom background colour" style="background-color:white" class="accessibility_button" onclick="choose_color(false)"></button>
+            <span style="grid-column: 1 / 3; padding:0.7ch; font-weight:bold">text:</span>
+            <button id="text_color_chooser" title="Custom text colour" style="background-color:black" class="accessibility_button" onclick="choose_color(true)"></button>
+        </div>
+    </div>
+
+    <div class="container" id="voice_choice">
+        <h2>Select Voice:</h2>
+        <div id="voice_options" class="options">
+            <div id="scottish" class="button voice_button" onclick="set_voice(this, 'scottish')">
+                <div class="selected_indicator">Scottish</div>
+            </div>
+            <div id="english" class="button voice_button" onclick="set_voice(this, 'english')">
+                <div class="selected_indicator">English</div>
+            </div>
+            <div id="american" class="button voice_button" onclick="set_voice(this, 'american')">
+                <div class="selected_indicator">American</div>
+            </div>
+            <div id="male" class="button voice_button" onclick="set_voice(this, 'male')">
+                <div class="selected_indicator">Male</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="frequency_choice">
+        <h2>Speak every:</h2>
+        <div id="frequency_options" class="options">
+            <div id="15secs" class="button voice_button" onclick="set_frequency(this, 15)">
+                <div class="selected_indicator">15 seconds</div>
+            </div>
+            <div id="30secs" class="button voice_button" onclick="set_frequency(this, 30)">
+                <div class="selected_indicator">30 seconds</div>
+            </div>
+            <div id="45secs" class="button voice_button" onclick="set_frequency(this, 45)">
+                <div class="selected_indicator">45 seconds</div>
+            </div>
+            <div id="60secs" class="button voice_button" onclick="set_frequency(this, 60)">
+                <div class="selected_indicator">60 seconds</div>
+            </div>
+        </div>
+    </div>
+
+    <a href="select_components.html">
+        <div class="button" id="update_camera_button">
+            <h2>Update Camera</h2>
+        </div>
+    </a>
+</body>
+
+</html>

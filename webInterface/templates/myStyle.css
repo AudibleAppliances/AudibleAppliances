@@ -1,0 +1,170 @@
+#canvas, img {
+    position: absolute;
+    left: 10vw;
+    top: 10vh;
+    width: 80vw;
+    height: 80vh;
+}
+
+.square {
+    border-radius: 5px;
+    border-width: 3px;
+    border-style: solid;
+    position: fixed;
+    left: 20vw;
+    top: 20vh;
+    width: 100px;
+    height: 100px;
+}
+
+body {
+    font-family: helvetica, sans-serif;
+    background-color: white;
+}
+
+h1 {
+    font-size: 4em;
+    margin-bottom: 3vh;
+}
+
+.button {
+    text-align: center;
+    font-size: 1.2em;
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    padding: 0 2ch 0 2ch;
+    box-shadow: none;
+    border: 2px solid black;
+}
+
+.button:hover {
+    opacity: 0.7;
+}
+
+#accessibility_options {
+    position: fixed;
+    text-align: center;
+    right: 2vw;
+}
+
+.accessibility_button {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.mask {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: grey;
+    margin: 0;
+    padding: 0;
+    opacity: 0.9;
+}
+
+.picker, .spoken_choice {
+    position: fixed;
+    left: 25vw;
+    width: 50vw;
+    top: 25vh;
+    height: 50vh;
+    background-color: white;
+    border-radius: 10px;
+    border: 2px solid black;
+}
+
+.picker {
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.color_choice, .speak {
+    margin: 1ch;
+    border-radius: 10px;
+    border: 2px solid black;
+}
+
+.speak {
+    position: fixed;
+    color: white;
+    font-size: 2em;
+    width: 15vw;
+    top: 40vh;
+    padding: 3ch 0 3ch 0;
+    text-align: center;
+}
+
+#update_camera_button {
+    bottom: 10vh;
+    width: 20vw;
+    left: 40vw;
+    position: fixed;
+}
+
+.container {
+    position: relative;
+    padding: 0 3ch 3ch 3ch;
+    border: 2px solid black;
+    border-radius: 4px;
+}
+
+#voice_choice, #frequency_choice {
+    width: 60vw;
+    margin: 2vh 0 2vh 3vw;
+}
+
+.options {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+}
+
+.voice_button {
+    padding: 1ch 0 1ch 0;
+    margin: 0 1ch 0 1ch;
+}
+
+#select_pane {
+    display: none;
+}
+
+#choose_component {
+    position: absolute;
+    background-color: black;
+    border-radius: 5vw;
+    width: 80vw;
+    height: 80vh;
+    left: 10vw;
+    top: 5vh;
+}
+
+.component {
+    position: absolute;
+    width: 20vw;
+    height: 18vh;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.component:hover {
+    opacity: 0.5;
+}
+
+.selected_banner {
+    position: absolute;
+    font-size: 2em;
+}
+
+#done_selection_button {
+    bottom: 3vh;
+    width: 20vw;
+    left: 40vw;
+    position: fixed;
+}

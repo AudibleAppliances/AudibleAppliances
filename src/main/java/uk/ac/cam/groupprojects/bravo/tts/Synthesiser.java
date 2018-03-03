@@ -39,6 +39,7 @@ public class Synthesiser implements AutoCloseable {
     }
 
     public void setVoice(String voice) throws VoiceMissingException {
+        // Sets the voice used by Festival
         write("(voice_" + voice + ")");
         
         // If the process didn't echo the voice back to us, there was an error
@@ -80,8 +81,12 @@ public class Synthesiser implements AutoCloseable {
     }
 
     public void speak(String text) {
+        // Request Festival to synthesise the text
         write("(SayText \"" + text + "\")");
-        readLine(); // Discard the next line of input (contains "utterance" information)
+        // Discard the next line of input (contains "utterance" information)
+        // Festival only output a line after it's finished speaking, so this also causes us to
+        // block until it's done speaking (desirable behaviour).
+        readLine();
     }
     
     @Override

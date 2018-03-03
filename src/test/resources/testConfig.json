@@ -1,0 +1,141 @@
+{
+	"voice": "male",
+		"boxes": {
+			"lcd1": {
+				"corner": [29.5, 27],
+				"width": 19.5,
+				"height": 10.5
+			},
+			"lcd2": {
+				"corner": [57, 27],
+				"width": 18.5,
+				"height": 10.5
+			},
+			"lcd3": {
+				"corner": [22.5, 40.2],
+				"width": 11.5,
+				"height": 8.2
+			},
+			"lcd4": {
+				"corner": [65.5, 40.1],
+				"width": 11.2,
+				"height": 9
+			},
+			"lcd5": {
+				"corner": [24.5, 51],
+				"width": 9.5,
+				"height": 8
+			},
+			"lcd6": {
+				"corner": [65.5, 51],
+				"width": 11.5,
+				"height": 8.5
+			},
+			"graph": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"text": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"speed": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"watt": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"rpm": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"load": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_1": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_2": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_3": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_4": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_5_top": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_5_bottom": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_6": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_7": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_8": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_9": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_10": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_11": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
+			"lcd_text_12": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			}
+		},
+		"spoken_fields": {
+			"speed": false,
+			"time": false,
+			"distance": true,
+			"rpm": false,
+			"cal": true,
+			"pulse": false,
+			"graph": false,
+			"program": true,
+			"watt": true
+		}
+}
