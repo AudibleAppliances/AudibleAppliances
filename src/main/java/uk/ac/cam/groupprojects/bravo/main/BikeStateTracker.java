@@ -135,6 +135,15 @@ public class BikeStateTracker {
         // Update which LCDs we know are solid/blinking
         updateSolidBlinking(currentTime);
         updateTimeChanging();
+
+        if (ApplicationConstants.DEBUG) {
+            System.out.println("Current State:");
+            System.out.println("Time Changing: " + isTimeChanging());
+            for (ScreenBox box : ScreenBox.values()) {
+                System.out.println(box.toString() + ": " + getBoxState(box).toString());
+            }
+            System.out.println();
+        }
     }
 
     // Update which boxes are blinking and which are solid
@@ -172,14 +181,6 @@ public class BikeStateTracker {
             } else {
                 boxStates.put(box, LCDState.SOLID_OFF);
             }
-        }
-
-        if (ApplicationConstants.DEBUG) {
-            System.out.println("Current State:");
-            for (ScreenBox box : ScreenBox.values()) {
-                System.out.println(box.toString() + ": " + boxStates.get(box).toString());
-            }
-            System.out.println();
         }
     }
 
