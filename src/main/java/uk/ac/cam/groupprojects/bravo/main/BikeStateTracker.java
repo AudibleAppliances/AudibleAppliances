@@ -116,7 +116,7 @@ public class BikeStateTracker {
         }
 
         // Recognise the text in each region of the screen
-        if (currentScreen.getEnum() == ScreenEnum.RUNNING_SCREEN | currentScreen.getEnum() == ScreenEnum.PROGRAM) {
+        if (currentScreen.getEnum() == ScreenEnum.RUNNING_SCREEN || currentScreen.getEnum() == ScreenEnum.PROGRAM) {
             for (ScreenBox box : ScreenBox.values()) {
                 if (activeSegs.contains(box)) {
                     for (BikeField field : box.getFields()) {
