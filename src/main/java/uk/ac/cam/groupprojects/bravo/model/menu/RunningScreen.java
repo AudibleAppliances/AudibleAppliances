@@ -15,6 +15,8 @@ public class RunningScreen extends BikeScreen {
 
     private boolean loadTip = false;
 
+    private int speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ;
+
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
 
@@ -36,17 +38,24 @@ public class RunningScreen extends BikeScreen {
             synthesiser.speak("You can use the wheel to adjust the difficulty");
             loadTip = true;
         }
-        ConfigData configData = bikeStateTracker.getConfig();
-        for (BikeField field : BikeField.values()) {
-            if (configData.isSpokenField(field)) {
-                synthesiser.speak( bikeStateTracker.getFieldValue(field).speakValue() );
+
+        if ( bikeStateTracker.isBoxActiveNow( ScreenBox.LOAD ) ){
+            synthesiser.speak( bikeStateTracker.getFieldValue( BikeField.LOAD ).speakValue() );
+            speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ / 5;
+        }else {
+            ConfigData configData = bikeStateTracker.getConfig();
+            for (BikeField field : BikeField.values()) {
+                if (configData.isSpokenField(field)) {
+                    synthesiser.speak( bikeStateTracker.getFieldValue(field).speakValue() );
+                }
             }
+            speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ;
         }
     }
 
     @Override
     public int getSpeakDelay() {
-        return ApplicationConstants.DEFAULT_SPEAK_FREQ;
+        return speakDelay;
     }
 
     @Override
