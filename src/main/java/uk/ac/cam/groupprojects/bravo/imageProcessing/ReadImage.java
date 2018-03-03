@@ -14,6 +14,7 @@ import java.net.Socket;
  * @author Oliver Hope
  */
 public class ReadImage {
+
     /**
      * Reads image from file, checking with daemon if ok to read.
      *
