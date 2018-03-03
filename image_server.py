@@ -7,17 +7,43 @@ import cv2
 assert cv2.__version__[0] == '3', 'The fisheye module needs opencv version 3'
 import numpy as np
 
-DIM=(1280, 720)
-K=np.array([[-1217315.2822407577, -0.0, 1432.2448011006538],
-            [0.0, -1164925.2770892496, 1028.049253108997],
-            [0.0, 0.0, 1.0]])
-D=np.array([[24382.846599116172], [-9262946.75372707], [-118555050724.20139], [256720115919336.12]])
+resolution = (1280, 720)
+strength = 2.5
+zoom = 1.2
+half_width = resolution[0]/2
+half_height = resolution[1]/2
+if strength == 0:
+    strength = 0.00001
+
+correction_radius = math.sqrt(resolution[0] ** 2 + resolution[1] ** 2) / strength
+mapping_x = np.zeros((resolution[0],resolution[1]), dtype=np.float32)
+mapping_y = np.zeros((resolution[0],resolution[1]), dtype=np.float32)
+new_image = np.zeros((resolution[0],resolution[1], 3), dtype=int)
 
 turn = Semaphore(value=1)
 writeGuard = Semaphore(value = 1)
 waitingReaders = Semaphore(value = 2)
 activeReaders = 0
 threads = []
+
+for x in range(resolution[0]):
+    for y in range(resolution[1]):
+        new_x = x - half_width
+        new_y = y - half_height
+        
+        distance = math.sqrt(new_x ** 2 + new_y ** 2)
+        r = distance / correction_radius
+        
+        if r == 0:
+            theta = 1
+        else:
+            theta = math.atan(r) / r
+        
+        source_x = int(half_width + theta * new_x * zoom)
+        source_y = int(half_height + theta * new_y * zoom)
+        if 0 <= source_x < resolution[0] and 0 <= source_y < resolution[1]:
+            mapping_x[x][y] = source_x
+            mapping_y[x][y] = source_y
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(("localhost", 40000))
@@ -38,7 +64,7 @@ def create_image():
         data = np.fromstring(stream.getvalue(), dtype=np.uint8)
         image = cv2.imdecode(data, 1)
 
-        undistorted_img = cv2.fisheye.undistortImage(image, K, D, Knew=K, new_size=DIM)
+        undistorted_img = new_image = cv2.remap(image, mapping_y, mapping_x, cv2.INTER_LINEAR)
         cv2.imwrite('/mnt/rd/image.jpg', undistorted_img)
 
 
