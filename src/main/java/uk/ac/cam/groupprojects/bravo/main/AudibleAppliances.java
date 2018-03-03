@@ -159,16 +159,25 @@ public class AudibleAppliances {
         @Override
         public void run() {
             try {
-                if ( DEBUG )
+                if (ApplicationConstants.DEBUG)
                     System.out.println("ProcessImageThread process created");
                 long loopStartTime = System.currentTimeMillis();
+
                 bikeStateTracker.updateState(image);
+
+                long elapsedTime = System.currentTimeMillis() - loopStartTime;
+                if (ApplicationConstants.DEBUG)
+                    System.out.println("State updated");
+
                 detectState();
+
                 if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
                     currentScreen.speakItems(bikeStateTracker, synthesiser);
                     lastSpeakTime = System.currentTimeMillis();
                 }
-                long elapsedTime = System.currentTimeMillis() - loopStartTime;if (ApplicationConstants.DEBUG)
+
+                elapsedTime = System.currentTimeMillis() - loopStartTime;
+                if (ApplicationConstants.DEBUG)
                     System.out.println("Time taken to run image process thread (time to process photo) " + elapsedTime + "ms ");
 
             } catch (IOException | UnrecognisedDigitException e) {
