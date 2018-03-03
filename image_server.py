@@ -51,7 +51,7 @@ server.bind(("localhost", 40000))
 server.listen(5)
 
 def create_image():
-    print "Created image"
+    print "writer thread: Created image"
     stream = io.BytesIO()
 
     with picamera.PiCamera() as camera:
@@ -71,6 +71,7 @@ def create_image():
 
 def writer():
     while True:
+        print "writer thread: acquiring turn!"
         turn.acquire()
         writeGuard.acquire()
         create_image()
