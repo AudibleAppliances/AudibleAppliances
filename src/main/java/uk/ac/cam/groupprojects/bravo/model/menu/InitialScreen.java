@@ -44,7 +44,7 @@ public class InitialScreen extends BikeScreen {
         // The Calories LCD is blinking
         matching += state.boxStateIndicator(ScreenBox.LCD6, LCDState.BLINKING);
 
-        return (float)matching / (float)ScreenBox.values().length;
+        return (float)matching / 26; // There are 26 indicators in this state
     }
 
     @Override

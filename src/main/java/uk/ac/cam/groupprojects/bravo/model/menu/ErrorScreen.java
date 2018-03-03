@@ -11,10 +11,12 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
  */
 public class ErrorScreen extends BikeScreen {
     @Override
-    public float screenActiveProbability(BikeStateTracker state) {
+    public Map<ScreenBox, LCDState> getFeatures(BikeStateTracker state) {
         int matching = 0;
+
+        // In the error screen, we've just booted up and everything's turned on
         for (ScreenBox box : ScreenBox.values()) {
-            matching += state.boxStateIndicator(box, LCDState.SOLID_OFF);
+            matching += state.boxStateIndicator(box, LCDState.SOLID_ON);
         }
 
         return (float)matching / (float)ScreenBox.values().length;

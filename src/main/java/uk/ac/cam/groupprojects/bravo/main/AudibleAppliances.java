@@ -3,6 +3,8 @@ package uk.ac.cam.groupprojects.bravo.main;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ReadImage;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
+import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
@@ -59,6 +61,7 @@ public class AudibleAppliances {
             running.set(true);
 
             addScreens(screens);
+            currentScreen = screens.get(ScreenEnum.OFF_SCREEN); // Default screen
 
             //Created thread to track the bike
             Thread runThread = new Thread( runTracker );
@@ -184,17 +187,22 @@ public class AudibleAppliances {
         System.out.println();
         System.out.println("DETECTING CHANGE SCREEN STATE");
 
-        BikeScreen bestScreen = screens.get(ScreenEnum.OFF_SCREEN);
-        float bestScreenProb = 0;
-        for (BikeScreen screen: screens.values()) {
-            float prob = screen.screenActiveProbability(bikeStateTracker);
+        BikeScreen newScreen = null;
+        for (BikeScreen screen : screens.values()) {
+            Map<ScreenBox, LCDState> features = screen.getFeatures(bikeStateTracker);
 
-            if (prob > bestScreenProb) {
-                bestScreen = screen;
-                bestScreenProb = prob;
+            if (bikeStateTracker.getBoxStates().entrySet().containsAll(features.entrySet())) {
+                newScreen = screen;
+                break;
             }
         }
-        currentScreen = bestScreen;
+        if (newScreen != null)
+            currentScreen = newScreen;
+        else {
+            if (ApplicationConstants.DEBUG) {
+                System.out.println("Failed to recognise state.");
+            }
+        }
 
         System.out.println("Establishing bike state is " + currentScreen.getEnum().toString());
         System.out.println();

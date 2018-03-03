@@ -46,7 +46,10 @@ public class SelectHRCScreen extends BikeScreen {
         matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_11, LCDState.SOLID_OFF);
         matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_12, LCDState.SOLID_OFF);
 
-        return (float)matching / 24; // 24 indicators for this state
+        if (state.isTimeChanging())
+            matching += 1;
+
+        return (float)matching / 25; // 25 indicators for this state
     }
 
     @Override
