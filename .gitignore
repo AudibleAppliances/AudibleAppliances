@@ -5,6 +5,7 @@
 
 # Build files
 target/
+dependency-reduced-pom.xml
 
 # Java files
 *.jar
