@@ -47,6 +47,8 @@ public class BikeStateTracker {
     // Current Screen state
     private static BikeScreen currentScreen;
 
+    private static long lastSpeakTime = 0;
+
     /**
      * Current state that we are tracking on the bike
      */
@@ -211,6 +213,14 @@ public class BikeStateTracker {
                 System.out.println(box.toString() + ": " + getBoxState(box).toString());
             }
             System.out.println();
+        }
+
+        // Check if time to speak, and if yes then speak
+        if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
+            currentScreen.speakItems(this, synthesiser);
+            lastSpeakTime = System.currentTimeMillis();
+            if (ApplicationConstants.DEBUG)
+                System.out.println("Spoke");
         }
 
     }

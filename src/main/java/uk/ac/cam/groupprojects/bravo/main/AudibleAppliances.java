@@ -30,9 +30,8 @@ public class AudibleAppliances {
 
     // Running state
     private static BikeStateTracker bikeStateTracker;
-    private static long lastSpeakTime = 0;
     private static ConfigData configData;
-    private static BikeScreen currentScreen;
+    private static ImageSegments segmenter;
 
     public static void main(String[] args) {
 
@@ -58,6 +57,7 @@ public class AudibleAppliances {
             // Load config from json
             System.out.println("Loading in config from " + PATH_TO_CONFIG );
             configData = new ConfigData(PATH_TO_CONFIG);
+            segmenter = new ImageSegments(configData);
 
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
@@ -158,26 +158,13 @@ public class AudibleAppliances {
                 long loopStartTime = System.currentTimeMillis();
 
                 // Segment image
-                ImageSegments segmenter = new ImageSegments(configData);
                 Map<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
                 for (ScreenBox box : ScreenBox.values()) {
                     imgSegs.put(box, segmenter.getImageBox(box, image));
                 }
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Initialise the image segments");
-
+                
                 // Update tracker state
                 bikeStateTracker.updateState(imgSegs);
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Updated BikeStateTracker");
-
-                // Check if time to speak, and if yes then speak
-                if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
-                    currentScreen.speakItems(bikeStateTracker, synthesiser);
-                    lastSpeakTime = System.currentTimeMillis();
-                }
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Spoke");
 
                 long elapsedTime = System.currentTimeMillis() - loopStartTime;
 
