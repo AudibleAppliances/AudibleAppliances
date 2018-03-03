@@ -12,7 +12,7 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 // This is the screen where the user selects which program they want to use
 public class ProgramScreen extends BikeScreen {
     @Override
-    public boolean getFeatures(BikeStateTracker state) {
+    public boolean isActiveScreen(BikeStateTracker state) {
 
         return !state.isTimeChanging() &&
                state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&

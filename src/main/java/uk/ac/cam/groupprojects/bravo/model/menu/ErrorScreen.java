@@ -11,7 +11,7 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
  */
 public class ErrorScreen extends BikeScreen {
     @Override
-    public boolean getFeatures(BikeStateTracker state) {
+    public boolean isActiveScreen(BikeStateTracker state) {
 
         return state.isTimeChanging() &&
                state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_ON &&

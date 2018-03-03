@@ -4,7 +4,7 @@ import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 public abstract class BikeScreen {
-    public abstract boolean getFeatures(BikeStateTracker state);
+    public abstract boolean isActiveScreen(BikeStateTracker state);
 
     public abstract ScreenEnum getEnum();
 

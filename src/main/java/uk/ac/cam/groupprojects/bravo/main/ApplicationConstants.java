@@ -20,6 +20,7 @@ public class ApplicationConstants {
 
     public static boolean DEBUG;
 
+    public static final int MAX_CONNECT_ATTEMPTS = 5;
 
     //The probability that we are in a state, we need it to be at least this
     public static final float MIN_PROB = 0.7f;
