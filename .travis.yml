@@ -20,7 +20,7 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: rsync -r --delete-after --quiet target/audible-1.0-SNAPSHOT-jar-with-dependencies.jar oh260@shell.srcf.net:~/public_html/AudibleAppliances/builds/
+  script: rsync -r --delete-after --quiet target/audible-1.0-SNAPSHOT.jar oh260@shell.srcf.net:~/public_html/AudibleAppliances/builds/
   on:
     branch: master
 
