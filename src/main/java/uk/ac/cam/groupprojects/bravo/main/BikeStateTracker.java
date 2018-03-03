@@ -124,21 +124,21 @@ public class BikeStateTracker {
                             if (ApplicationConstants.DEBUG) {
                                 System.out.println("Running OCR for " + field.toString());
                                 long startTime = System.currentTimeMillis();
-                                currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(box)));
                                 long elapsedTime = System.currentTimeMillis() - startTime;
                                 System.out.println("That took " + elapsedTime);
-                            } else {
-                                currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(box)));
                             }
+                            currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(box)));
                         }
                     }
                 }
             }
         }
+        else {
+            currentFields.get(BikeField.TIME).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(ScreenBox.LCD1)));
+        }
         
         // Remove state information that's older than two complete blink cycles (2s) ago
         while (history.size() > 0) {
-            //if (olderThanBy(history.getFirst().addedTime, currentTime, 4 * ApplicationConstants.BLINK_FREQ)) {
             if (currentTime.minus(4 * ApplicationConstants.BLINK_FREQ, ChronoUnit.MILLIS)
                            .isAfter(history.getFirst().addedTime)) {
                 history.removeFirst();

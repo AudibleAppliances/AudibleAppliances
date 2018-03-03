@@ -36,30 +36,25 @@
 				"width": 10,
 				"height": 20
 			},
-			"text": {
-				"corner": [20, 12],
-				"width": 10,
-				"height": 20
-			},
 			"speed": {
-				"corner": [20, 12],
-				"width": 10,
-				"height": 20
+				"corner": [12.3, 28.5],
+				"width": 8.3,
+				"height": 3.8
 			},
 			"watt": {
-				"corner": [20, 12],
-				"width": 10,
-				"height": 20
+				"corner": [12, 48],
+				"width": 6.5,
+				"height": 3.7
 			},
 			"rpm": {
-				"corner": [20, 12],
-				"width": 10,
-				"height": 20
+				"corner": [22, 28.2],
+				"width": 6,
+				"height": 4
 			},
 			"load": {
-				"corner": [20, 12],
-				"width": 10,
-				"height": 20
+				"corner": [20.7, 47.7],
+				"width": 7.4,
+				"height": 3.9
 			},
 			"lcd_text_1": {
 				"corner": [20, 12],
