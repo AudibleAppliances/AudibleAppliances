@@ -149,11 +149,24 @@ public class BikeStateTracker {
 
         // Map each screen region to the image of that region
         // Compute which LCD segments are lit up (active)
-        for (ScreenBox box : ScreenBox.values()) {
-            if (SegmentActive.segmentActive(imgSegs.get(box))) {
-                activeSegs.add(box);
+        if ( ApplicationConstants.DEBUG ){
+            for (ScreenBox box : ScreenBox.values()) {
+                if (SegmentActive.segmentActive(imgSegs.get(box))) {
+                    activeSegs.add(box);
+                }
+            }
+        }else {
+            for (ScreenBox box : ScreenBox.values()) {
+                System.out.println("Running segmentActive for " + box.name() );
+                long startTime = System.currentTimeMillis();
+                if (SegmentActive.segmentActive(imgSegs.get(box))) {
+                    activeSegs.add(box);
+                }
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                System.out.println("segmentActive took " + elapsedTime);
             }
         }
+
 
         // Recognise the text in each region of the screen
         if (currentScreen.getEnum() == ScreenEnum.RUNNING_SCREEN || currentScreen.getEnum() == ScreenEnum.PROGRAM) {
@@ -196,7 +209,7 @@ public class BikeStateTracker {
                     long elapsedTime = System.currentTimeMillis() - startTime;
                     System.out.println("That took " + elapsedTime);
                 }catch ( Exception e ){
-                    //I don't care
+                    System.out.println("OCR crashed");
                 }
             }else {
                 try {
