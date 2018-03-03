@@ -46,7 +46,6 @@ def writer():
     while True:
         time.sleep(0.5)
         turn.acquire()
-		print "writer"
         writeGuard.acquire()
         create_image()
         writeGuard.release()
