@@ -127,7 +127,11 @@ public class BikeStateTracker {
                                 long elapsedTime = System.currentTimeMillis() - startTime;
                                 System.out.println("That took " + elapsedTime);
                             }
-                            currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(box)));
+                            try {
+                                currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(box)));
+                            }catch ( Exception e ){
+                                //I don't care
+                            }
                         }
                     }
                 }
