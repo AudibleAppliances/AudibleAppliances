@@ -73,7 +73,6 @@ public class BikeStateTracker {
         currentFields = new HashMap<>();
         currentFields.put(BikeField.CAL, new Calories());
         currentFields.put(BikeField.DISTANCE, new Distance());
-        currentFields.put(BikeField.LOAD, new Load());
         currentFields.put(BikeField.PULSE, new Pulse());
         currentFields.put(BikeField.RPM, new RPM());
         currentFields.put(BikeField.SPEED, new Speed());
