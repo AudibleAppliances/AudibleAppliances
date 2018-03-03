@@ -28,12 +28,12 @@ def create_image():
     stream = io.BytesIO()
 
     with picamera.PiCamera() as camera:
-        time.sleep(0.1)
         camera.rotation = 180
         camera.awb_mode = 'fluorescent'
         camera.resolution = (1280, 720)
         camera.exposure_mode = 'backlight'
         camera.capture(stream, format='jpeg')
+        time.sleep(0.5)
 
         data = np.fromstring(stream.getvalue(), dtype=np.uint8)
         image = cv2.imdecode(data, 1)
@@ -44,12 +44,12 @@ def create_image():
 
 def writer():
     while True:
-        time.sleep(0.5)
         turn.acquire()
         writeGuard.acquire()
         create_image()
         writeGuard.release()
         turn.release()
+        time.sleep(0.1)
 
 def reader(clientsocket):
     global activeReaders
