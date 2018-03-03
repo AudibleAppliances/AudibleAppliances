@@ -1,3 +1,6 @@
+#Increase volume to 100%
+amixer set PCM -- 100%
+
 # Run GPIO script
 python gpio/gpio.py &
 
