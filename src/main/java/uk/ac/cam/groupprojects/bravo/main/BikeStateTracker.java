@@ -75,6 +75,7 @@ public class BikeStateTracker {
         currentFields.put(BikeField.DISTANCE, new Distance());
         currentFields.put(BikeField.PULSE, new Pulse());
         currentFields.put(BikeField.RPM, new RPM());
+        currentFields.put(BikeField.LOAD, new Load());
         currentFields.put(BikeField.SPEED, new Speed());
         currentFields.put(BikeField.TIME, new Time());
         currentFields.put(BikeField.WATT, new Watt());

@@ -68,7 +68,7 @@ public class ConfigData {
             JsonPrimitive voice = config.getAsJsonPrimitive("voice");
             mVoice = voice.getAsString();
 
-            // Parse spoken_fileds
+            // Parse spoken_fields
             JsonObject spoken_fields = config.getAsJsonObject("spoken_fields");
 
             for (BikeField type : BikeField.values()) {

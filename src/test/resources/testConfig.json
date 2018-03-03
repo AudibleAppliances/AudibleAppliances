@@ -56,6 +56,11 @@
 				"width": 10,
 				"height": 20
 			},
+			"load": {
+				"corner": [20, 12],
+				"width": 10,
+				"height": 20
+			},
 			"lcd_text_1": {
 				"corner": [20, 12],
 				"width": 10,

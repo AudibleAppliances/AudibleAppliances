@@ -24,7 +24,7 @@ public class SplitImage {
         ImageSegments segments = new ImageSegments(cd);
 
         //for ( ScreenBox box: ScreenBox.values() ){
-            ScreenBox box = ScreenBox.LCD1;
+            ScreenBox box = ScreenBox.LCD6;
             BufferedImage output = segments.getImageBox( box, img );
             ImageIO.write( output, "jpg", new File( "output/" + box.toString().toLowerCase() + ".jpg" ) );
         //}
