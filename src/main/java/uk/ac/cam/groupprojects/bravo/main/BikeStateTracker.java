@@ -12,8 +12,9 @@ import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -109,13 +110,21 @@ public class BikeStateTracker {
             }
         }
         
-        // Remove state information that's older than two complete blink cycle ago
+        // Remove state information that's older than two complete blink cycles (2s) ago
         while (history.size() > 0) {
-            if (olderThanBy(history.getFirst().addedTime, currentTime, 4 * ApplicationConstants.BLINK_FREQ)) {
+            //if (olderThanBy(history.getFirst().addedTime, currentTime, 4 * ApplicationConstants.BLINK_FREQ)) {
+            if (currentTime.minus(4 * ApplicationConstants.BLINK_FREQ, ChronoUnit.MILLIS)
+                           .isAfter(history.getFirst().addedTime)) {
                 history.removeFirst();
             } else {
                 break;
             }                
+        }
+        if (ApplicationConstants.DEBUG) {
+            for (StateTime s : history) {
+                System.out.println(s.addedTime.get(ChronoField.MILLI_OF_DAY));
+            }
+            System.out.println();
         }
 
         // Store the new state, with the time we recognised at the moment
@@ -142,7 +151,8 @@ public class BikeStateTracker {
                 boolean historyMatches =
                         history.stream()
                                .filter(s ->
-                                   !olderThanBy(s.addedTime, currentTime, 2 * ApplicationConstants.BLINK_FREQ))
+                                   currentTime.minus(2 * ApplicationConstants.BLINK_FREQ, ChronoUnit.MILLIS)
+                                              .isBefore(s.addedTime))
                                .allMatch(s ->
                                    s.activeBoxes.contains(box) == currentlyActive);
 
@@ -171,11 +181,6 @@ public class BikeStateTracker {
         int currentTime = history.getLast().recognisedTime;
         timeChanging = history.stream()
                               .allMatch(s -> s.recognisedTime == currentTime);
-    }
-
-    private boolean olderThanBy(LocalDateTime early, LocalDateTime late, long milliseconds) {
-        Duration timeSpan = Duration.between(early, late);
-        return timeSpan.toMillis() > milliseconds;
     }
 
     public ConfigData getConfig() {
