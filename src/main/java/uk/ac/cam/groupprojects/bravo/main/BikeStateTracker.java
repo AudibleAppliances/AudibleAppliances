@@ -116,19 +116,20 @@ public class BikeStateTracker {
         }
 
         // Recognise the text in each region of the screen
-        // TODO (Keith): Maybe compute this lazily to improve performance?
-        for (ScreenBox box : ScreenBox.values()) {
-            if (activeSegs.contains(box)) {
-                for (BikeField field : box.getFields()) {
-                    if (field.getTitleBox() == null || activeSegs.contains(field.getTitleBox())) {
-                        if ( ApplicationConstants.DEBUG ){
-                            System.out.println("Running OCR for " + field.toString() );
-                            long startTime = System.currentTimeMillis();
-                            currentFields.get(field).setValue(SegmentRecogniser.recogniseInt( imgSegs.get( box ) ));
-                            long elapsedTime = System.currentTimeMillis() - startTime;
-                            System.out.println("That took " + elapsedTime );
-                        }else {
-                            currentFields.get(field).setValue(SegmentRecogniser.recogniseInt( imgSegs.get( box ) ));
+        if (currentScreen.getEnum() == ScreenEnum.RUNNING_SCREEN || currentScreen.getEnum() == ScreenEnum.PROGRAM) {
+            for (ScreenBox box : ScreenBox.values()) {
+                if (activeSegs.contains(box)) {
+                    for (BikeField field : box.getFields()) {
+                        if (field.getTitleBox() == null || activeSegs.contains(field.getTitleBox())) {
+                            if (ApplicationConstants.DEBUG) {
+                                System.out.println("Running OCR for " + field.toString());
+                                long startTime = System.currentTimeMillis();
+                                currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(box)));
+                                long elapsedTime = System.currentTimeMillis() - startTime;
+                                System.out.println("That took " + elapsedTime);
+                            } else {
+                                currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(box)));
+                            }
                         }
                     }
                 }
