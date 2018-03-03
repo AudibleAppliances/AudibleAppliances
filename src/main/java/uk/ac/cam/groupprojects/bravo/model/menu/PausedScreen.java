@@ -13,7 +13,7 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
  */
 public class PausedScreen extends BikeScreen {
     @Override
-    public boolean getFeatures(BikeStateTracker state) {
+    public boolean isActiveScreen(BikeStateTracker state) {
 
         return !state.isTimeChanging() &&
                state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
@@ -31,10 +31,10 @@ public class PausedScreen extends BikeScreen {
     public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
         synthesiser.speak("The bike is currently paused!");
         ConfigData configData = bikeStateTracker.getConfig();
-        if ( configData.isSpokenField(BikeField.DISTANCE ) ){
+        if (configData.isSpokenField(BikeField.DISTANCE )) {
             synthesiser.speak( bikeStateTracker.getFieldValue( BikeField.DISTANCE ).speakValue() );
         }
-        if ( configData.isSpokenField(BikeField.TIME ) ){
+        if (configData.isSpokenField(BikeField.TIME )) {
             synthesiser.speak( bikeStateTracker.getFieldValue( BikeField.TIME ).speakValue() );
         }
     }

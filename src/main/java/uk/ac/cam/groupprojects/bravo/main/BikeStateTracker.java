@@ -5,6 +5,7 @@ import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
+import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
@@ -25,6 +26,7 @@ import java.util.Set;
  * Created by david on 13/02/2018.
  */
 public class BikeStateTracker {
+
     class StateTime {
         public LocalDateTime addedTime;
         public Set<ScreenBox> activeBoxes;
@@ -35,6 +37,13 @@ public class BikeStateTracker {
             this.activeBoxes = activeBoxes;
         }
     }
+
+    // Necessary class state
+    private final Map<ScreenEnum, BikeScreen> screens = new HashMap<>();
+    private final ConfigData configData;
+
+    // Current Screen state
+    private static BikeScreen currentScreen;
 
     /**
      * Current state that we are tracking on the bike
@@ -50,24 +59,11 @@ public class BikeStateTracker {
     private final Map<ScreenBox, LCDState> boxStates;
     private boolean timeChanging;
 
-    /**
-     * Other state
-     */
-    private final ImageSegments segments;
-    private final ConfigData configData;
-
-    /**
-     *
-     * @param segments ImageSegments object to crop out parts of the image for processing
-     * @param configData Configuration that can be passed around with this object
-     */
-    public BikeStateTracker(ImageSegments segments, ConfigData configData) {
+    public BikeStateTracker(ConfigData config) {
         history = new LinkedList<>();
         boxStates = new HashMap<>();
         timeChanging = false;
-
-        this.segments = segments;
-        this.configData = configData;
+        configData = config;
 
         // Initialise currentFields;
         currentFields = new HashMap<>();
@@ -79,9 +75,33 @@ public class BikeStateTracker {
         currentFields.put(BikeField.SPEED, new Speed());
         currentFields.put(BikeField.TIME, new Time());
         currentFields.put(BikeField.WATT, new Watt());
+
+        // Initialise screens
+        screens.put(ScreenEnum.OFF_SCREEN, new OffScreen());
+        screens.put(ScreenEnum.ERROR_SCREEN, new ErrorScreen());
+        screens.put(ScreenEnum.INITIAL_SCREEN, new InitialScreen());
+        screens.put(ScreenEnum.RUNNING_SCREEN, new RunningScreen());
+        screens.put(ScreenEnum.PAUSED_SCREEN, new PausedScreen());
+        screens.put(ScreenEnum.PROGRAM, new ProgramScreen());
+        screens.put(ScreenEnum.SELECT_MANUAL, new SelectManualScreen());
+        screens.put(ScreenEnum.SELECT_HRC, new SelectHRCScreen());
+        screens.put(ScreenEnum.SELECT_USER_PROGRAM, new SelectUserProgramScreen());
+        screens.put(ScreenEnum.SELECT_WATTS, new SelectWattScreen());
+        screens.put(ScreenEnum.SELECT_PROGRAM, new SelectProgramScreen());
+
+        // Set default screen
+        currentScreen = screens.get(ScreenEnum.OFF_SCREEN);
     }
 
-    public void updateState(BufferedImage newImage)
+    /**
+     * Update the current state using pre-segmented image
+     *
+     * @param imgSegs
+     * @throws IOException
+     * @throws UnrecognisedDigitException
+     * @throws NumberFormatException
+     */
+    public void updateState(Map<ScreenBox, BufferedImage> imgSegs)
                 throws IOException, UnrecognisedDigitException, NumberFormatException {
 
         LocalDateTime currentTime = LocalDateTime.now();
@@ -89,11 +109,8 @@ public class BikeStateTracker {
 
         // Map each screen region to the image of that region
         // Compute which LCD segments are lit up (active)
-        HashMap<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
         for (ScreenBox box : ScreenBox.values()) {
-            BufferedImage imgSeg = segments.getImageBox(box, newImage);
-            imgSegs.put(box, imgSeg);
-            if (SegmentActive.segmentActive(imgSeg)) {
+            if (SegmentActive.segmentActive(imgSegs.get(box))) {
                 activeSegs.add(box);
             }
         }
@@ -154,6 +171,36 @@ public class BikeStateTracker {
         }
     }
 
+    /**
+     * Return the current bike state
+     */
+    public BikeScreen getState() {
+        System.out.println();
+        System.out.println("DETECTING CHANGE SCREEN STATE");
+
+        BikeScreen newScreen = null;
+        for (BikeScreen screen : screens.values()) {
+            boolean inState = screen.isActiveScreen(this);
+
+            if (inState) {
+                newScreen = screen;
+                break;
+            }
+        }
+        if (newScreen != null)
+            currentScreen = newScreen;
+        else {
+            if (ApplicationConstants.DEBUG) {
+                System.out.println("Failed to recognise state.");
+            }
+        }
+
+        System.out.println("Establishing bike state is " + currentScreen.getEnum().toString());
+        System.out.println();
+
+        return currentScreen;
+    }
+
     // Update which boxes are blinking and which are solid
     private void updateSolidBlinking(LocalDateTime currentTime) {
         // Reset all
@@ -210,19 +257,8 @@ public class BikeStateTracker {
         return currentFields.get(field);
     }
 
-    public Map<ScreenBox, LCDState> getBoxStates() {
-        return boxStates;
-    }
     public LCDState getBoxState(ScreenBox box) {
-        return getBoxStates().get(box);
-    }
-
-    public int boxStateIndicator(ScreenBox box, LCDState state) {
-        if (getBoxStates().get(box) == state) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return boxStates.get(box);
     }
 
     public boolean isTimeChanging() {

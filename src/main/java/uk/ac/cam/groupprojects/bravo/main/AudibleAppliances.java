@@ -4,16 +4,13 @@ import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ReadImage;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
-import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,16 +22,22 @@ import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
  */
 public class AudibleAppliances {
 
-    private static final Map<ScreenEnum, BikeScreen> screens = new HashMap<>();
-
+    // Class necessary state
     private static Synthesiser synthesiser;
-    private static BikeScreen currentScreen;
-    private static BikeStateTracker bikeStateTracker;
     private static final AtomicBoolean running = new AtomicBoolean(false);
 
+    // Running state
+    private static BikeStateTracker bikeStateTracker;
     private static long lastSpeakTime = 0;
+    private static ConfigData configData;
+    private static BikeScreen currentScreen;
 
     public static void main(String[] args) {
+
+        /***********************
+         * Start up and checks *
+         ***********************/
+
         printHeader();
 
         //Turn debug mode off and on
@@ -52,25 +55,21 @@ public class AudibleAppliances {
             synthesiser = new Synthesiser();
 
             System.out.println("Loading in config from " + PATH_TO_CONFIG );
-            ConfigData configData = new ConfigData(PATH_TO_CONFIG);
+            configData = new ConfigData(PATH_TO_CONFIG);
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
-            bikeStateTracker = new BikeStateTracker( new ImageSegments(configData) , configData);
+            bikeStateTracker = new BikeStateTracker(configData);
             System.out.println("Components set up successfully!");
 
             running.set(true);
 
-            addScreens(screens);
-            currentScreen = screens.get(ScreenEnum.OFF_SCREEN); // Default screen
+            /***********************
+             * Start main run loop *
+             ***********************/
 
             //Created thread to track the bike
             Thread runThread = new Thread( runTracker );
             runThread.start();
-
-            //Created thread to read from command line
-            Thread inputThread = new Thread( handleInput );
-            inputThread.setDaemon(true);
-            inputThread.start();
 
         } catch( FestivalMissingException e ){
             if ( DEBUG )
@@ -88,29 +87,6 @@ public class AudibleAppliances {
             printFooter();
         }
     }
-
-    static Runnable handleInput = () -> {
-        try {
-            System.out.println("Type 'exit' to close the application");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            while (running.get()) {
-                String input = reader.readLine();
-                if (input.trim().length() > 0 && input.compareToIgnoreCase("exit") == 0){
-                    running.set(false);
-                    System.out.println("ENDING Audible Appliances");
-                    return;
-                } else {
-                    System.out.println("Type 'exit' to close the application!");
-                }
-            }
-            System.out.println("DONE1");
-        } catch (IOException e) {
-            if (DEBUG)
-                e.printStackTrace();
-            System.out.println("FATAL ERROR: Cannot read from System.in");
-            printFooter();
-        }
-    };
 
     static Runnable runTracker = () -> {
         System.out.println();
@@ -148,7 +124,7 @@ public class AudibleAppliances {
         synthesiser.close();
     };
 
-    public static class ProcessImageThread implements Runnable{
+    public static class ProcessImageThread implements Runnable {
 
         private BufferedImage image;
 
@@ -161,14 +137,33 @@ public class AudibleAppliances {
             try {
                 if ( DEBUG )
                     System.out.println("ProcessImageThread process created");
+
                 long loopStartTime = System.currentTimeMillis();
-                bikeStateTracker.updateState(image);
-                detectState();
+
+                // Segment image
+                ImageSegments segmenter = new ImageSegments(configData);
+                Map<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
+                for (ScreenBox box : ScreenBox.values()) {
+                    imgSegs.put(box, segmenter.getImageBox(box, image));
+                }
+
+                // Update tracker and then get current state
+                bikeStateTracker.updateState(imgSegs);
+                currentScreen = bikeStateTracker.getState();
+
+                // TODO: using current state get actual values
+
+                // TODO: speak values properly
+
+                // Check if time to speak, and if yes then speak
                 if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
                     currentScreen.speakItems(bikeStateTracker, synthesiser);
                     lastSpeakTime = System.currentTimeMillis();
                 }
-                long elapsedTime = System.currentTimeMillis() - loopStartTime;if (ApplicationConstants.DEBUG)
+
+                long elapsedTime = System.currentTimeMillis() - loopStartTime;
+
+                if (ApplicationConstants.DEBUG)
                     System.out.println("Time taken to run image process thread (time to process photo) " + elapsedTime + "ms ");
 
             } catch (IOException | UnrecognisedDigitException e) {
@@ -178,47 +173,9 @@ public class AudibleAppliances {
         }
     }
 
-    public static void addScreens( Map<ScreenEnum, BikeScreen> screens ){
-        screens.put(ScreenEnum.OFF_SCREEN, new OffScreen());
-
-        screens.put(ScreenEnum.ERROR_SCREEN, new ErrorScreen());
-        screens.put(ScreenEnum.INITIAL_SCREEN, new InitialScreen());
-        screens.put(ScreenEnum.RUNNING_SCREEN, new RunningScreen());
-        screens.put(ScreenEnum.PAUSED_SCREEN, new PausedScreen());
-
-        screens.put(ScreenEnum.PROGRAM, new ProgramScreen());
-
-        screens.put(ScreenEnum.SELECT_MANUAL, new SelectManualScreen());
-        screens.put(ScreenEnum.SELECT_HRC, new SelectHRCScreen());
-        screens.put(ScreenEnum.SELECT_USER_PROGRAM, new SelectUserProgramScreen());
-        screens.put(ScreenEnum.SELECT_WATTS, new SelectWattScreen());
-        screens.put(ScreenEnum.SELECT_PROGRAM, new SelectProgramScreen());
-    }
-
-    private static void detectState(){
-        System.out.println();
-        System.out.println("DETECTING CHANGE SCREEN STATE");
-
-        BikeScreen newScreen = null;
-        for (BikeScreen screen : screens.values()) {
-            boolean inState = screen.getFeatures(bikeStateTracker);
-
-            if (inState) {
-                newScreen = screen;
-                break;
-            }
-        }
-        if (newScreen != null)
-            currentScreen = newScreen;
-        else {
-            if (ApplicationConstants.DEBUG) {
-                System.out.println("Failed to recognise state.");
-            }
-        }
-
-        System.out.println("Establishing bike state is " + currentScreen.getEnum().toString());
-        System.out.println();
-    }
+    /*******************************************
+     * Pretty printing for command line output *
+     *******************************************/
 
     private static void printHeader(){
         System.out.println("|----------------------------------------|");
