@@ -60,7 +60,7 @@ public class AudibleAppliances {
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
 
-            bikeStateTracker = new BikeStateTracker(configData);
+            bikeStateTracker = new BikeStateTracker(configData, synthesiser);
             System.out.println("Components set up successfully!");
 
             running.set(true);
