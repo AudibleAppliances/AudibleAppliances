@@ -104,7 +104,15 @@ public class BikeStateTracker {
             if (activeSegs.contains(box)) {
                 for (BikeField field : box.getFields()) {
                     if (field.getTitleBox() == null || activeSegs.contains(field.getTitleBox())) {
-                        currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(newImage));
+                        if ( ApplicationConstants.DEBUG ){
+                            System.out.println("Running OCR for " + field.toString() );
+                            long startTime = System.currentTimeMillis();
+                            currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(newImage));
+                            long elapsedTime = System.currentTimeMillis() - startTime;
+                            System.out.println("That took " + elapsedTime );
+                        }else {
+                            currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(newImage));
+                        }
                     }
                 }
             }
