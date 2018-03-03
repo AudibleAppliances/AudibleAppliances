@@ -215,36 +215,6 @@ public class BikeStateTracker {
 
     }
 
-    /**
-     * Return the current bike state
-     */
-    public BikeScreen getState() {
-        System.out.println();
-        System.out.println("DETECTING CHANGE SCREEN STATE");
-
-        BikeScreen newScreen = null;
-        for (BikeScreen screen : screens.values()) {
-            boolean inState = screen.isActiveScreen(this);
-
-            if (inState) {
-                newScreen = screen;
-                break;
-            }
-        }
-        if (newScreen != null)
-            currentScreen = newScreen;
-        else {
-            if (ApplicationConstants.DEBUG) {
-                System.out.println("Failed to recognise state.");
-            }
-        }
-
-        System.out.println("Establishing bike state is " + currentScreen.getEnum().toString());
-        System.out.println();
-
-        return currentScreen;
-    }
-
     // Update which boxes are blinking and which are solid
     private void updateSolidBlinking(LocalDateTime currentTime) {
         // Reset all

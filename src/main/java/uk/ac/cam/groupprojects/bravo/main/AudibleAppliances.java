@@ -164,9 +164,8 @@ public class AudibleAppliances {
                 if (ApplicationConstants.DEBUG)
                     System.out.println("Initialise the image segments");
 
-                // Update tracker and then get current state
+                // Update tracker state
                 bikeStateTracker.updateState(imgSegs);
-                currentScreen = bikeStateTracker.getState();
                 if (ApplicationConstants.DEBUG)
                     System.out.println("Updated BikeStateTracker");
 
