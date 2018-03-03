@@ -3,6 +3,8 @@ package uk.ac.cam.groupprojects.bravo.main;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ReadImage;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
+import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
@@ -59,6 +61,7 @@ public class AudibleAppliances {
             running.set(true);
 
             addScreens(screens);
+            currentScreen = screens.get(ScreenEnum.OFF_SCREEN); // Default screen
 
             //Created thread to track the bike
             Thread runThread = new Thread( runTracker );
@@ -156,16 +159,25 @@ public class AudibleAppliances {
         @Override
         public void run() {
             try {
-                if ( DEBUG )
+                if (ApplicationConstants.DEBUG)
                     System.out.println("ProcessImageThread process created");
                 long loopStartTime = System.currentTimeMillis();
+
                 bikeStateTracker.updateState(image);
+
+                long elapsedTime = System.currentTimeMillis() - loopStartTime;
+                if (ApplicationConstants.DEBUG)
+                    System.out.println("State updated");
+
                 detectState();
+
                 if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
                     currentScreen.speakItems(bikeStateTracker, synthesiser);
                     lastSpeakTime = System.currentTimeMillis();
                 }
-                long elapsedTime = System.currentTimeMillis() - loopStartTime;if (ApplicationConstants.DEBUG)
+
+                elapsedTime = System.currentTimeMillis() - loopStartTime;
+                if (ApplicationConstants.DEBUG)
                     System.out.println("Time taken to run image process thread (time to process photo) " + elapsedTime + "ms ");
 
             } catch (IOException | UnrecognisedDigitException e) {
@@ -183,7 +195,6 @@ public class AudibleAppliances {
         screens.put(ScreenEnum.RUNNING_SCREEN, new RunningScreen());
         screens.put(ScreenEnum.PAUSED_SCREEN, new PausedScreen());
 
-        screens.put(ScreenEnum.TIME_SELECT, new TimeSelectScreen());
         screens.put(ScreenEnum.PROGRAM, new ProgramScreen());
 
         screens.put(ScreenEnum.SELECT_MANUAL, new SelectManualScreen());
@@ -197,17 +208,22 @@ public class AudibleAppliances {
         System.out.println();
         System.out.println("DETECTING CHANGE SCREEN STATE");
 
-        BikeScreen bestScreen = screens.get(ScreenEnum.OFF_SCREEN);
-        float bestScreenProb = 0;
-        for (BikeScreen screen: screens.values()) {
-            float prob = screen.screenActiveProbability(bikeStateTracker);
+        BikeScreen newScreen = null;
+        for (BikeScreen screen : screens.values()) {
+            boolean inState = screen.getFeatures(bikeStateTracker);
 
-            if (prob > bestScreenProb) {
-                bestScreen = screen;
-                bestScreenProb = prob;
+            if (inState) {
+                newScreen = screen;
+                break;
             }
         }
-        currentScreen = bestScreen;
+        if (newScreen != null)
+            currentScreen = newScreen;
+        else {
+            if (ApplicationConstants.DEBUG) {
+                System.out.println("Failed to recognise state.");
+            }
+        }
 
         System.out.println("Establishing bike state is " + currentScreen.getEnum().toString());
         System.out.println();

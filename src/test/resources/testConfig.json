@@ -56,11 +56,6 @@
 				"width": 10,
 				"height": 20
 			},
-			"load": {
-				"corner": [20, 12],
-				"width": 10,
-				"height": 20
-			},
 			"lcd_text_1": {
 				"corner": [20, 12],
 				"width": 10,
@@ -96,12 +91,7 @@
 				"width": 10,
 				"height": 20
 			},
-			"lcd_text_7_top": {
-				"corner": [20, 12],
-				"width": 10,
-				"height": 20
-			},
-			"lcd_text_7_bottom": {
+			"lcd_text_7": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
@@ -111,12 +101,7 @@
 				"width": 10,
 				"height": 20
 			},
-			"lcd_text_9_top": {
-				"corner": [20, 12],
-				"width": 10,
-				"height": 20
-			},
-			"lcd_text_9_bottom": {
+			"lcd_text_9": {
 				"corner": [20, 12],
 				"width": 10,
 				"height": 20
@@ -146,7 +131,6 @@
 			"pulse": false,
 			"graph": false,
 			"program": true,
-			"watt": true,
-			"load": true
+			"watt": true
 		}
 }

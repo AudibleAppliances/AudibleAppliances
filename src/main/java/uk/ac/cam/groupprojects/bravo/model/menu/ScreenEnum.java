@@ -11,7 +11,6 @@ public enum ScreenEnum {
     RUNNING_SCREEN,
     PAUSED_SCREEN,
 
-    TIME_SELECT,
     PROGRAM,
     SELECT_MANUAL,
     SELECT_PROGRAM,

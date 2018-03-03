@@ -16,8 +16,7 @@ public enum BikeField {
     PULSE,
     GRAPH,
     PROGRAM,
-    WATT(ScreenBox.WATT),
-    LOAD(ScreenBox.LOAD);
+    WATT(ScreenBox.WATT);
 
     // Boxes containing titles showing if the display is active
     private ScreenBox[] titleBoxes;

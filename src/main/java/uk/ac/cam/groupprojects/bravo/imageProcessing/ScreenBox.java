@@ -12,9 +12,9 @@ public enum ScreenBox {
     LCD2(BikeField.PULSE),
     LCD3(BikeField.SPEED, BikeField.RPM),
     LCD4(BikeField.DISTANCE),
-    LCD5(BikeField.WATT, BikeField.LOAD),
+    LCD5(BikeField.WATT),
     LCD6(BikeField.CAL),
-    GRAPH, SPEED, RPM, WATT, LOAD,
+    GRAPH, SPEED, RPM, WATT,
 
     //This is disgusting but desperate times
     LCD_TEXT_1,
@@ -24,11 +24,9 @@ public enum ScreenBox {
     LCD_TEXT_5_TOP,
     LCD_TEXT_5_BOTTOM,
     LCD_TEXT_6,
-    LCD_TEXT_7_TOP,
-    LCD_TEXT_7_BOTTOM,
+    LCD_TEXT_7,
     LCD_TEXT_8,
-    LCD_TEXT_9_TOP,
-    LCD_TEXT_9_BOTTOM,
+    LCD_TEXT_9,
     LCD_TEXT_10,
     LCD_TEXT_11,
     LCD_TEXT_12;
