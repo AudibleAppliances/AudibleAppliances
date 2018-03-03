@@ -133,6 +133,9 @@ public class BikeStateTracker {
                 }
             }
         }
+        else {
+            currentFields.get(BikeField.TIME).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(ScreenBox.LCD1)));
+        }
         
         // Remove state information that's older than two complete blink cycles (2s) ago
         while (history.size() > 0) {
