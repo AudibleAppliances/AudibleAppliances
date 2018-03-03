@@ -11,14 +11,13 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
  */
 public class OffScreen extends BikeScreen {
     @Override
-    public float screenActiveProbability(BikeStateTracker state) {
-        int matching = 0;
+    public boolean getFeatures(BikeStateTracker state) {
 
-        for (ScreenBox box : ScreenBox.values()) {
-            matching += state.boxStateIndicator(box, LCDState.SOLID_OFF);
-        }
-
-        return (float)matching / (float)ScreenBox.values().length;
+        return !state.isTimeChanging() &&
+               state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
+               state.getBoxState(ScreenBox.LCD_TEXT_3) == LCDState.SOLID_OFF &&
+               state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.SOLID_OFF &&
+               state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_OFF;
     }
 
     @Override

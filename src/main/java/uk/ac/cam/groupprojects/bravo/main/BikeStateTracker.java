@@ -128,7 +128,9 @@ public class BikeStateTracker {
                 break;
             }                
         }
+
         if (ApplicationConstants.DEBUG) {
+            System.out.println("Current state snapshots:");
             for (StateTime s : history) {
                 System.out.println(s.addedTime.get(ChronoField.MILLI_OF_DAY));
             }
@@ -141,6 +143,15 @@ public class BikeStateTracker {
         // Update which LCDs we know are solid/blinking
         updateSolidBlinking(currentTime);
         updateTimeChanging();
+
+        if (ApplicationConstants.DEBUG) {
+            System.out.println("Current State:");
+            System.out.println("Time Changing: " + isTimeChanging());
+            for (ScreenBox box : ScreenBox.values()) {
+                System.out.println(box.toString() + ": " + getBoxState(box).toString());
+            }
+            System.out.println();
+        }
     }
 
     // Update which boxes are blinking and which are solid
@@ -202,6 +213,9 @@ public class BikeStateTracker {
     public Map<ScreenBox, LCDState> getBoxStates() {
         return boxStates;
     }
+    public LCDState getBoxState(ScreenBox box) {
+        return getBoxStates().get(box);
+    }
 
     public int boxStateIndicator(ScreenBox box, LCDState state) {
         if (getBoxStates().get(box) == state) {
@@ -209,6 +223,10 @@ public class BikeStateTracker {
         } else {
             return 0;
         }
+    }
+
+    public boolean isTimeChanging() {
+        return timeChanging;
     }
 
     // Returns true iff the given box is lit in the latest received image
