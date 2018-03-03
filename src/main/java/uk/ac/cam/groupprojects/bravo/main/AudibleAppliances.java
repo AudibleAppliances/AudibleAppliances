@@ -160,10 +160,14 @@ public class AudibleAppliances {
                 for (ScreenBox box : ScreenBox.values()) {
                     imgSegs.put(box, segmenter.getImageBox(box, image));
                 }
+                if (ApplicationConstants.DEBUG)
+                    System.out.println("Initialise the image segments");
 
                 // Update tracker and then get current state
                 bikeStateTracker.updateState(imgSegs);
                 currentScreen = bikeStateTracker.getState();
+                if (ApplicationConstants.DEBUG)
+                    System.out.println("Updated BikeStateTracker");
 
                 // TODO: using current state get actual values
 
@@ -174,6 +178,8 @@ public class AudibleAppliances {
                     currentScreen.speakItems(bikeStateTracker, synthesiser);
                     lastSpeakTime = System.currentTimeMillis();
                 }
+                if (ApplicationConstants.DEBUG)
+                    System.out.println("Spoke");
 
                 long elapsedTime = System.currentTimeMillis() - loopStartTime;
 
