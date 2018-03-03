@@ -44,8 +44,6 @@ public class AudibleAppliances {
         //Turn debug mode off and on
         DEBUG = args.length > 0 && args[0].compareToIgnoreCase("-d") == 0;
 
-        //Load config
-
         try {
             /*
                 We load the speech library first so that we can speak any errors
@@ -55,10 +53,13 @@ public class AudibleAppliances {
             System.out.println("Loading up speech library!");
             synthesiser = new Synthesiser();
 
+            // Load config from json
             System.out.println("Loading in config from " + PATH_TO_CONFIG );
             configData = new ConfigData(PATH_TO_CONFIG);
+
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
+
             bikeStateTracker = new BikeStateTracker(configData);
             System.out.println("Components set up successfully!");
 
@@ -68,7 +69,7 @@ public class AudibleAppliances {
              * Start main run loop *
              ***********************/
 
-            //Created thread to track the bike
+            // Created thread to track the bike
             Thread runThread = new Thread( runTracker );
             runThread.start();
 
@@ -160,20 +161,22 @@ public class AudibleAppliances {
                 for (ScreenBox box : ScreenBox.values()) {
                     imgSegs.put(box, segmenter.getImageBox(box, image));
                 }
+                if (ApplicationConstants.DEBUG)
+                    System.out.println("Initialise the image segments");
 
                 // Update tracker and then get current state
                 bikeStateTracker.updateState(imgSegs);
                 currentScreen = bikeStateTracker.getState();
-
-                // TODO: using current state get actual values
-
-                // TODO: speak values properly
+                if (ApplicationConstants.DEBUG)
+                    System.out.println("Updated BikeStateTracker");
 
                 // Check if time to speak, and if yes then speak
                 if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
                     currentScreen.speakItems(bikeStateTracker, synthesiser);
                     lastSpeakTime = System.currentTimeMillis();
                 }
+                if (ApplicationConstants.DEBUG)
+                    System.out.println("Spoke");
 
                 long elapsedTime = System.currentTimeMillis() - loopStartTime;
 

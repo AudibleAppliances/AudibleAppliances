@@ -14,7 +14,6 @@ public class ApplicationConstants {
     public static final String TMP_DIR_PATH = "/mnt/rd";
     public static final File TMP_DIR = new File(TMP_DIR_PATH);
     public static final String IMAGE_PATH = TMP_DIR_PATH + "/image.jpg";
-    public static final String DE_FISH_EYE = TMP_DIR_PATH + "/defish_image.jpg";
 
     public static final int DAEMON_PORT = 40000;
 
@@ -22,19 +21,7 @@ public class ApplicationConstants {
 
     public static final int MAX_CONNECT_ATTEMPTS = 5;
 
-    //The probability that we are in a state, we need it to be at least this
-    public static final float MIN_PROB = 0.7f;
-
-    //How many tries we'll take to try and establish the max initial tries
-    public static final int MAX_INITIAL_TRIES = 10;
-
-
-    public static final int INITIAL_FREQ = 1000;
-
-    public static final int UPDATE_FREQ = 1000;
-
-    public static final int BLINK_FREQ = 500; // Blink frequency
-
+    public static final int BLINK_FREQ = 500; // Blink frequency in ms
 
     public static final int DEFAULT_SPEAK_FREQ = 1000;
 

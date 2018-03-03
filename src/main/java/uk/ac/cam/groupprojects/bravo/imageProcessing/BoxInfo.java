@@ -33,8 +33,4 @@ public class BoxInfo {
     public Point2D.Double getCorner() {
         return mCorner;
     }
-
-    public ScreenBox getType() {
-        return mType;
-    }
 }

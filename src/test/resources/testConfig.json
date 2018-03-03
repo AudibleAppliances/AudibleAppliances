@@ -36,11 +36,6 @@
 				"width": 10,
 				"height": 20
 			},
-			"text": {
-				"corner": [20, 12],
-				"width": 10,
-				"height": 20
-			},
 			"speed": {
 				"corner": [12.3, 28.5],
 				"width": 8.3,

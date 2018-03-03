@@ -8,6 +8,7 @@ import uk.ac.cam.groupprojects.bravo.config.BikeField;
  * @author Oliver Hope
  */
 public enum ScreenBox {
+
     LCD1(BikeField.TIME),
     LCD2(BikeField.PULSE),
     LCD3(BikeField.SPEED, BikeField.RPM),
