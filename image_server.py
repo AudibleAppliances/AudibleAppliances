@@ -1,15 +1,16 @@
 from threading import Semaphore, Thread
 import socket
 import time
+import math
 import picamera
 import io
 import cv2
 assert cv2.__version__[0] == '3', 'The fisheye module needs opencv version 3'
 import numpy as np
 
-resolution = (1280, 720)
+resolution = (720, 1280)
 strength = 2.5
-zoom = 1.2
+zoom = 1.1
 half_width = resolution[0]/2
 half_height = resolution[1]/2
 if strength == 0:
@@ -75,7 +76,6 @@ def writer():
         create_image()
         writeGuard.release()
         turn.release()
-        time.sleep(0.1)
 
 def reader(clientsocket):
     global activeReaders
@@ -83,22 +83,22 @@ def reader(clientsocket):
         data = clientsocket.recv(1)
         if data == '\x02':
             print "reader thread: acquiring turn!"
-			turn.acquire()
+            turn.acquire()
             turn.release()
 
-			print "reader thread: acquiring waitingReaders!"
+            print "reader thread: acquiring waitingReaders!"
             waitingReaders.acquire()
             if activeReaders == 0:
                 writeGuard.acquire()
             activeReaders += 1
             waitingReaders.release()
 
-			print "reader thread: sending 2 to client socket"
+            print "reader thread: sending 2 to client socket"
             clientsocket.send('\x01')
-			print "reader thread: recv from client socket"
+            print "reader thread: recv from client socket"
             clientsocket.recv(1)
 
-			print "reader thread: acquiring waitingReaders!"
+            print "reader thread: acquiring waitingReaders!"
             waitingReaders.acquire()
             activeReaders -= 1
             if activeReaders == 0:
@@ -112,11 +112,11 @@ t.start()
 threads.append(t)
 
 while True:
-	clientsocket, addr = server.accept() 
-	print "New reader"
-	read_thread = Thread(target=reader, args=(clientsocket,))
-	read_thread.daemon = True
-	read_thread.start()
-	threads.append(read_thread)
+    clientsocket, addr = server.accept() 
+    print "New reader"
+    read_thread = Thread(target=reader, args=(clientsocket,))
+    read_thread.daemon = True
+    read_thread.start()
+    threads.append(read_thread)
 
         
