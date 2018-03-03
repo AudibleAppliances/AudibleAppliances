@@ -39,13 +39,14 @@ def create_image():
         image = cv2.imdecode(data, 1)
 
         undistorted_img = cv2.fisheye.undistortImage(image, K, D, Knew=K, new_size=DIM)
-        cv2.imwrite('/mnt/rd/test.jpg', undistorted_img)
+        cv2.imwrite('/mnt/rd/image.jpg', undistorted_img)
 
 
 def writer():
     while True:
         time.sleep(0.5)
         turn.acquire()
+		print "writer"
         writeGuard.acquire()
         create_image()
         writeGuard.release()
@@ -76,12 +77,16 @@ def reader(clientsocket):
 
 
 t = Thread(target=writer)
+t.daemon = True
 t.start()
 threads.append(t)
 
 while True:
-    clientsocket, addr = server.accept() 
-    print "New reader"
-    read_thread = Thread(target=reader, args=(clientsocket,))
-    read_thread.start()
-    threads.append(read_thread)
+	clientsocket, addr = server.accept() 
+	print "New reader"
+	read_thread = Thread(target=reader, args=(clientsocket,))
+	read_thread.daemon = True
+	read_thread.start()
+	threads.append(read_thread)
+
+        
