@@ -16,7 +16,7 @@ public class Speed extends ScreenNumber {
     }
 
     public boolean setValue( int value ){
-        return value > 0 && this.setValue( value / 100, value % 10 );
+        return value > 0 && this.setValue( value / 100, value % 100 );
     }
 
     public boolean setValue( int val1, int val2 ){
@@ -25,6 +25,6 @@ public class Speed extends ScreenNumber {
 
     @Override
     public String speakValue() {
-        return String.format( "You are currently cycling at %d.%d kilometres per hour", higherSpeedDigit.getValue(), lowerSpeedDigit.getValue() );
+        return String.format( "You are currently cycling at %d.%d miles per hour", higherSpeedDigit.getValue(), lowerSpeedDigit.getValue() );
     }
 }

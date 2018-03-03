@@ -12,27 +12,15 @@ import java.awt.image.BufferedImage;
  */
 public class ImageSegments {
 
-    private String mConfigPath;
     private ConfigData mConfigData;
 
     /**
      * Loads config file in to object
      *
-     * @param configPath Path to configuration file
-     * @throws ConfigException If file not found or incorrect formatting
+     * @param config Config data to determine segments
      */
-    public ImageSegments(String configPath) throws ConfigException {
-        mConfigPath = configPath;
-        readConfig();
-    }
-
-    /**
-     * Reads in the config file for cropping.
-     *
-     * @throws ConfigException If file not found or malformed config file
-     */
-    private void readConfig() throws ConfigException {
-        mConfigData = new ConfigData(mConfigPath);
+    public ImageSegments(ConfigData config) {
+        mConfigData = config;
     }
 
     /**
@@ -42,7 +30,7 @@ public class ImageSegments {
      * @param image Image of exercise bike screen
      * @return Crop of BoxType from image
      */
-    public BufferedImage getImageBox(BoxType type, BufferedImage image) {
+    public BufferedImage getImageBox(ScreenBox type, BufferedImage image) {
         BoxInfo box = mConfigData.getBox(type);
 
         // Calculate coordinates
