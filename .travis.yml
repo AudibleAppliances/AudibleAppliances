@@ -25,9 +25,8 @@ deploy:
     branch: master
 
 notifications:
-	on_success: always
-	pushover:
-		api_key: axsf7bqxacq8ifnzq37k741n5uougx
-		users:
-			- ueqp8yjxwrezz3dupea42dnpv9uzp9
-		template: "%{repository_slug} (%{commit}) : %{message} %{foo} - Build details: %{build_url}"
+  pushover:
+    api_key: axsf7bqxacq8ifnzq37k741n5uougx
+    users:
+    - ueqp8yjxwrezz3dupea42dnpv9uzp9
+    template: "%{repository_slug} (%{commit}) : %{message} - Build details: %{build_url}"
