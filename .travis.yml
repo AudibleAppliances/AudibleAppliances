@@ -23,3 +23,10 @@ deploy:
   script: rsync -r --delete-after --quiet target/audible-1.0-SNAPSHOT-jar-with-dependencies.jar oh260@shell.srcf.net:~/public_html/AudibleAppliances/builds/
   on:
     branch: master
+
+notifications:
+pushover:
+  api_key: axsf7bqxacq8ifnzq37k741n5uougx
+  users:
+    - ueqp8yjxwrezz3dupea42dnpv9uzp9
+  template: "%{repository_slug} (%{commit}) : %{message} %{foo} - Build details: %{build_url}"
