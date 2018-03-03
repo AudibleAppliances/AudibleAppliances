@@ -55,7 +55,6 @@ def create_image():
     stream = io.BytesIO()
 
     with picamera.PiCamera() as camera:
-        camera.rotation = 180
         camera.awb_mode = 'fluorescent'
         camera.resolution = (1280, 720)
         camera.exposure_mode = 'backlight'
