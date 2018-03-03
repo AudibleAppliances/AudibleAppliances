@@ -107,11 +107,11 @@ public class BikeStateTracker {
                         if ( ApplicationConstants.DEBUG ){
                             System.out.println("Running OCR for " + field.toString() );
                             long startTime = System.currentTimeMillis();
-                            currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(newImage));
+                            currentFields.get(field).setValue(SegmentRecogniser.recogniseInt( imgSegs.get( box ) ));
                             long elapsedTime = System.currentTimeMillis() - startTime;
                             System.out.println("That took " + elapsedTime );
                         }else {
-                            currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(newImage));
+                            currentFields.get(field).setValue(SegmentRecogniser.recogniseInt( imgSegs.get( box ) ));
                         }
                     }
                 }

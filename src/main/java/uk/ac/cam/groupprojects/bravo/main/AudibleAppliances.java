@@ -115,13 +115,24 @@ public class AudibleAppliances {
         synthesiser.speak("Welcome to Audible Appliances");
 
         while(running.get()) {
+            if ( DEBUG )
+                System.out.println("Run while loop");
             try {
+
                 long loopStartTime = System.currentTimeMillis();
-                Thread imageThread = new Thread( new ProcessImageThread( ReadImage.readImage( ApplicationConstants.IMAGE_PATH ) ) );
-                imageThread.start();
+                BufferedImage image = ReadImage.readImage( ApplicationConstants.IMAGE_PATH );
                 long elapsedTime = System.currentTimeMillis() - loopStartTime;
                 if (ApplicationConstants.DEBUG)
-                    System.out.println("Time taken to spawn image process thread (time to take photo) " + elapsedTime + "ms ");
+                    System.out.println("Time taken to time to take photo " + elapsedTime + "ms ");
+
+
+                loopStartTime = System.currentTimeMillis();
+                Thread imageThread = new Thread( new ProcessImageThread( image ) );
+                imageThread.start();
+                elapsedTime = System.currentTimeMillis() - loopStartTime;
+
+                if (ApplicationConstants.DEBUG)
+                    System.out.println("Time taken to spawn image process thread" + elapsedTime + "ms ");
             } catch ( IOException e) {
                 if (DEBUG)
                     e.printStackTrace();
@@ -145,6 +156,8 @@ public class AudibleAppliances {
         @Override
         public void run() {
             try {
+                if ( DEBUG )
+                    System.out.println("ProcessImageThread process created");
                 long loopStartTime = System.currentTimeMillis();
                 bikeStateTracker.updateState(image);
                 detectState();
