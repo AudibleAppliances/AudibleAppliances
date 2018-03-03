@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -117,8 +118,9 @@ public class AudibleAppliances {
         System.out.println("Starting the bike state tracker! ");
         synthesiser.speak("Welcome to Audible Appliances");
 
+        int connectionAttempts = 0;
         while(running.get()) {
-            if ( DEBUG )
+            if (DEBUG)
                 System.out.println("Run while loop");
             try {
 
@@ -130,13 +132,25 @@ public class AudibleAppliances {
 
 
                 loopStartTime = System.currentTimeMillis();
-                Thread imageThread = new Thread( new ProcessImageThread( image ) );
+                Thread imageThread = new Thread(new ProcessImageThread(image));
                 imageThread.start();
                 elapsedTime = System.currentTimeMillis() - loopStartTime;
 
                 if (ApplicationConstants.DEBUG)
                     System.out.println("Time taken to spawn image process thread" + elapsedTime + "ms ");
-            } catch ( IOException e) {
+            } catch (ConnectException e) {
+                if (DEBUG) {
+                    System.out.println("Failed to connect to image server.");
+                }
+
+                connectionAttempts++;
+                if (connectionAttempts == ApplicationConstants.MAX_CONNECT_ATTEMPTS) {
+                    synthesiser.speak("Failed to connect to the image server. Try rebooting the system.");
+
+                    synthesiser.close();
+                    return;
+                }
+            } catch (IOException e) {
                 if (DEBUG)
                     e.printStackTrace();
             }
