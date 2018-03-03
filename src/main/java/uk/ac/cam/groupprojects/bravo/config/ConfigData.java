@@ -72,9 +72,14 @@ public class ConfigData {
             JsonObject spoken_fields = config.getAsJsonObject("spoken_fields");
 
             for (BikeField type : BikeField.values()) {
-                String typeName = type.name().toLowerCase();
-                JsonPrimitive field = spoken_fields.getAsJsonPrimitive(typeName);
-                mSpokenFields.put(type, field.getAsBoolean());
+                //Load is the exception
+                if ( type != BikeField.LOAD ){
+                    String typeName = type.name().toLowerCase();
+                    JsonPrimitive field = spoken_fields.getAsJsonPrimitive(typeName);
+                    mSpokenFields.put(type, field.getAsBoolean());
+                }else {
+                    mSpokenFields.put(BikeField.LOAD, false);
+                }
             }
 
         } catch(FileNotFoundException e){
