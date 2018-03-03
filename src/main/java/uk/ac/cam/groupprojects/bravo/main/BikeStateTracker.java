@@ -162,23 +162,49 @@ public class BikeStateTracker {
                     for (BikeField field : box.getFields()) {
                         if (field.getTitleBox() == null || activeSegs.contains(field.getTitleBox())) {
                             if (ApplicationConstants.DEBUG) {
-                                System.out.println("Running OCR for " + field.toString());
-                                long startTime = System.currentTimeMillis();
-                                long elapsedTime = System.currentTimeMillis() - startTime;
-                                System.out.println("That took " + elapsedTime);
+                                try {
+                                    System.out.println("Running OCR for " + field.toString());
+                                    long startTime = System.currentTimeMillis();
+                                    currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(box)));
+                                    long elapsedTime = System.currentTimeMillis() - startTime;
+                                    System.out.println("That took " + elapsedTime);
+                                }catch ( Exception e ){
+                                    //I don't care
+                                }
+                            }else {
+                                try {
+                                    System.out.println("Running OCR for " + field.toString());
+                                    long startTime = System.currentTimeMillis();
+                                    currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(box)));
+                                    long elapsedTime = System.currentTimeMillis() - startTime;
+                                    System.out.println("That took " + elapsedTime);
+                                }catch ( Exception e ){
+                                    //I don't care
+                                }
                             }
-                            try {
-                                currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(box)));
-                            }catch ( Exception e ){
-                                //I don't care
-                            }
+
                         }
                     }
                 }
             }
-        }
-        else {
-            currentFields.get(BikeField.TIME).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(ScreenBox.LCD1)));
+        } else {
+            if ( ApplicationConstants.DEBUG ){
+                try {
+                    System.out.println("Running OCR for TIME" );
+                    long startTime = System.currentTimeMillis();
+                    currentFields.get(BikeField.TIME).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(ScreenBox.LCD1)));
+                    long elapsedTime = System.currentTimeMillis() - startTime;
+                    System.out.println("That took " + elapsedTime);
+                }catch ( Exception e ){
+                    //I don't care
+                }
+            }else {
+                try {
+                    currentFields.get(BikeField.TIME).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(ScreenBox.LCD1)));
+                }catch ( Exception e ){
+                    //I don't care
+                }
+            }
         }
         
         // Remove state information that's older than two complete blink cycles (2s) ago

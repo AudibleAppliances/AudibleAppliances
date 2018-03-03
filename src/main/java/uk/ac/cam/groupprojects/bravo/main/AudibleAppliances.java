@@ -109,14 +109,8 @@ public class AudibleAppliances {
                 if (ApplicationConstants.DEBUG)
                     System.out.println("Time taken to time to take photo " + elapsedTime + "ms ");
 
-
-                loopStartTime = System.currentTimeMillis();
                 Thread imageThread = new Thread(new ProcessImageThread(image));
                 imageThread.start();
-                elapsedTime = System.currentTimeMillis() - loopStartTime;
-
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Time taken to spawn image process thread" + elapsedTime + "ms ");
             } catch (ConnectException e) {
                 if (DEBUG) {
                     System.out.println("Failed to connect to image server.");
@@ -162,7 +156,7 @@ public class AudibleAppliances {
                 for (ScreenBox box : ScreenBox.values()) {
                     imgSegs.put(box, segmenter.getImageBox(box, image));
                 }
-                
+
                 // Update tracker state
                 bikeStateTracker.updateState(imgSegs);
 
