@@ -4,8 +4,7 @@ import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 public abstract class BikeScreen {
-
-    public abstract float screenProbability( BikeStateTracker bikeStateTracker );
+    public abstract boolean isActiveScreen(BikeStateTracker state);
 
     public abstract ScreenEnum getEnum();
 
@@ -13,4 +12,6 @@ public abstract class BikeScreen {
 
     public abstract int getSpeakDelay();
 
+    //When we change to this screen, do we immediately want to notify the user
+    public abstract boolean isSpeakFirst();
 }

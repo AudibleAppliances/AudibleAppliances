@@ -4,7 +4,6 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.BoxInfo;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
-import uk.ac.cam.groupprojects.bravo.imageProcessing.ConfigException;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 
 import java.awt.geom.Point2D;
@@ -69,22 +68,31 @@ public class ConfigData {
             JsonPrimitive voice = config.getAsJsonPrimitive("voice");
             mVoice = voice.getAsString();
 
-            // Parse spoken_fileds
+            // Parse spoken_fields
             JsonObject spoken_fields = config.getAsJsonObject("spoken_fields");
 
             for (BikeField type : BikeField.values()) {
-                String typeName = type.name().toLowerCase();
-                JsonPrimitive field = spoken_fields.getAsJsonPrimitive(typeName);
-                mSpokenFields.put(type, field.getAsBoolean());
+                //Load is the exception
+                if (type != BikeField.LOAD) {
+                    String typeName = type.name().toLowerCase();
+                    JsonPrimitive field = spoken_fields.getAsJsonPrimitive(typeName);
+                    mSpokenFields.put(type, field.getAsBoolean());
+                } else {
+                    mSpokenFields.put(BikeField.LOAD, false);
+                }
             }
 
-        } catch(FileNotFoundException e){
-            if ( ApplicationConstants.DEBUG )
+        } catch (FileNotFoundException e) {
+            if (ApplicationConstants.DEBUG)
                 e.printStackTrace();
             throw new ConfigException("Could not read config file");
-        } catch(JsonParseException e2){
-            if ( ApplicationConstants.DEBUG )
+        } catch (JsonParseException e2) {
+            if (ApplicationConstants.DEBUG)
                 e2.printStackTrace();
+            throw new ConfigException("Error parsing JSON");
+        } catch (NullPointerException e3) {
+            if (ApplicationConstants.DEBUG)
+                e3.printStackTrace();
             throw new ConfigException("Error parsing JSON");
         }
     }
