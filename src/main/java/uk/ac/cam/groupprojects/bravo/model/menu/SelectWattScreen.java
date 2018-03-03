@@ -15,10 +15,12 @@ public class SelectWattScreen extends BikeScreen {
     public float screenActiveProbability(BikeStateTracker state) {
         int matching = 0;
 
-        matching += state.boxStateIndicator(ScreenBox.WATT, LCDState.SOLID_ON);
-        matching += state.boxStateIndicator(ScreenBox.LOAD, LCDState.SOLID_OFF);
-        matching += state.boxStateIndicator(ScreenBox.SPEED, LCDState.SOLID_OFF);
-        matching += state.boxStateIndicator(ScreenBox.RPM, LCDState.SOLID_ON);
+        // Watt xor Load can be on
+        if (state.getBoxState(ScreenBox.WATT) == LCDState.SOLID_ON ^ state.getBoxState(ScreenBox.LOAD) == LCDState.SOLID_ON)
+            matching += 1;
+        // Speed xor RPM can be on
+        if (state.getBoxState(ScreenBox.SPEED) == LCDState.SOLID_ON ^ state.getBoxState(ScreenBox.RPM) == LCDState.SOLID_ON)
+            matching += 1;
 
         matching += state.boxStateIndicator(ScreenBox.GRAPH, LCDState.SOLID_ON);
 
@@ -45,7 +47,7 @@ public class SelectWattScreen extends BikeScreen {
         matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_11, LCDState.SOLID_OFF);
         matching += state.boxStateIndicator(ScreenBox.LCD_TEXT_12, LCDState.SOLID_OFF);
 
-        return (float)matching / (float)ScreenBox.values().length;
+        return (float)matching / 24; // 24 indicators for this state
     }
 
     @Override

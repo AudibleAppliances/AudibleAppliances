@@ -194,6 +194,9 @@ public class BikeStateTracker {
     public Map<ScreenBox, LCDState> getBoxStates() {
         return boxStates;
     }
+    public LCDState getBoxState(ScreenBox box) {
+        return getBoxStates().get(box);
+    }
 
     public int boxStateIndicator(ScreenBox box, LCDState state) {
         if (getBoxStates().get(box) == state) {
@@ -201,6 +204,10 @@ public class BikeStateTracker {
         } else {
             return 0;
         }
+    }
+
+    public boolean isTimeChanging() {
+        return timeChanging;
     }
 
     // Returns true iff the given box is lit in the latest received image
