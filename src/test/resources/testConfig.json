@@ -131,6 +131,6 @@
 			"pulse": false,
 			"graph": false,
 			"program": true,
-			"watt": true,
+			"watt": true
 		}
 }
