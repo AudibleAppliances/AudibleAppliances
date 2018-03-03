@@ -10,6 +10,7 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.*;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
+import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -41,6 +42,7 @@ public class BikeStateTracker {
     // Necessary class state
     private final Map<ScreenEnum, BikeScreen> screens = new HashMap<>();
     private final ConfigData configData;
+    private final Synthesiser synthesiser;
 
     // Current Screen state
     private static BikeScreen currentScreen;
@@ -59,11 +61,12 @@ public class BikeStateTracker {
     private final Map<ScreenBox, LCDState> boxStates;
     private boolean timeChanging;
 
-    public BikeStateTracker(ConfigData config) {
+    public BikeStateTracker(ConfigData config, Synthesiser synth) {
         history = new LinkedList<>();
         boxStates = new HashMap<>();
         timeChanging = false;
         configData = config;
+        synthesiser = synth;
 
         // Initialise currentFields;
         currentFields = new HashMap<>();
@@ -103,6 +106,41 @@ public class BikeStateTracker {
      */
     public void updateState(Map<ScreenBox, BufferedImage> imgSegs)
                 throws IOException, UnrecognisedDigitException, NumberFormatException {
+
+        //////////////////////////////////////////
+        // Update the screen (ie overall state) //
+        //////////////////////////////////////////
+
+        if (ApplicationConstants.DEBUG)
+            System.out.println("DETECTING CHANGE SCREEN STATE");
+
+        BikeScreen newScreen = null;
+        BikeScreen oldScreen = currentScreen;
+
+        for (BikeScreen screen : screens.values()) {
+            boolean inState = screen.isActiveScreen(this);
+            if (inState) {
+                newScreen = screen;
+                break;
+            }
+        }
+
+        if (newScreen != null) {
+            currentScreen = newScreen;
+            if (newScreen != oldScreen && newScreen.isSpeakFirst())
+                newScreen.speakItems(this, synthesiser);
+        }
+        else {
+            if (ApplicationConstants.DEBUG)
+                System.out.println("Failed to recognise state.");
+        }
+
+        System.out.println("Establishing bike state is " + currentScreen.getEnum().toString());
+        System.out.println();
+
+        ////////////////////////////////////////
+        // Update the state (ie field values) //
+        ////////////////////////////////////////
 
         LocalDateTime currentTime = LocalDateTime.now();
         Set<ScreenBox> activeSegs = new HashSet<>();
@@ -174,6 +212,7 @@ public class BikeStateTracker {
             }
             System.out.println();
         }
+
     }
 
     /**
