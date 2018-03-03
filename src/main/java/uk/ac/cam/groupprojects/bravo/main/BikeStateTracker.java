@@ -120,7 +120,9 @@ public class BikeStateTracker {
                 break;
             }                
         }
+
         if (ApplicationConstants.DEBUG) {
+            System.out.println("Current state snapshots:");
             for (StateTime s : history) {
                 System.out.println(s.addedTime.get(ChronoField.MILLI_OF_DAY));
             }
@@ -170,6 +172,14 @@ public class BikeStateTracker {
             } else {
                 boxStates.put(box, LCDState.SOLID_OFF);
             }
+        }
+
+        if (ApplicationConstants.DEBUG) {
+            System.out.println("Current State:");
+            for (ScreenBox box : ScreenBox.values()) {
+                System.out.println(box.toString() + ": " + boxStates.get(box).toString());
+            }
+            System.out.println();
         }
     }
 
