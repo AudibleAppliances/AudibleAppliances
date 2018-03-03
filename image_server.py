@@ -55,19 +55,24 @@ def reader(clientsocket):
     global activeReaders
     while True:
         data = clientsocket.recv(1)
-        if data == '\x00':
-            turn.acquire()
+        if data == '\x02':
+            print "reader thread: acquiring turn!"
+			turn.acquire()
             turn.release()
 
+			print "reader thread: acquiring waitingReaders!"
             waitingReaders.acquire()
             if activeReaders == 0:
                 writeGuard.acquire()
             activeReaders += 1
             waitingReaders.release()
 
+			print "reader thread: sending 2 to client socket"
             clientsocket.send('\x01')
+			print "reader thread: recv from client socket"
             clientsocket.recv(1)
 
+			print "reader thread: acquiring waitingReaders!"
             waitingReaders.acquire()
             activeReaders -= 1
             if activeReaders == 0:

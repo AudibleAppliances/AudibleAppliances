@@ -1,6 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
-import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
+import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -21,32 +21,38 @@ public class ReadImage {
      * @throws IOException If there is a problem reading or communicating with daemon
      */
     public static BufferedImage readImage(String imagePath) throws IOException, ConnectException {
-        try (Socket s = new Socket("127.0.0.1", ApplicationConstants.DAEMON_PORT)) {
+        if ( DEBUG )
+            System.out.println("ReadImage: Opening a socket");
+
+        try (Socket s = new Socket("127.0.0.1", DAEMON_PORT)) {
             DataInputStream in = new DataInputStream(s.getInputStream());
             OutputStream out = s.getOutputStream();
 
             // Send REQ
+            if ( DEBUG )
+                System.out.println("ReadImage: writing 2 to the socket");
             out.write(2);
 
             // Wait for ACK
+            if ( DEBUG )
+                System.out.println("ReadImage: waiting for ack");
             if (in.readByte() == 1) {
 
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Attempting to read image from: " + imagePath );
+                if (DEBUG)
+                    System.out.println("ReadImage: Attempting to read image from: " + imagePath );
 
                 BufferedImage img = ImageIO.read(new File(imagePath));
 
                 // Send DONE
                 out.write(1);
 
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Returned image!");
-
+                if (DEBUG)
+                    System.out.println("ReadImage: Returned image!");
                 return img;
             }
             // Exception if incorrect reply
             else {
-                throw new IOException("Received incorrect response from image server");
+                throw new IOException("ReadImage: Received incorrect response from image server");
             }
         }
     }
