@@ -2,34 +2,34 @@
 	"voice": "male",
 		"boxes": {
 			"lcd1": {
-				"corner": [12.5, 9],
-				"width": 37,
-				"height": 19.5
+				"corner": [14, 7.6],
+				"width": 36,
+				"height": 20
 			},
 			"lcd2": {
-				"corner": [58, 9],
+				"corner": [60, 6.5],
 				"width": 28,
 				"height": 19.5
 			},
 			"lcd3": {
-				"corner": [13, 32.2],
+				"corner": [15, 31.7],
 				"width": 16,
 				"height": 14
 			},
 			"lcd4": {
-				"corner": [70, 32.3],
+				"corner": [72, 30.3],
 				"width": 17.5,
-				"height": 16
+				"height": 15.3
 			},
 			"lcd5": {
-				"corner": [12, 51.5],
+				"corner": [13.5, 50.5],
 				"width": 17.5,
-				"height": 15.5
+				"height": 14.5
 			},
 			"lcd6": {
-				"corner": [69.5, 51.5],
+				"corner": [71.8, 49.4],
 				"width": 18,
-				"height": 15
+				"height": 14.8
 			},
 			"graph": {
 				"corner": [20, 12],
@@ -37,23 +37,23 @@
 				"height": 20
 			},
 			"speed": {
-				"corner": [12.3, 28.5],
-				"width": 8.3,
+				"corner": [14.6, 27.9],
+				"width": 7.9,
 				"height": 3.8
 			},
 			"watt": {
-				"corner": [12, 48],
+				"corner": [14.5, 47.2],
 				"width": 6.5,
-				"height": 3.7
+				"height": 3.5
 			},
 			"rpm": {
-				"corner": [22, 28.2],
-				"width": 6,
-				"height": 4
+				"corner": [24, 27.8],
+				"width": 5.8,
+				"height": 3.5
 			},
 			"load": {
-				"corner": [20.7, 47.7],
-				"width": 7.4,
+				"corner": [22.8, 46.7],
+				"width": 7.2,
 				"height": 3.9
 			},
 			"lcd_text_1": {
