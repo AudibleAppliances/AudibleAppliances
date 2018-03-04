@@ -68,7 +68,7 @@ public class Synthesiser implements AutoCloseable {
         setVoice(voice);
     }
 
-    public void setVoice(String voice) throws VoiceMissingException {
+    public synchronized void setVoice(String voice) throws VoiceMissingException {
         // Sets the voice used by Festival
         write("(voice_" + voice + ")");
         
@@ -81,7 +81,7 @@ public class Synthesiser implements AutoCloseable {
 
     // Sets the rate of playback of the voice
     // rate is measured in Hertz - valid values are from 2000 to 192000 inclusive (see aplay's documentation)
-    public void setRate(int rate) throws RateSetException {
+    public synchronized void setRate(int rate) throws RateSetException {
         if (rate < 2000 || rate > 192000) {
             throw new RateSetException("Invalid rate: must be between 2000Hz and 192000Hz inclusive.");
         }
@@ -120,7 +120,7 @@ public class Synthesiser implements AutoCloseable {
     }
     
     @Override
-    public void close() {
+    public synchronized void close() {
         try {
             in.close();
             out.close();
@@ -131,13 +131,13 @@ public class Synthesiser implements AutoCloseable {
     }
 
     // Output a command to the festival process
-    private void write(String s) {
+    private synchronized void write(String s) {
         out.write(s + "\n");
         out.flush();
     }
     // Read a single whitespace-delimited token from the process' output.
     // Ignore tokens containing the festival prompt ("festival>")
-    private String read() {
+    private synchronized String read() {
         String s;
         do {
             s = in.next();
@@ -146,7 +146,7 @@ public class Synthesiser implements AutoCloseable {
     }
     // Reada newline-delimited string from the process' output.
     // Ignore tokens containing the festival prompt ("festival>")
-    private String readLine() {
+    private synchronized String readLine() {
         String s = in.nextLine().trim();
         if (s.startsWith("festival> ")) {
             s = s.substring(10);
@@ -154,7 +154,7 @@ public class Synthesiser implements AutoCloseable {
         return s;
     }
 
-    public static List<String> getVoices() throws FestivalMissingException,
+    public synchronized static List<String> getVoices() throws FestivalMissingException,
                                                   InvalidVoiceListException {
         try (Synthesiser synth = new Synthesiser()) {
             // Tell the festival process to list the available voices
