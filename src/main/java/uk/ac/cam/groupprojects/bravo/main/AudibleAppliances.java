@@ -2,6 +2,7 @@ package uk.ac.cam.groupprojects.bravo.main;
 
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.IntelligentCropping;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ReadImage;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.model.menu.*;
@@ -151,7 +152,10 @@ public class AudibleAppliances {
                 // Segment image
                 Map<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
                 for (ScreenBox box : ScreenBox.values()) {
-                    imgSegs.put(box, segmenter.getImageBox(box, image));
+                    BufferedImage boxImage = segmenter.getImageBox(box, image);
+                    boxImage = IntelligentCropping.intelligentCrop(boxImage);
+                    
+                    imgSegs.put(box, boxImage);
                 }
 
                 // Update tracker state
