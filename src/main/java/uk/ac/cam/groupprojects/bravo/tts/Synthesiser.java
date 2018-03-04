@@ -2,6 +2,8 @@ package uk.ac.cam.groupprojects.bravo.tts;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.IOException;
@@ -20,6 +22,9 @@ public class Synthesiser implements AutoCloseable {
     private final PrintWriter out;
     private final Scanner in;
 
+    // Command queue
+    private BlockingQueue<String> commandQueue;
+
     public Synthesiser() throws FestivalMissingException {
         festival = spawnFestivalProcess();
         out = new PrintWriter(festival.getOutputStream());
@@ -31,6 +36,31 @@ public class Synthesiser implements AutoCloseable {
         while (!s.startsWith("festival>")) {
             s = in.next();
         }
+
+        commandQueue = new LinkedBlockingQueue<>();
+
+        // Speak thread to pull from queue and speak
+        Thread speakThread = new Thread(() -> {
+            while (true) {
+                try {
+                    // Take latest string from queue
+                    String toSpeak = commandQueue.take();
+
+                    // Request Festival to synthesise the text
+                    write("(SayText \"" + toSpeak + "\")");
+
+                    // Discard the next line of input (contains "utterance" information)
+                    // Festival only output a line after it's finished speaking, so this also causes us to
+                    // block until it's done speaking (desirable behaviour).
+                    readLine();
+                } catch (InterruptedException e) {
+                    // Empty as we want to keep going if this happens
+                }
+            }
+        });
+
+        speakThread.setDaemon(true);
+        speakThread.start();
     }
     public Synthesiser(String voice) throws FestivalMissingException,
                                             VoiceMissingException {
@@ -80,13 +110,18 @@ public class Synthesiser implements AutoCloseable {
         }
     }
 
+    // Put text in queue to be spoken on the speak thread
     public void speak(String text) {
-        // Request Festival to synthesise the text
-        write("(SayText \"" + text + "\")");
-        // Discard the next line of input (contains "utterance" information)
-        // Festival only output a line after it's finished speaking, so this also causes us to
-        // block until it's done speaking (desirable behaviour).
-        readLine();
+        int tries = 3;
+
+        while (tries > 0) {
+            try {
+                commandQueue.put(text);
+                break;
+            } catch (InterruptedException e) {
+                tries--;
+            }
+        }
     }
     
     @Override
