@@ -2,7 +2,6 @@ package uk.ac.cam.groupprojects.bravo.ocr;
 
 import java.util.List;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,9 +22,11 @@ import uk.ac.cam.groupprojects.bravo.util.FastImageIO;
 public class SSOCRUtil {
     protected static final String IMG_TYPE = "png";
 
+    protected static final double THRESHOLD_SCALE = 1.3; // Empirically decided
+
     public static File saveTempFile(BufferedImage img) throws IOException {
-        File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
-        //File f = File.createTempFile("audible", "." + IMG_TYPE);
+        //File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
+        File f = File.createTempFile("audible", "." + IMG_TYPE);
         return saveFile(img, f);
     }
     public static File saveFile(BufferedImage img, File f) throws IOException {
@@ -73,7 +74,8 @@ public class SSOCRUtil {
         opencv_core.split(src, mv);
 
         Mat dst = new Mat();
-        opencv_imgproc.threshold(singleChannel, dst, 0, 255, opencv_imgproc.THRESH_OTSU);
+        double threshold = Math.min(opencv_core.mean(singleChannel).get() * THRESHOLD_SCALE, 255);
+        opencv_imgproc.threshold(singleChannel, dst, threshold, 255, opencv_imgproc.THRESH_BINARY);
 
         return java2dConverter.convert(iplConverter.convert(dst));
     }
