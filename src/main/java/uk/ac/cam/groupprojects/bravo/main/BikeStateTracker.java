@@ -3,11 +3,10 @@ package uk.ac.cam.groupprojects.bravo.main;
 import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
-import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
+import uk.ac.cam.groupprojects.bravo.main.threads.SegmentActiveThread;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
-import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
@@ -17,11 +16,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.DEBUG;
 
 /**
  * Created by david on 13/02/2018.
@@ -62,6 +59,40 @@ public class BikeStateTracker {
     // State over time of the LCDs - 
     private final Map<ScreenBox, LCDState> boxStates;
     private boolean timeChanging;
+
+
+    private static final ScreenBox[] thread1_boxes = new ScreenBox[]{
+            ScreenBox.LCD1,
+            ScreenBox.LCD2,
+            ScreenBox.LCD3,
+            ScreenBox.LCD4,
+            ScreenBox.LCD5,
+            ScreenBox.LCD6,
+
+            ScreenBox.LCD_TEXT_1,
+            ScreenBox.LCD_TEXT_2,
+            ScreenBox.LCD_TEXT_3,
+            ScreenBox.LCD_TEXT_4,
+            ScreenBox.LCD_TEXT_5_TOP,
+            ScreenBox.LCD_TEXT_5_BOTTOM,
+
+    };
+
+    private static final ScreenBox[] thread2_boxes = new ScreenBox[]{
+            ScreenBox.GRAPH,
+            ScreenBox.RPM,
+            ScreenBox.WATT,
+            ScreenBox.SPEED,
+            ScreenBox.LOAD,
+
+            ScreenBox.LCD_TEXT_6,
+            ScreenBox.LCD_TEXT_7,
+            ScreenBox.LCD_TEXT_8,
+            ScreenBox.LCD_TEXT_9,
+            ScreenBox.LCD_TEXT_10,
+            ScreenBox.LCD_TEXT_11,
+            ScreenBox.LCD_TEXT_12,
+    };
 
     public BikeStateTracker(ConfigData config, Synthesiser synth) {
         history = new LinkedList<>();
@@ -113,7 +144,7 @@ public class BikeStateTracker {
         // Update the screen (ie overall state) //
         //////////////////////////////////////////
 
-        if (ApplicationConstants.DEBUG)
+        if (DEBUG)
             System.out.println("DETECTING CHANGE SCREEN STATE");
 
         BikeScreen newScreen = null;
@@ -133,7 +164,7 @@ public class BikeStateTracker {
                 newScreen.speakItems(this, synthesiser);
         }
         else {
-            if (ApplicationConstants.DEBUG)
+            if (DEBUG)
                 System.out.println("Failed to recognise state.");
         }
 
@@ -149,24 +180,27 @@ public class BikeStateTracker {
 
         // Map each screen region to the image of that region
         // Compute which LCD segments are lit up (active)
-        if ( ApplicationConstants.DEBUG ){
-            for (ScreenBox box : ScreenBox.values()) {
-                System.out.println("Running segmentActive for " + box.name() );
-                long startTime = System.currentTimeMillis();
-                if (SegmentActive.segmentActive(imgSegs.get(box))) {
-                    activeSegs.add(box);
-                }
-                long elapsedTime = System.currentTimeMillis() - startTime;
-                System.out.println("segmentActive took " + elapsedTime);
-            }
 
-        }else {
-            for (ScreenBox box : ScreenBox.values()) {
-                if (SegmentActive.segmentActive(imgSegs.get(box))) {
-                    activeSegs.add(box);
-                }
-            }
+        Thread segmentActive1 = new Thread(
+                new SegmentActiveThread( thread1_boxes, activeSegs, imgSegs )
+        );
+
+        Thread segmentActive2 = new Thread(
+                new SegmentActiveThread( thread2_boxes, activeSegs, imgSegs )
+        );
+
+        segmentActive1.start();
+        segmentActive2.start();
+
+        try {
+            //Block until these have finished
+            segmentActive1.join();
+            segmentActive2.join();
+        } catch (InterruptedException e) {
+            if ( DEBUG )
+                e.printStackTrace();
         }
+
 
 
         // Recognise the text in each region of the screen
@@ -175,7 +209,7 @@ public class BikeStateTracker {
                 if (activeSegs.contains(box)) {
                     for (BikeField field : box.getFields()) {
                         if (field.getTitleBox() == null || activeSegs.contains(field.getTitleBox())) {
-                            if (ApplicationConstants.DEBUG) {
+                            if (DEBUG) {
                                 try {
                                     System.out.println("Running OCR for " + field.toString());
                                     long startTime = System.currentTimeMillis();
@@ -202,7 +236,7 @@ public class BikeStateTracker {
                 }
             }
         } else {
-            if ( ApplicationConstants.DEBUG ){
+            if ( DEBUG ){
                 try {
                     System.out.println("Running OCR for TIME" );
                     long startTime = System.currentTimeMillis();
@@ -231,7 +265,7 @@ public class BikeStateTracker {
             }                
         }
 
-        if (ApplicationConstants.DEBUG) {
+        if (DEBUG) {
             System.out.println("Current state snapshots:");
             for (StateTime s : history) {
                 System.out.println(s.addedTime.get(ChronoField.MILLI_OF_DAY));
@@ -246,7 +280,7 @@ public class BikeStateTracker {
         updateSolidBlinking(currentTime);
         updateTimeChanging();
 
-        if (ApplicationConstants.DEBUG) {
+        if (DEBUG) {
             System.out.println("Current State:");
             System.out.println("Time Changing: " + isTimeChanging());
             for (ScreenBox box : ScreenBox.values()) {
@@ -259,7 +293,7 @@ public class BikeStateTracker {
         if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
             currentScreen.speakItems(this, synthesiser);
             lastSpeakTime = System.currentTimeMillis();
-            if (ApplicationConstants.DEBUG)
+            if (DEBUG)
                 System.out.println("Spoke");
         }
 
