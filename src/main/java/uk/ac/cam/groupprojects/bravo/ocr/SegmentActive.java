@@ -2,7 +2,10 @@ package uk.ac.cam.groupprojects.bravo.ocr;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
+import java.io.File;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class SegmentActive {
     // "Threshold" is effectively the percentage (100% = 1.0) of the image that's white
@@ -14,20 +17,16 @@ public class SegmentActive {
     }
 
     public static double imageAverage(BufferedImage img) throws IOException {
-        Raster raw = img.getRaster();
-
-        final int bands = 3;
+        BufferedImage grey = SSOCRUtil.threshold(img);
+        //try { ImageIO.write(grey, "jpg", new File("out.jpg")); } catch (Exception e) {}
+        Raster raw = grey.getRaster();
 
         double sum = 0;
         for (int y = 0; y < raw.getHeight(); y++) {
             for (int x = 0; x < raw.getWidth(); x++) {
-                double pixelAvg = 0;
-                for (int b = 0; b < bands; b++) {
-                    pixelAvg += raw.getSampleDouble(x, y, b);
-                }
-                pixelAvg /= 3 * 255;
+                double pixelVal = raw.getSampleDouble(x, y, 0) / 255;
 
-                if (pixelAvg > 0.4) {
+                if (pixelVal > 0.4) {
                     sum += 1;
                 }
             }
