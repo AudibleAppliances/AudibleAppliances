@@ -24,17 +24,37 @@ void writer(Semaphore &turn, Semaphore &write_guard) {
     }
 }
 
-void reader(int socket, std::atomic_int &active_readers) {
-    char buffer[256] = {0};
-    
-    while (true) {
-        read(socket, buffer, 256);
-        std::cout << buffer << std::endl;
-        for (int i = 0; i < 256; i++) {
-            std::cout << (int)buffer[i] << std::endl;
-        }
-        
-    }
+void reader(int socket, std::atomic_int &active_readers, Semaphore &turn, Semaphore &waiting_readers, Semaphore &write_guard) {
+    char buffer[1] = {0};
+    char response[1] = {1};
+        read(socket, buffer, 1);
+        if (buffer[0] == 2) {
+	    std::cout << "Reader thread: Acquiring turn" << std::endl;
+	    turn.wait();
+	    turn.signal();
+
+	    std::cout << "Reader thread: Acquiring waiting_readers" << std::endl;
+	    waiting_readers.wait();
+	    if (std::atomic_load(&active_readers) == 0) {
+	        write_guard.wait();
+	    }
+	    std::atomic_fetch_add(&active_readers, 1);
+	    waiting_readers.signal();
+
+	    std::cout << "Reader thread: Sending 1 to client socket" << std::endl;
+	    
+	    send(socket, response, 1, 0);
+	    std::cout << "Reader thread: Wait to hear from client to read" << std::endl;
+	    read(socket, buffer, 1);
+
+	    std::cout << "Reader thread: Acquiring waiting_readers" << std::endl;
+	    waiting_readers.wait();
+	    std::atomic_fetch_sub(&active_readers, 1);
+	    if (std::atomic_load(&active_readers) == 0) {
+                write_guard.signal();
+            }
+	    waiting_readers.signal();
+	}
 }
 
 int main() {
@@ -50,14 +70,14 @@ int main() {
     int address_length = sizeof(address);
 
     std::thread writer_thread (writer, std::ref(turn), std::ref(write_guard));
-    int server_socket = socket(AF_INET, AF_INET, 0);
+    int server_socket = socket(AF_INET, SOCK_STREAM, 0);
     bind(server_socket, (struct sockaddr *)&address, sizeof(address));
     listen(server_socket, 5);
 
     while (true) {
         int client_socket = accept(server_socket, (struct sockaddr *)&address, (socklen_t*)&address_length);
         std::cout << "New reader" << std::endl;
-    	std::thread reader_thread (reader, client_socket, std::ref(active_readers));
+    	std::thread reader_thread (reader, client_socket, std::ref(active_readers), std::ref(turn), std::ref(waiting_readers), std::ref(write_guard));
     }
     writer_thread.join();
     return 0;
