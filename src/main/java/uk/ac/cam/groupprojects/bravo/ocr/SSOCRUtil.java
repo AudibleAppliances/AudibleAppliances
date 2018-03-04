@@ -25,8 +25,8 @@ public class SSOCRUtil {
     protected static final double THRESHOLD_SCALE = 1.3; // Empirically decided
 
     public static File saveTempFile(BufferedImage img) throws IOException {
-        File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
-        //File f = File.createTempFile("audible", "." + IMG_TYPE);
+        //File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
+        File f = File.createTempFile("audible", "." + IMG_TYPE);
         return saveFile(img, f);
     }
     public static File saveFile(BufferedImage img, File f) throws IOException {

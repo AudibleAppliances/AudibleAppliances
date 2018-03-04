@@ -6,6 +6,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -35,7 +38,10 @@ public class Synthesiser implements AutoCloseable {
         String s = "";
         while (!s.startsWith("festival>")) {
             s = in.next();
+            if (ApplicationConstants.DEBUG)
+                System.out.print(s);
         }
+        System.out.println();
 
         commandQueue = new LinkedBlockingQueue<>();
 
@@ -52,7 +58,9 @@ public class Synthesiser implements AutoCloseable {
                     // Discard the next line of input (contains "utterance" information)
                     // Festival only output a line after it's finished speaking, so this also causes us to
                     // block until it's done speaking (desirable behaviour).
-                    readLine();
+                    String l = readLine();
+                    if (ApplicationConstants.DEBUG)
+                        System.out.println(l);
                 } catch (InterruptedException e) {
                     // Empty as we want to keep going if this happens
                 }
@@ -141,6 +149,8 @@ public class Synthesiser implements AutoCloseable {
         String s;
         do {
             s = in.next();
+            if (ApplicationConstants.DEBUG)
+                System.out.print(s);
         } while (s.startsWith("festival>"));
         return s;
     }
