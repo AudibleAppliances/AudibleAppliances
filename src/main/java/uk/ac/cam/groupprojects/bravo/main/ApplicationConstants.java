@@ -23,6 +23,6 @@ public class ApplicationConstants {
 
     public static final int BLINK_FREQ = 500; // Blink frequency in ms
 
-    public static final int DEFAULT_SPEAK_FREQ = 1000;
+    public static final int DEFAULT_SPEAK_FREQ = 10000;
 
 }

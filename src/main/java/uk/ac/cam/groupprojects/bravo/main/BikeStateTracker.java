@@ -151,12 +151,6 @@ public class BikeStateTracker {
         // Compute which LCD segments are lit up (active)
         if ( ApplicationConstants.DEBUG ){
             for (ScreenBox box : ScreenBox.values()) {
-                if (SegmentActive.segmentActive(imgSegs.get(box))) {
-                    activeSegs.add(box);
-                }
-            }
-        }else {
-            for (ScreenBox box : ScreenBox.values()) {
                 System.out.println("Running segmentActive for " + box.name() );
                 long startTime = System.currentTimeMillis();
                 if (SegmentActive.segmentActive(imgSegs.get(box))) {
@@ -164,6 +158,13 @@ public class BikeStateTracker {
                 }
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 System.out.println("segmentActive took " + elapsedTime);
+            }
+
+        }else {
+            for (ScreenBox box : ScreenBox.values()) {
+                if (SegmentActive.segmentActive(imgSegs.get(box))) {
+                    activeSegs.add(box);
+                }
             }
         }
 
