@@ -79,31 +79,30 @@ def writer():
 
 def reader(clientsocket):
     global activeReaders
-    while True:
-        data = clientsocket.recv(1)
-        if data == '\x02':
-            print "reader thread: acquiring turn!"
-            turn.acquire()
-            turn.release()
+	data = clientsocket.recv(1)
+	if data == '\x02':
+		print "reader thread: acquiring turn!"
+		turn.acquire()
+		turn.release()
 
-            print "reader thread: acquiring waitingReaders!"
-            waitingReaders.acquire()
-            if activeReaders == 0:
-                writeGuard.acquire()
-            activeReaders += 1
-            waitingReaders.release()
+		print "reader thread: acquiring waitingReaders!"
+		waitingReaders.acquire()
+		if activeReaders == 0:
+			writeGuard.acquire()
+		activeReaders += 1
+		waitingReaders.release()
 
-            print "reader thread: sending 2 to client socket"
-            clientsocket.send('\x01')
-            print "reader thread: recv from client socket"
-            clientsocket.recv(1)
+		print "reader thread: sending 2 to client socket"
+		clientsocket.send('\x01')
+		print "reader thread: recv from client socket"
+		clientsocket.recv(1)
 
-            print "reader thread: acquiring waitingReaders!"
-            waitingReaders.acquire()
-            activeReaders -= 1
-            if activeReaders == 0:
-                writeGuard.release()
-            waitingReaders.release()
+		print "reader thread: acquiring waitingReaders!"
+		waitingReaders.acquire()
+		activeReaders -= 1
+		if activeReaders == 0:
+			writeGuard.release()
+		waitingReaders.release()
 
 
 t = Thread(target=writer)
