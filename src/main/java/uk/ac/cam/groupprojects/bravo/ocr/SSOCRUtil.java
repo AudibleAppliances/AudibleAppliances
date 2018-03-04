@@ -60,23 +60,6 @@ public class SSOCRUtil {
         return startSSOCR(args);
     }
 
-<<<<<<< HEAD
-    public static BufferedImage makeMonochrome(BufferedImage image) throws IOException {
-        File f = null;
-        try {
-            f = saveTempFile(image);
-            makeMonochrome(f.getPath(), f.getPath());
-            BufferedImage result = FastImageIO.read(f);
-            return result;
-        }
-        finally {
-            if (f != null)
-                f.delete();
-        }
-    }
-    public static void makeMonochrome(String imagePath, String outputPath) throws IOException {
-        List<String> args = new ArrayList<>();
-=======
     public static BufferedImage threshold(BufferedImage image) throws IOException {
         // https://stackoverflow.com/questions/8368078/java-bufferedimage-to-iplimage
         ToMat iplConverter = new OpenCVFrameConverter.ToMat();
@@ -88,7 +71,6 @@ public class SSOCRUtil {
         MatVector mv = new MatVector(src.channels());
         mv.put(1, singleChannel);
         opencv_core.split(src, mv);
->>>>>>> ocr
 
         Mat dst = new Mat();
         opencv_imgproc.threshold(singleChannel, dst, 0, 255, opencv_imgproc.THRESH_OTSU);
