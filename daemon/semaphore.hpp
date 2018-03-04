@@ -1,11 +1,12 @@
 #include <mutex>
+#include <atomic>
 #include <condition_variable>
 
 class Semaphore {
     private:
         std::mutex mutex;
         std::condition_variable cv;
-        unsigned int count;
+        std::atomic_uint count;
     public:
         Semaphore();
         Semaphore(int initial);

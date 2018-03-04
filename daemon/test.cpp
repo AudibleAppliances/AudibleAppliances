@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <netinet/in.h>
+#include <atomic>
 #include "semaphore.hpp"
 
 
@@ -22,34 +23,38 @@ void writer(Semaphore *turn, Semaphore *write_guard) {
     }
 }
 
-void reader(int socket, int &active_readers) {
+void reader(int socket, int *active_readers) {
     char buffer[256] = {0};
     
     while (true) {
-        std::fread(buffer, 256, 2, (FILE*)socket);
+        std::read(socket, buffer, 256);
         std::cout << buffer << std::endl;
-//        if (buffer == 0)
+        for (int i = 0; i < 256; i++) {
+            std::cout << (int)buffer[i] << std::endl;
+        }
+        
     }
 }
 
 int main() {
-    Semaphore turn(1);
-    Semaphore write_guard(1);
-    Semaphore waiting_readers(1);
-    int active_readers = 0;
+    Semaphore * turn = new Semaphore(1);
+    Semaphore * write_guard = new Semaphore(1);
+    Semaphore * waiting_readers = new Semaphore(1);
+    std::atomic_int * active_readers = new std::atomic_int(0);
     
     struct sockaddr_in address;
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = htonl(INADDR_ANY);
     address.sin_port = htons(40000);
+    int address_length = sizeof(address);
 
     std::thread writer_thread (writer, turn, write_guard);
     int server_socket = socket(AF_INET, AF_INET, 0);
     bind(server_socket, (struct sockaddr *)&address, sizeof(address));
     listen(server_socket, 5);
-    
+
     while (true) {
-        int client_socket = accept(server_socket, (struct sockaddr *)&address, sizeof(address));
+        int client_socket = accept(server_socket, (struct sockaddr *)&address, (socklen_t*)&address_length);
         std::cout << "New reader" << std::endl;
         std::thread reader_thread (reader, client_socket, active_readers);
     }

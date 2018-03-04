@@ -16,7 +16,7 @@ void Semaphore::signal() {
 
 void Semaphore::wait() {
     std::unique_lock<decltype(mutex)> lock(mutex);
-    while (count != 0) {
+    while (count == 0) {
         cv.wait(lock);
     }
     count--;
