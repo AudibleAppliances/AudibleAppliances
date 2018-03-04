@@ -12,7 +12,7 @@ set(SOURCE_FILES
         semaphore.hpp
 	mappings.cpp
 	mappings.hpp
-        test.cpp)
+        main.cpp)
 
 add_executable(daemon ${SOURCE_FILES})
 
