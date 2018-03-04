@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <netinet/in.h>
 #include <atomic>
 #include "semaphore.hpp"
@@ -27,7 +28,7 @@ void reader(int socket, int *active_readers) {
     char buffer[256] = {0};
     
     while (true) {
-        std::read(socket, buffer, 256);
+        read(socket, buffer, 256);
         std::cout << buffer << std::endl;
         for (int i = 0; i < 256; i++) {
             std::cout << (int)buffer[i] << std::endl;
