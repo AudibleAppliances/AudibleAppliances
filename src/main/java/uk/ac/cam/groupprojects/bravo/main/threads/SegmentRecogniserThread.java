@@ -42,6 +42,7 @@ public class SegmentRecogniserThread implements Runnable {
                                 long elapsedTime = System.currentTimeMillis() - startTime;
                                 System.out.println("That took " + elapsedTime);
                             }catch ( Exception e ){
+                                e.printStackTrace();
                                 //I don't care
                             }
 
