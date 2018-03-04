@@ -112,15 +112,10 @@ public class Synthesiser implements AutoCloseable {
 
     // Put text in queue to be spoken on the speak thread
     public void speak(String text) {
-        int tries = 3;
-
-        while (tries > 0) {
-            try {
-                commandQueue.put(text);
-                break;
-            } catch (InterruptedException e) {
-                tries--;
-            }
+        try {
+            commandQueue.put(text);
+        } catch (InterruptedException e) {
+            // Just return
         }
     }
     
