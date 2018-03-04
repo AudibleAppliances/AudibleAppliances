@@ -13,18 +13,18 @@ void create_image() {
     std::cout << "Created image" << std::endl;
 }
 
-void writer(Semaphore *turn, Semaphore *write_guard) {
+void writer(Semaphore &turn, Semaphore &write_guard) {
     while (true) {
         std::cout << "Writer thread : Acquired turn" << std::endl;
-        turn->wait();
-        write_guard->wait();
+        turn.wait();
+        write_guard.wait();
         create_image();
-        write_guard->signal();
-        turn->signal();
+        write_guard.signal();
+        turn.signal();
     }
 }
 
-void reader(int socket, int *active_readers) {
+void reader(int socket, std::atomic_int &active_readers) {
     char buffer[256] = {0};
     
     while (true) {
@@ -38,10 +38,10 @@ void reader(int socket, int *active_readers) {
 }
 
 int main() {
-    Semaphore * turn = new Semaphore(1);
-    Semaphore * write_guard = new Semaphore(1);
-    Semaphore * waiting_readers = new Semaphore(1);
-    std::atomic_int * active_readers = new std::atomic_int(0);
+    Semaphore turn(1);
+    Semaphore write_guard(1);
+    Semaphore waiting_readers(1);
+    std::atomic_int active_readers(0);
     
     struct sockaddr_in address;
     address.sin_family = AF_INET;
@@ -49,7 +49,7 @@ int main() {
     address.sin_port = htons(40000);
     int address_length = sizeof(address);
 
-    std::thread writer_thread (writer, turn, write_guard);
+    std::thread writer_thread (writer, std::ref(turn), std::ref(write_guard));
     int server_socket = socket(AF_INET, AF_INET, 0);
     bind(server_socket, (struct sockaddr *)&address, sizeof(address));
     listen(server_socket, 5);
@@ -57,7 +57,7 @@ int main() {
     while (true) {
         int client_socket = accept(server_socket, (struct sockaddr *)&address, (socklen_t*)&address_length);
         std::cout << "New reader" << std::endl;
-        std::thread reader_thread (reader, client_socket, active_readers);
+    	std::thread reader_thread (reader, client_socket, std::ref(active_readers));
     }
     writer_thread.join();
     return 0;
