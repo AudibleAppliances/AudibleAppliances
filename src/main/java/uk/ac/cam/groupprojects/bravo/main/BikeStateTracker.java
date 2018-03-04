@@ -4,6 +4,7 @@ import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.threads.SegmentActiveThread;
+import uk.ac.cam.groupprojects.bravo.main.threads.SegmentRecogniserThread;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
@@ -197,44 +198,29 @@ public class BikeStateTracker {
             segmentActive1.join();
             segmentActive2.join();
         } catch (InterruptedException e) {
+            //Lol help us if this happens
             if ( DEBUG )
                 e.printStackTrace();
         }
 
-
-
         // Recognise the text in each region of the screen
         if (currentScreen.getEnum() == ScreenEnum.RUNNING_SCREEN || currentScreen.getEnum() == ScreenEnum.PROGRAM) {
-            for (ScreenBox box : ScreenBox.values()) {
-                if (activeSegs.contains(box)) {
-                    for (BikeField field : box.getFields()) {
-                        if (field.getTitleBox() == null || activeSegs.contains(field.getTitleBox())) {
-                            if (DEBUG) {
-                                try {
-                                    System.out.println("Running OCR for " + field.toString());
-                                    long startTime = System.currentTimeMillis();
-                                    currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(box)));
-                                    long elapsedTime = System.currentTimeMillis() - startTime;
-                                    System.out.println("That took " + elapsedTime);
-                                }catch ( Exception e ){
-                                    //I don't care
-                                }
-                            }else {
-                                try {
-                                    System.out.println("Running OCR for " + field.toString());
-                                    long startTime = System.currentTimeMillis();
-                                    currentFields.get(field).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(box)));
-                                    long elapsedTime = System.currentTimeMillis() - startTime;
-                                    System.out.println("That took " + elapsedTime);
-                                }catch ( Exception e ){
-                                    //I don't care
-                                }
-                            }
+            Thread segmentRecogniser1 = new Thread(
+                    new SegmentRecogniserThread( thread1_boxes, activeSegs, imgSegs, currentFields )
+            );
+            Thread segmentRecogniser2 = new Thread(
+                    new SegmentRecogniserThread( thread2_boxes, activeSegs, imgSegs, currentFields )
+            );
 
-                        }
-                    }
-                }
+            try {
+                segmentRecogniser1.join();
+                segmentRecogniser2.join();
+            }catch (InterruptedException e){
+                //Lol help us even more if this happens
+                if ( DEBUG )
+                    e.printStackTrace();
             }
+
         } else {
             if ( DEBUG ){
                 try {
