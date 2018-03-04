@@ -8,7 +8,7 @@ python gpio/gpio.py &
 cd AudibleAppliances-master
 
 # Start the python image server script
-python image-server.py &
+./AudibleAppliances-master/daemon/daemon &
 
 # Start the interface web server
 cd webInterface
