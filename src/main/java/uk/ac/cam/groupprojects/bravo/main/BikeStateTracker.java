@@ -72,10 +72,8 @@ public class BikeStateTracker {
 
             ScreenBox.LCD_TEXT_1,
             ScreenBox.LCD_TEXT_2,
-            ScreenBox.LCD_TEXT_3,
-            ScreenBox.LCD_TEXT_4,
-            ScreenBox.LCD_TEXT_5_TOP,
-            ScreenBox.LCD_TEXT_5_BOTTOM,
+
+
 
     };
 
@@ -86,13 +84,22 @@ public class BikeStateTracker {
             ScreenBox.SPEED,
             ScreenBox.LOAD,
 
+
+            ScreenBox.LCD_TEXT_10,
+            ScreenBox.LCD_TEXT_11,
+            ScreenBox.LCD_TEXT_12,
+    };
+
+    private static final ScreenBox[] thread3_boxes = new ScreenBox[]{
+            ScreenBox.LCD_TEXT_3,
+            ScreenBox.LCD_TEXT_4,
+            ScreenBox.LCD_TEXT_5_TOP,
+            ScreenBox.LCD_TEXT_5_BOTTOM,
+
             ScreenBox.LCD_TEXT_6,
             ScreenBox.LCD_TEXT_7,
             ScreenBox.LCD_TEXT_8,
             ScreenBox.LCD_TEXT_9,
-            ScreenBox.LCD_TEXT_10,
-            ScreenBox.LCD_TEXT_11,
-            ScreenBox.LCD_TEXT_12,
     };
 
     public BikeStateTracker(ConfigData config, Synthesiser synth) {
@@ -190,13 +197,19 @@ public class BikeStateTracker {
                 new SegmentActiveThread( thread2_boxes, activeSegs, imgSegs )
         );
 
+        Thread segmentActive3 = new Thread(
+                new SegmentActiveThread( thread3_boxes, activeSegs, imgSegs )
+        );
+
         segmentActive1.start();
         segmentActive2.start();
+        segmentActive3.start();
 
         try {
             //Block until these have finished
             segmentActive1.join();
             segmentActive2.join();
+            segmentActive3.join();
         } catch (InterruptedException e) {
             //Lol help us if this happens
             if ( DEBUG )
@@ -211,10 +224,18 @@ public class BikeStateTracker {
             Thread segmentRecogniser2 = new Thread(
                     new SegmentRecogniserThread( thread2_boxes, activeSegs, imgSegs, currentFields )
             );
+            Thread segmentRecogniser3 = new Thread(
+                    new SegmentRecogniserThread( thread2_boxes, activeSegs, imgSegs, currentFields )
+            );
+
+            segmentRecogniser1.start();
+            segmentRecogniser2.start();
+            segmentRecogniser3.start();
 
             try {
                 segmentRecogniser1.join();
                 segmentRecogniser2.join();
+                segmentRecogniser3.join();
             }catch (InterruptedException e){
                 //Lol help us even more if this happens
                 if ( DEBUG )
