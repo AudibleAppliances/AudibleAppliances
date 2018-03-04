@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <ctime>
 #include <raspicam/raspicam_cv.h>
+#include "mappings.hpp"
 using namespace cv;
 using namespace std;
 
@@ -13,7 +14,7 @@ int main(int argc, char** argv) {
     raspicam::RaspiCam_Cv Camera;
     Camera.set(CV_CAP_PROP_FORMAT, CV_8UC1);
     Camera.set(CV_CAP_PROP_FRAME_WIDTH, mapping.resolution_x);
-    Camera.set(CV_CAP_PROP_FRAME_HEIGHT, mapping.resolution_y;
+    Camera.set(CV_CAP_PROP_FRAME_HEIGHT, mapping.resolution_y);
     Camera.set(CV_CAP_PROP_EXPOSURE, 20);
    
     if (!Camera.open()) {
@@ -29,7 +30,7 @@ int main(int argc, char** argv) {
     Camera.grab();
     Camera.retrieve(image);
 
-    remap(image, *new_image, *mapping.mapping_x, *mapping.mapping_y, INTER_LINEAR);
+    remap(image, *new_image, *mapping.get_mapping_x(), *mapping.get_mapping_y(), INTER_LINEAR);
     image.release();
     imwrite("new_image.jpg", *new_image);
     clock_t end = clock();

@@ -14,7 +14,8 @@
 #include "mappings.hpp"
 
 void create_image(Mapping &mapping, raspicam::RaspiCam_Cv &camera);
-void writer(Semaphore &turn, Semaphore &write_guard);
+void writer(Semaphore &turn, Semaphore &write_guard, Mapping &mapping,
+	    raspicam::RaspiCam_Cv &camera);
 void reader(int socket, std::atomic_int &active_readers, Semaphore &turn,
             Semaphore &waiting_readers, Semaphore &write_guard);
 
@@ -33,12 +34,12 @@ int main(int argc, char *argv[]) {
     std::cout << "Initialising Raspberry Pi camera" << std::endl;
     raspicam::RaspiCam_Cv camera;
     camera.set(CV_CAP_PROP_FORMAT, CV_8UC1);
-    camera.set(CV_CAP_PROP_FRAME_WIDTH, mapping.get_resolution_x());
-    camera.set(CV_CAP_PROP_FRAME_HEIGHT, mapping.get_resolution_y());
+    camera.set(CV_CAP_PROP_FRAME_WIDTH, mapping.resolution_x);
+    camera.set(CV_CAP_PROP_FRAME_HEIGHT, mapping.resolution_y);
     camera.set(CV_CAP_PROP_EXPOSURE, 20);
     
     if (!camera.open()) {
-        cerr << "Failed to open the camera" << endl;
+	    std::cerr << "Failed to open the camera" << std::endl;
         return 1;
     }
     
@@ -49,7 +50,7 @@ int main(int argc, char *argv[]) {
     address.sin_port = htons(40000);
     int address_length = sizeof(address);
     
-    std::thread writer_thread (writer, std::ref(turn), std::ref(write_guard));
+    std::thread writer_thread (writer, std::ref(turn), std::ref(write_guard), std::ref(mapping), std::ref(camera));
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
     bind(server_socket, (struct sockaddr *)&address, sizeof(address));
     listen(server_socket, 5);
@@ -66,13 +67,13 @@ int main(int argc, char *argv[]) {
 }
 
 void create_image(Mapping &mapping, raspicam::RaspiCam_Cv &camera) {
-    static cv::Mat *new_image = new cv::Mat(mapping.resolution_y, mapping.resolution_x, mapping.typ);
-    cv::Mat image;
+    static cv::Mat *new_image = new cv::Mat(mapping.resolution_y, mapping.resolution_x, mapping.type);
+    static cv::Mat image;
     camera.grab();
-    camera..retrieve(image);
-    cv::remap(image, *new_image, *mapping.mapping_x, *mapping.mapping_y, INTER_LINEAR);
+    camera.retrieve(image);
+    cv::remap(image, *new_image, *mapping.get_mapping_x(), *mapping.get_mapping_y(), cv::INTER_LINEAR);
     image.release();
-    cv::imwrite("new_image.jpg", *new_image);
+    cv::imwrite("/mnt/rd/image.jpg", *new_image);
 }
 
 void writer(Semaphore &turn, Semaphore &write_guard, Mapping &mapping, raspicam::RaspiCam_Cv &camera) {
@@ -85,7 +86,7 @@ void writer(Semaphore &turn, Semaphore &write_guard, Mapping &mapping, raspicam:
         create_image(std::ref(mapping), std::ref(camera));
         clock_t end = clock();
         total_time += double(end - begin) / CLOCKS_PER_SEC;
-        cout << "Created image in " << total_time << "s" << endl;
+	std::cout << "Created image in " << total_time << "s" << std::endl;
         write_guard.signal();
         turn.signal();
     }
