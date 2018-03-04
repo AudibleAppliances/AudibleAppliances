@@ -18,7 +18,7 @@ public class IntelligentCropping {
         FastRGB rgb = new FastRGB( image );
 
         int imageHeight = image.getHeight();
-        int height_limit = imageHeight * 10 / 100;
+        int height_limit = imageHeight * HEIGHT_LIMIT / 100;
 
         for ( int i = 0; i < image.getWidth(); i++ ){
             int start = -1;
