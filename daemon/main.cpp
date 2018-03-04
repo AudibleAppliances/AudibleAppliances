@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <ctime>
 #include <raspicam/raspicam_cv.h>
-#include "mapping.hpp"
 using namespace cv;
 using namespace std;
 
@@ -19,7 +18,7 @@ int main(int argc, char** argv) {
     if (!Camera.open()) {
 	cerr << "Failed to open the camera" << endl;
     }
-    Mapping mapping(1.2, 2.5);
+
     Mat* new_image = new Mat(resolution_y, resolution_x, type);
 
     double total_time = 0;
@@ -29,7 +28,7 @@ int main(int argc, char** argv) {
     Camera.grab();
     Camera.retrieve(image);
 
-    remap(image, *new_image, *mapping.get_mapping_x(), *mapping.get_mapping_y(), INTER_LINEAR);
+    remap(image, *new_image, *mapping_x, *mapping_y, INTER_LINEAR);
     image.release();
     imwrite("new_image.jpg", *new_image);
     clock_t end = clock();
