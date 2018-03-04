@@ -103,11 +103,9 @@ public class AudibleAppliances {
                 System.out.println("Run while loop");
             try {
 
-                long loopStartTime = System.currentTimeMillis();
+
                 BufferedImage image = ReadImage.readImage( ApplicationConstants.IMAGE_PATH );
-                long elapsedTime = System.currentTimeMillis() - loopStartTime;
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Time taken to time to take photo " + elapsedTime + "ms ");
+
 
                 Thread imageThread = new Thread(new ProcessImageThread(image));
                 imageThread.start();
@@ -145,12 +143,11 @@ public class AudibleAppliances {
 
         @Override
         public void run() {
+            if (ApplicationConstants.DEBUG)
+                System.out.println("ProcessImageThread process created");
+
+            long loopStartTime = System.currentTimeMillis();
             try {
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("ProcessImageThread process created");
-
-                long loopStartTime = System.currentTimeMillis();
-
                 // Segment image
                 Map<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
                 for (ScreenBox box : ScreenBox.values()) {
@@ -159,16 +156,15 @@ public class AudibleAppliances {
 
                 // Update tracker state
                 bikeStateTracker.updateState(imgSegs);
-
-                long elapsedTime = System.currentTimeMillis() - loopStartTime;
-
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Time taken to run image process thread (time to process photo) " + elapsedTime + "ms ");
-
             } catch (IOException | UnrecognisedDigitException e) {
                 if (DEBUG)
                     e.printStackTrace();
             }
+
+            long elapsedTime = System.currentTimeMillis() - loopStartTime;
+
+            if (ApplicationConstants.DEBUG)
+                System.out.println("Time taken to run image process thread (time to process photo) " + elapsedTime + "ms ");
         }
     }
 
