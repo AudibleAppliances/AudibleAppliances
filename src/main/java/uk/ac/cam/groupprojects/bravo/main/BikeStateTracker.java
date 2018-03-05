@@ -114,7 +114,10 @@ public class BikeStateTracker {
         }
 
         // Store the new state, with the time we recognised at the moment
-        history.add(new StateTime(currentTime, activeSegs, getFieldValue(BikeField.TIME).getValue()));
+        Time bikeTime = (Time)getFieldValue(BikeField.TIME);
+        if (bikeTime != null) { // If this is null, it just means we've only just started and don't have enough data yet
+            history.add(new StateTime(currentTime, activeSegs, bikeTime.getValue()));
+        }
 
         // Remove state information that's older than two complete blink cycles (2s) ago
         removeOldHistory(currentTime);
