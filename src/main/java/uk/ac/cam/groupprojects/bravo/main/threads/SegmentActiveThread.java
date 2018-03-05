@@ -32,7 +32,7 @@ public class SegmentActiveThread implements Runnable {
                 try {
                     System.out.println("Running segmentActive for " + box.name() );
                     long startTime = System.currentTimeMillis();
-                    if (SegmentActive.segmentActive(imgSegs.get(box))) {
+                    if (SegmentActive.segmentActive(box, imgSegs.get(box))) {
                         synchronized ( activeSegs ){
                             activeSegs.add(box);
                         }
@@ -47,7 +47,7 @@ public class SegmentActiveThread implements Runnable {
         }else {
             for ( ScreenBox box: boxes ){
                 try {
-                    if (SegmentActive.segmentActive(imgSegs.get(box))) {
+                    if (SegmentActive.segmentActive(box, imgSegs.get(box))) {
                         synchronized ( activeSegs ){
                             activeSegs.add(box);
                         }
