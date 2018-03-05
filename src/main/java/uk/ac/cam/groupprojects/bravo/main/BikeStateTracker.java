@@ -218,7 +218,7 @@ public class BikeStateTracker {
         }
 
         ImageTime lastImage = latestImages.get(containingBox);
-        if (lastImage.boxImage == null) { // No images for this box yet
+        if (lastImage == null || lastImage.boxImage == null) { // No images for this box yet
             return null;
         }
 
@@ -238,9 +238,17 @@ public class BikeStateTracker {
             }
 
             long elapsedTime = System.currentTimeMillis() - startTime;
-            System.out.println("OCR for " + field.toString() + " took " + elapsedTime + "ms");
+            if (ApplicationConstants.DEBUG) {
+                System.out.println("OCR for " + field.toString() + " took " + elapsedTime + "ms");
+            }
         }
 
+        if (ApplicationConstants.DEBUG) {
+            if (lastImage.recognisedValue == null)
+                System.out.println("Value of " + field.toString() + ": lastImage.recognisedValue null");
+            else
+                System.out.println("Value of " + field.toString() + ": " + lastImage.recognisedValue.getValue());
+        }
         return lastImage.recognisedValue;
     }
 
