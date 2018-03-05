@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Initialising server sockets" << std::endl;
     struct sockaddr_in address;
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = htonl(INADDR_ANY);
+    address.sin_addr.s_addr = inet_addr("127.0.0.1");
     address.sin_port = htons(40000);
     int address_length = sizeof(address);
     
@@ -60,6 +60,7 @@ int main(int argc, char *argv[]) {
         std::cout << "New reader" << std::endl;
         std::thread reader_thread (reader, client_socket, std::ref(active_readers),
                                    std::ref(turn), std::ref(waiting_readers), std::ref(write_guard));
+        reader_thread.detach();
     }
     writer_thread.join();
     camera.release();
@@ -94,8 +95,8 @@ void writer(Semaphore &turn, Semaphore &write_guard, Mapping &mapping, raspicam:
 
 void reader(int socket, std::atomic_int &active_readers, Semaphore &turn,
             Semaphore &waiting_readers, Semaphore &write_guard) {
-    char buffer[1] = {0};
-    char response[1] = {1};
+        char buffer[1] = {0};
+        char response[1] = {1};
         read(socket, buffer, 1);
         if (buffer[0] == 2) {
 	    std::cout << "Reader thread: Acquiring turn" << std::endl;
