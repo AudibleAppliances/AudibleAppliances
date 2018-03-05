@@ -23,12 +23,10 @@ public class SplitImage {
         ConfigData cd = new ConfigData(configPath);
         ImageSegments segments = new ImageSegments(cd);
 
-        //for ( ScreenBox box: ScreenBox.values() ){
-            ScreenBox box = ScreenBox.LCD6;
+        for ( ScreenBox box: ScreenBox.values() ){
+            //ScreenBox box = ScreenBox.LCD6;
             BufferedImage output = segments.getImageBox( box, img );
             ImageIO.write( output, "jpg", new File( "output/" + box.toString().toLowerCase() + ".jpg" ) );
-        //}
-
+        }
     }
-
 }
