@@ -103,11 +103,12 @@ public class BikeStateTracker {
             long startTime = System.currentTimeMillis();
 
             BufferedImage boxImage = imgSegs.get(box);
-            if (SegmentActive.segmentActive(boxImage)) {
+            if (SegmentActive.segmentActive(box, boxImage)) {
                 // If the LCD is active, record it and update the latest image we have of it
                 activeSegs.add(box);
                 latestImages.put(box, new ImageTime(currentTime, boxImage));
             }
+
             long elapsedTime = System.currentTimeMillis() - startTime;
             if (ApplicationConstants.DEBUG)
                 System.out.println("segmentActive(" + box.toString() + ") took " + elapsedTime + "ms");

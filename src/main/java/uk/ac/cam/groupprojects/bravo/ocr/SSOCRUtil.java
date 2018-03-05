@@ -14,13 +14,15 @@ import org.bytedeco.javacv.Java2DFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter.ToMat;
 
+import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.util.FastImageIO;
 
 public class SSOCRUtil {
     protected static final String IMG_TYPE = "png";
 
-    protected static final double THRESHOLD_SCALE = 1.3; // Empirically decided
+    protected static final double BLUE_BACKGROUND_THRESHOLD = 97; // Empirically decided
+    protected static final double BLACK_BACKGROUND_THRESHOLD = 60; // Empirically decided
 
     public static File saveTempFile(BufferedImage img) throws IOException {
         File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
@@ -59,7 +61,7 @@ public class SSOCRUtil {
         return startSSOCR(args);
     }
 
-    public static BufferedImage threshold(BufferedImage image) throws IOException {
+    public static BufferedImage threshold(ScreenBox box, BufferedImage image) throws IOException {
         // https://stackoverflow.com/questions/8368078/java-bufferedimage-to-iplimage
         ToMat iplConverter = new OpenCVFrameConverter.ToMat();
         Java2DFrameConverter java2dConverter = new Java2DFrameConverter();
@@ -76,7 +78,13 @@ public class SSOCRUtil {
 
         // Threshold the resulting image using the scaled average lightness
         Mat dst = new Mat();
-        double threshold = Math.min(opencv_core.mean(singleChannel).get() * THRESHOLD_SCALE, 255);
+
+        double threshold;
+        if (box.isBlackBackground()) {
+            threshold = BLACK_BACKGROUND_THRESHOLD;
+        } else {
+            threshold = BLUE_BACKGROUND_THRESHOLD;
+        }
         opencv_imgproc.threshold(singleChannel, dst, threshold, 255, opencv_imgproc.THRESH_BINARY);
 
         // Convert the result back into a BufferedImage
