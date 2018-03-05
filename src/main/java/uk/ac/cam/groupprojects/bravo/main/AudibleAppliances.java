@@ -64,10 +64,12 @@ public class AudibleAppliances {
             bikeStateTracker = new BikeStateTracker(configData, synthesiser);
             System.out.println("Components set up successfully!");
 
+            ReadImage readImage = new ReadImage();
+
 
             // Created thread to track the bike
             // Main entry point
-            runApplication(synthesiser, segmenter);
+            runApplication(synthesiser, segmenter, readImage);
 
         } catch(FestivalMissingException e ){
             e.printStackTrace();
@@ -90,7 +92,7 @@ public class AudibleAppliances {
         }
     }
 
-    static void runApplication(Synthesiser synthesiser, ImageSegments segmenter) throws IOException {
+    static void runApplication(Synthesiser synthesiser, ImageSegments segmenter, ReadImage readImage) throws IOException {
         System.out.println();
         System.out.println("Starting the bike state tracker! ");
         synthesiser.speak("Welcome to Audible Appliances");
@@ -101,7 +103,7 @@ public class AudibleAppliances {
                 System.out.println("Run while loop");
 
             try {
-                BufferedImage image = ReadImage.readImage( ApplicationConstants.IMAGE_PATH );
+                BufferedImage image = readImage.read(ApplicationConstants.IMAGE_PATH);
                 // Read successfully, reset the failed connection attempt counter
                 connectionAttempts = 0;
 
