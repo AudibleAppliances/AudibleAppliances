@@ -89,9 +89,10 @@ void writer(Semaphore &turn, Semaphore &write_guard, Mapping &mapping, raspicam:
         create_image(std::ref(mapping), std::ref(camera));
         clock_t end = clock();
         total_time += double(end - begin) / CLOCKS_PER_SEC;
-//    std::cout << "Created image in " << total_time << "s" << std::endl;
+//        std::cout << "Created image in " << total_time << "s" << std::endl;
         write_guard.signal();
         turn.signal();
+        std::this_thread::yield();
     }
 }
 
