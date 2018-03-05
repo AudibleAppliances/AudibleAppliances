@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     
     std::cout << "Initialising Raspberry Pi camera" << std::endl;
     raspicam::RaspiCam_Cv camera;
-    camera.set(CV_CAP_PROP_FORMAT, CV_8UC1);
+    camera.set(CV_CAP_PROP_FORMAT, CV_8UC3);
     camera.set(CV_CAP_PROP_FRAME_WIDTH, mapping.resolution_x);
     camera.set(CV_CAP_PROP_FRAME_HEIGHT, mapping.resolution_y);
     camera.set(CV_CAP_PROP_EXPOSURE, 30);
