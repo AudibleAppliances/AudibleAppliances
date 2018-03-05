@@ -69,7 +69,7 @@ public class AudibleAppliances {
             // Main entry point
             runApplication(synthesiser, segmenter);
 
-        } catch(FestivalMissingException e ){
+        } catch(FestivalMissingException e) {
             e.printStackTrace();
             System.out.println("FATAL ERROR: Could not load voice library!");
         } catch (ConfigException e) {

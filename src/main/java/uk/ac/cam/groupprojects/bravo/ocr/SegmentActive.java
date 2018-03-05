@@ -5,17 +5,19 @@ import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 
+import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
+
 public class SegmentActive {
     // "Threshold" is effectively the percentage (100% = 1.0) of the image that's white
-    public static boolean segmentActive(BufferedImage img) throws IOException {
-        return segmentActive(img, 0.05); // 5% white is a good default threshold (empirical)
+    public static boolean segmentActive(ScreenBox box, BufferedImage img) throws IOException {
+        return segmentActive(box, img, 0.05); // 5% white is a good default threshold (empirical)
     }
-    public static boolean segmentActive(BufferedImage img, double threshold) throws IOException {
-        return imageAverage(img) > threshold;
+    public static boolean segmentActive(ScreenBox box, BufferedImage img, double threshold) throws IOException {
+        return imageAverage(box, img) > threshold;
     }
 
-    public static double imageAverage(BufferedImage img) throws IOException {
-        BufferedImage grey = SSOCRUtil.threshold(img);
+    public static double imageAverage(ScreenBox box, BufferedImage img) throws IOException {
+        BufferedImage grey = SSOCRUtil.threshold(box, img);
         Raster raw = grey.getRaster();
 
         double sum = 0;

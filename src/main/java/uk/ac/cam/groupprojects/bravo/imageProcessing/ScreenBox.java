@@ -41,4 +41,24 @@ public enum ScreenBox {
     public BikeField[] getFields() {
         return fields.clone();
     }
+
+    public boolean isBlueBackground() {
+        switch(this) {
+            case LCD1:
+            case LCD2:
+            case LCD3:
+            case LCD4:
+            case LCD5:
+            case LCD6:
+            case SPEED:
+            case RPM:
+            case WATT:
+            case LOAD:  return true;
+            // All others
+            default:    return false;
+        }
+    }
+    public boolean isBlackBackground() {
+        return !isBlueBackground();
+    }
 }
