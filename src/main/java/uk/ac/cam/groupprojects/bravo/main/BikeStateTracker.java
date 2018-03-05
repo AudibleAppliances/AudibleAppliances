@@ -4,6 +4,7 @@ import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.IntelligentCropping;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
@@ -103,7 +104,7 @@ public class BikeStateTracker {
             long startTime = System.currentTimeMillis();
 
             BufferedImage boxImage = imgSegs.get(box);
-            if (SegmentActive.segmentActive(box, boxImage)) {
+            if (SegmentActive.segmentActive(boxImage)) {
                 // If the LCD is active, record it and update the latest image we have of it
                 activeSegs.add(box);
                 latestImages.put(box, new ImageTime(currentTime, boxImage));

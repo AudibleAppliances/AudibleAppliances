@@ -111,7 +111,7 @@ public class AudibleAppliances {
                 Map<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
                 for (ScreenBox box : ScreenBox.values()) {
                     BufferedImage boxImage = segmenter.getImageBox(box, image);
-                    boxImage = IntelligentCropping.intelligentCrop(boxImage);
+                    IntelligentCropping.intelligentCrop(boxImage);
 
                     imgSegs.put(box, boxImage);
                 }
