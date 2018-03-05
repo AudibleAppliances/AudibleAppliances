@@ -223,13 +223,7 @@ public class BikeStateTracker {
     }
 
     public ScreenNumber getFieldValue(BikeField field) {
-        if (field.getTitleBox() == null) {
-            return null;
-        }
-        ScreenBox containingBox = field.getTitleBox();
-        if (containingBox == null) {
-            return null;
-        }
+        ScreenBox containingBox = field.getScreenBox();
 
         ImageTime lastImage = latestImages.get(containingBox);
         if (lastImage == null || lastImage.boxImage == null) { // No images for this box yet

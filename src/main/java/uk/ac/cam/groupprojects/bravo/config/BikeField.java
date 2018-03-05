@@ -1,7 +1,7 @@
 package uk.ac.cam.groupprojects.bravo.config;
 
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
-import uk.ac.cam.groupprojects.bravo.model.Program;
+import uk.ac.cam.groupprojects.bravo.model.numbers.Program;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
 
 /**
@@ -10,32 +10,31 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.*;
  * @author Oliver Hope
  */
 public enum BikeField {
-    SPEED(ScreenBox.SPEED),
-    TIME,
-    DISTANCE,
-    RPM(ScreenBox.RPM),
-    CAL,
-    PULSE,
-    GRAPH,
-    PROGRAM,
-    LOAD(ScreenBox.LOAD),
-    WATT(ScreenBox.WATT);
+    SPEED(ScreenBox.LCD3),
+    TIME(ScreenBox.LCD1),
+    DISTANCE(ScreenBox.LCD4),
+    RPM(ScreenBox.LCD3),
+    CAL(ScreenBox.LCD6),
+    PULSE(ScreenBox.LCD2),
+    GRAPH(ScreenBox.GRAPH),
+    PROGRAM(ScreenBox.PROGRAM),
+    LOAD(ScreenBox.LCD5),
+    WATT(ScreenBox.LCD5);
 
     // Boxes containing titles showing if the display is active
-    private ScreenBox[] titleBoxes;
+    private ScreenBox screenBox;
 
-    BikeField(ScreenBox... title) {
-        this.titleBoxes = title;
+    BikeField(ScreenBox box) {
+        this.screenBox = box;
     }
 
     /**
-     * Get the box containing the relevant title
+     * Get the ScreenBox that can contain this field
      *
-     * @return The relevant ScreenBox, or null if there isn't one.
+     * @return The relevant ScreenBox
      */
-    public ScreenBox getTitleBox() {
-        if (titleBoxes.length == 0) return null;
-        else return titleBoxes[0];
+    public ScreenBox getScreenBox() {
+        return screenBox;
     }
 
     /**

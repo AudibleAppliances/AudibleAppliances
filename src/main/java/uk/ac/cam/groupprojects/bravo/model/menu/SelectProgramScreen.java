@@ -1,10 +1,10 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
+import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
-import uk.ac.cam.groupprojects.bravo.model.menu.BikeScreen;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 /**
@@ -12,15 +12,24 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
  */
 public class SelectProgramScreen extends BikeScreen {
 
+    private int currentProgram = 1;
+
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
 
-        return !state.isTimeChanging() &&
+        boolean isActive = !state.isTimeChanging() &&
                state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
                state.getBoxState(ScreenBox.LCD_TEXT_3) == LCDState.BLINKING &&
                state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.BLINKING &&
                state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.BLINKING &&
                state.getBoxState(ScreenBox.LCD_TEXT_9) == LCDState.BLINKING;
+
+        // If this is the current state, we get the program number
+        if (isActive) {
+            currentProgram = state.getFieldValue(BikeField.PROGRAM).getValue();
+        }
+
+        return isActive;
     }
 
     @Override
@@ -30,7 +39,8 @@ public class SelectProgramScreen extends BikeScreen {
 
     @Override
     public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
-        synthesiser.speak("Currently selecting program. Click Enter to select your desired program.");
+        synthesiser.speak("Currently selecting program. The current program is program " +
+                currentProgram + ". Rotate to change or enter to select your desired program.");
     }
 
     @Override

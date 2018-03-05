@@ -39,8 +39,8 @@ public class RunningScreen extends BikeScreen {
             loadTip = true;
         }
 
-        if ( bikeStateTracker.isBoxActiveNow( ScreenBox.LOAD ) ){
-            synthesiser.speak( bikeStateTracker.getFieldValue( BikeField.LOAD ).speakValue() );
+        if ( bikeStateTracker.isBoxActiveNow(ScreenBox.LOAD) ){
+            synthesiser.speak( bikeStateTracker.getFieldValue(BikeField.LOAD).speakValue() );
             speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ / 5;
         }else {
             ConfigData configData = bikeStateTracker.getConfig();

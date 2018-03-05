@@ -56,6 +56,11 @@
 				"width": 6.5,
 				"height": 3.5
 			},
+			"program": {
+				"corner": [23.2, 49.6],
+				"width": 6.5,
+				"height": 3.5
+			},
 			"lcd_text_1": {
 				"corner": [30.7, 51],
 				"width": 3.6,

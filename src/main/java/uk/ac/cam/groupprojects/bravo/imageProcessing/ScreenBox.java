@@ -15,22 +15,16 @@ public enum ScreenBox {
     LCD4(BikeField.DISTANCE),
     LCD5(BikeField.WATT, BikeField.LOAD),
     LCD6(BikeField.CAL),
-    GRAPH, SPEED, RPM, WATT, LOAD,
+    GRAPH, PROGRAM, WATT, RPM, LOAD,
 
-    //This is disgusting but desperate times
+    // This is disgusting but desperate times
     LCD_TEXT_1,
-    LCD_TEXT_2,
     LCD_TEXT_3,
     LCD_TEXT_4,
     LCD_TEXT_5_TOP,
-    LCD_TEXT_5_BOTTOM,
-    LCD_TEXT_6,
-    LCD_TEXT_7,
-    LCD_TEXT_8,
     LCD_TEXT_9,
     LCD_TEXT_10,
-    LCD_TEXT_11,
-    LCD_TEXT_12;
+    LCD_TEXT_11;
 
     private BikeField[] fields;
 
@@ -49,13 +43,9 @@ public enum ScreenBox {
             case LCD3:
             case LCD4:
             case LCD5:
-            case LCD6:
-            case SPEED:
-            case RPM:
-            case WATT:
-            case LOAD:  return true;
+            case LCD6: return true;
             // All others
-            default:    return false;
+            default:   return false;
         }
     }
     public boolean isBlackBackground() {
