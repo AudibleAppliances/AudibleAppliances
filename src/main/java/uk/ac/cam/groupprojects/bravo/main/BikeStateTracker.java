@@ -95,11 +95,6 @@ public class BikeStateTracker {
      */
     public void updateState(Map<ScreenBox, BufferedImage> imgSegs)
                 throws IOException, UnrecognisedDigitException, NumberFormatException {
-
-        ////////////////////////////////////////
-        // Update the state (ie field values) //
-        ////////////////////////////////////////
-
         LocalDateTime currentTime = LocalDateTime.now();
         Set<ScreenBox> activeSegs = new HashSet<>();
 
