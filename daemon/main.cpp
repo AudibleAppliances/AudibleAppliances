@@ -37,7 +37,8 @@ int main(int argc, char *argv[]) {
     camera.set(CV_CAP_PROP_FORMAT, CV_8UC1);
     camera.set(CV_CAP_PROP_FRAME_WIDTH, mapping.resolution_x);
     camera.set(CV_CAP_PROP_FRAME_HEIGHT, mapping.resolution_y);
-    camera.set(CV_CAP_PROP_EXPOSURE, 20);
+    camera.set(CV_CAP_PROP_EXPOSURE, 30);
+    camera.set(CV_CAP_PROP_MODE, 2);
     
     if (!camera.open()) {
 	    std::cerr << "Failed to open the camera" << std::endl;
