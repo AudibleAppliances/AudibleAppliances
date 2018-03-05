@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-
 import org.bytedeco.javacpp.opencv_core.*;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_imgcodecs;
@@ -66,17 +64,22 @@ public class SSOCRUtil {
         ToMat iplConverter = new OpenCVFrameConverter.ToMat();
         Java2DFrameConverter java2dConverter = new Java2DFrameConverter();
 
+        // Convert input image to an OpenCV Matrix
         Mat src = iplConverter.convertToMat(java2dConverter.convert(image));
+        // Convert the source image from BGR to HLS
         opencv_imgproc.cvtColor(src, src, opencv_imgproc.COLOR_BGR2HLS);
+        // Extract only the L (lightness) component
         Mat singleChannel = new Mat(src.size(), opencv_core.CV_8UC1);
         MatVector mv = new MatVector(src.channels());
         mv.put(1, singleChannel);
         opencv_core.split(src, mv);
 
+        // Threshold the resulting image using the scaled average lightness
         Mat dst = new Mat();
         double threshold = Math.min(opencv_core.mean(singleChannel).get() * THRESHOLD_SCALE, 255);
         opencv_imgproc.threshold(singleChannel, dst, threshold, 255, opencv_imgproc.THRESH_BINARY);
 
+        // Convert the result back into a BufferedImage
         return java2dConverter.convert(iplConverter.convert(dst));
     }
 }
