@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <atomic>
 #include "semaphore.hpp"
 #include "mappings.hpp"
