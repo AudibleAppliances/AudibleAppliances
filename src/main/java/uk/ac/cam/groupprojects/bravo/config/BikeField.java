@@ -38,7 +38,7 @@ public enum BikeField {
         else return titleBoxes[0];
     }
 
-    public ScreenNumber getObject() {
+    public ScreenNumber getScreenNumber() {
         switch(this) {
             case SPEED: return new Speed();
             case TIME: return new Time();
