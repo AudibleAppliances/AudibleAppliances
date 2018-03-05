@@ -6,19 +6,29 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
+import org.bytedeco.javacpp.opencv_core.*;
+import org.bytedeco.javacpp.opencv_core;
+import org.bytedeco.javacpp.opencv_imgcodecs;
+import org.bytedeco.javacpp.opencv_imgproc;
+import org.bytedeco.javacv.Java2DFrameConverter;
+import org.bytedeco.javacv.OpenCVFrameConverter;
+import org.bytedeco.javacv.OpenCVFrameConverter.ToMat;
 
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
+import uk.ac.cam.groupprojects.bravo.util.FastImageIO;
 
 public class SSOCRUtil {
     protected static final String IMG_TYPE = "png";
 
+    protected static final double THRESHOLD_SCALE = 1.3; // Empirically decided
+
     public static File saveTempFile(BufferedImage img) throws IOException {
         File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
+        //File f = File.createTempFile("audible", "." + IMG_TYPE);
         return saveFile(img, f);
     }
     public static File saveFile(BufferedImage img, File f) throws IOException {
-        ImageIO.write(img, IMG_TYPE, f);
+        FastImageIO.write(img, IMG_TYPE, f);
         return f;
     }
 
@@ -49,31 +59,27 @@ public class SSOCRUtil {
         return startSSOCR(args);
     }
 
-    public static BufferedImage makeMonochrome(BufferedImage image) throws IOException {
-        File f = null;
-        try {
-            f = saveTempFile(image);
-            makeMonochrome(f.getPath(), f.getPath());
-            BufferedImage result = ImageIO.read(f);
-            return result;
-        }
-        finally {
-            if (f != null)
-                f.delete();
-        }
-    }
-    public static void makeMonochrome(String imagePath, String outputPath) throws IOException {
-        List<String> args = new ArrayList<>();
+    public static BufferedImage threshold(BufferedImage image) throws IOException {
+        // https://stackoverflow.com/questions/8368078/java-bufferedimage-to-iplimage
+        ToMat iplConverter = new OpenCVFrameConverter.ToMat();
+        Java2DFrameConverter java2dConverter = new Java2DFrameConverter();
 
-        // Perform thresholding only on green channel. This means that white/green text is
-        // saved, while the blue background is deleted.
-        args.add("g_threshold");
-        args.add("invert"); // Invert to get black text on a white background (as required by SSOCR)
-        args.add("-o");
-        args.add(outputPath);
-        args.add(imagePath);
+        // Convert input image to an OpenCV Matrix
+        Mat src = iplConverter.convertToMat(java2dConverter.convert(image));
+        // Convert the source image from BGR to HLS
+        opencv_imgproc.cvtColor(src, src, opencv_imgproc.COLOR_BGR2HLS);
+        // Extract only the L (lightness) component
+        Mat singleChannel = new Mat(src.size(), opencv_core.CV_8UC1);
+        MatVector mv = new MatVector(src.channels());
+        mv.put(1, singleChannel);
+        opencv_core.split(src, mv);
 
-        Process p = startSSOCR(args);
-        waitFor(p);
+        // Threshold the resulting image using the scaled average lightness
+        Mat dst = new Mat();
+        double threshold = Math.min(opencv_core.mean(singleChannel).get() * THRESHOLD_SCALE, 255);
+        opencv_imgproc.threshold(singleChannel, dst, threshold, 255, opencv_imgproc.THRESH_BINARY);
+
+        // Convert the result back into a BufferedImage
+        return java2dConverter.convert(iplConverter.convert(dst));
     }
 }

@@ -2,8 +2,13 @@ package uk.ac.cam.groupprojects.bravo.tts;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -20,6 +25,9 @@ public class Synthesiser implements AutoCloseable {
     private final PrintWriter out;
     private final Scanner in;
 
+    // Command queue
+    private BlockingQueue<String> commandQueue;
+
     public Synthesiser() throws FestivalMissingException {
         festival = spawnFestivalProcess();
         out = new PrintWriter(festival.getOutputStream());
@@ -30,7 +38,37 @@ public class Synthesiser implements AutoCloseable {
         String s = "";
         while (!s.startsWith("festival>")) {
             s = in.next();
+            if (ApplicationConstants.DEBUG)
+                System.out.print(s);
         }
+        System.out.println();
+
+        commandQueue = new LinkedBlockingQueue<>();
+
+        // Speak thread to pull from queue and speak
+        Thread speakThread = new Thread(() -> {
+            while (true) {
+                try {
+                    // Take latest string from queue
+                    String toSpeak = commandQueue.take();
+
+                    // Request Festival to synthesise the text
+                    write("(SayText \"" + toSpeak + "\")");
+
+                    // Discard the next line of input (contains "utterance" information)
+                    // Festival only output a line after it's finished speaking, so this also causes us to
+                    // block until it's done speaking (desirable behaviour).
+                    String l = readLine();
+                    if (ApplicationConstants.DEBUG)
+                        System.out.println(l);
+                } catch (InterruptedException e) {
+                    // Empty as we want to keep going if this happens
+                }
+            }
+        });
+
+        speakThread.setDaemon(true);
+        speakThread.start();
     }
     public Synthesiser(String voice) throws FestivalMissingException,
                                             VoiceMissingException {
@@ -38,7 +76,7 @@ public class Synthesiser implements AutoCloseable {
         setVoice(voice);
     }
 
-    public void setVoice(String voice) throws VoiceMissingException {
+    public synchronized void setVoice(String voice) throws VoiceMissingException {
         // Sets the voice used by Festival
         write("(voice_" + voice + ")");
         
@@ -51,7 +89,7 @@ public class Synthesiser implements AutoCloseable {
 
     // Sets the rate of playback of the voice
     // rate is measured in Hertz - valid values are from 2000 to 192000 inclusive (see aplay's documentation)
-    public void setRate(int rate) throws RateSetException {
+    public synchronized void setRate(int rate) throws RateSetException {
         if (rate < 2000 || rate > 192000) {
             throw new RateSetException("Invalid rate: must be between 2000Hz and 192000Hz inclusive.");
         }
@@ -80,17 +118,17 @@ public class Synthesiser implements AutoCloseable {
         }
     }
 
+    // Put text in queue to be spoken on the speak thread
     public void speak(String text) {
-        // Request Festival to synthesise the text
-        write("(SayText \"" + text + "\")");
-        // Discard the next line of input (contains "utterance" information)
-        // Festival only output a line after it's finished speaking, so this also causes us to
-        // block until it's done speaking (desirable behaviour).
-        readLine();
+        try {
+            commandQueue.put(text);
+        } catch (InterruptedException e) {
+            // Just return
+        }
     }
     
     @Override
-    public void close() {
+    public synchronized void close() {
         try {
             in.close();
             out.close();
@@ -101,22 +139,24 @@ public class Synthesiser implements AutoCloseable {
     }
 
     // Output a command to the festival process
-    private void write(String s) {
+    private synchronized void write(String s) {
         out.write(s + "\n");
         out.flush();
     }
     // Read a single whitespace-delimited token from the process' output.
     // Ignore tokens containing the festival prompt ("festival>")
-    private String read() {
+    private synchronized String read() {
         String s;
         do {
             s = in.next();
+            if (ApplicationConstants.DEBUG)
+                System.out.print(s);
         } while (s.startsWith("festival>"));
         return s;
     }
     // Reada newline-delimited string from the process' output.
     // Ignore tokens containing the festival prompt ("festival>")
-    private String readLine() {
+    private synchronized String readLine() {
         String s = in.nextLine().trim();
         if (s.startsWith("festival> ")) {
             s = s.substring(10);
@@ -124,7 +164,7 @@ public class Synthesiser implements AutoCloseable {
         return s;
     }
 
-    public static List<String> getVoices() throws FestivalMissingException,
+    public synchronized static List<String> getVoices() throws FestivalMissingException,
                                                   InvalidVoiceListException {
         try (Synthesiser synth = new Synthesiser()) {
             // Tell the festival process to list the available voices
