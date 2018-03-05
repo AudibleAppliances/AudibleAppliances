@@ -22,6 +22,9 @@ public class ReadImage {
      * @throws IOException Opening the socket fails
      */
     public ReadImage() throws IOException {
+
+        if (ApplicationConstants.DEBUG) System.out.println("Opening initial socket");
+
         socket = new Socket("127.0.0.1", ApplicationConstants.DAEMON_PORT);
     }
 
@@ -33,9 +36,6 @@ public class ReadImage {
      */
     public BufferedImage read(String imagePath) throws IOException {
 
-        if (ApplicationConstants.DEBUG)
-            System.out.println("ReadImage: Opening a socket");
-
         long loopStartTime = System.currentTimeMillis();
         long elapsedTime, elapsedTime2, loopSubSetTime = System.currentTimeMillis();
 
@@ -46,6 +46,9 @@ public class ReadImage {
         try {
             out.write(2);
         } catch (IOException e) {
+
+            if (ApplicationConstants.DEBUG) System.out.println("Socket closed, opening new socket");
+
             socket = new Socket("127.0.0.1", ApplicationConstants.DAEMON_PORT);
             out.write(2);
         }
