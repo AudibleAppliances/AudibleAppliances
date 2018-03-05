@@ -5,8 +5,6 @@ import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-
 public class SegmentActive {
     // "Threshold" is effectively the percentage (100% = 1.0) of the image that's white
     public static boolean segmentActive(BufferedImage img) throws IOException {
@@ -18,7 +16,6 @@ public class SegmentActive {
 
     public static double imageAverage(BufferedImage img) throws IOException {
         BufferedImage grey = SSOCRUtil.threshold(img);
-        try { ImageIO.write(grey, "jpg", new File("out.jpg")); } catch (Exception e) {}
         Raster raw = grey.getRaster();
 
         double sum = 0;

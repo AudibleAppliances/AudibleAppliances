@@ -95,11 +95,6 @@ public class BikeStateTracker {
      */
     public void updateState(Map<ScreenBox, BufferedImage> imgSegs)
                 throws IOException, UnrecognisedDigitException, NumberFormatException {
-
-        ////////////////////////////////////////
-        // Update the state (ie field values) //
-        ////////////////////////////////////////
-
         LocalDateTime currentTime = LocalDateTime.now();
         Set<ScreenBox> activeSegs = new HashSet<>();
 
@@ -119,7 +114,10 @@ public class BikeStateTracker {
         }
 
         // Store the new state, with the time we recognised at the moment
-        history.add(new StateTime(currentTime, activeSegs, getFieldValue(BikeField.TIME).getValue()));
+        Time bikeTime = (Time)getFieldValue(BikeField.TIME);
+        if (bikeTime != null) { // If this is null, it just means we've only just started and don't have enough data yet
+            history.add(new StateTime(currentTime, activeSegs, bikeTime.getValue()));
+        }
 
         // Remove state information that's older than two complete blink cycles (2s) ago
         removeOldHistory(currentTime);
@@ -138,6 +136,21 @@ public class BikeStateTracker {
             System.out.println();
         }
 
+        BikeScreen newScreen = null;
+        for (ScreenEnum s : ScreenEnum.values()) {
+            BikeScreen screen = s.getBikeScreen();
+            boolean inState = screen.isActiveScreen(this);
+            if (inState) {
+                newScreen = screen;
+                break;
+            }
+        }
+        if (newScreen == null) {
+            System.out.println("Failed to identify state");
+        }
+
+        currentScreen = newScreen;
+        
         // Check if it's the time to speak, and if yes then speak
         if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
             currentScreen.speakItems(this, synthesiser);

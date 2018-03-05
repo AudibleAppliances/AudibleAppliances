@@ -38,8 +38,6 @@ public class Synthesiser implements AutoCloseable {
         String s = "";
         while (!s.startsWith("festival>")) {
             s = in.next();
-            if (ApplicationConstants.DEBUG)
-                System.out.print(s);
         }
         System.out.println();
 
@@ -59,8 +57,6 @@ public class Synthesiser implements AutoCloseable {
                     // Festival only output a line after it's finished speaking, so this also causes us to
                     // block until it's done speaking (desirable behaviour).
                     String l = readLine();
-                    if (ApplicationConstants.DEBUG)
-                        System.out.println(l);
                 } catch (InterruptedException e) {
                     // Empty as we want to keep going if this happens
                 }
@@ -149,8 +145,6 @@ public class Synthesiser implements AutoCloseable {
         String s;
         do {
             s = in.next();
-            if (ApplicationConstants.DEBUG)
-                System.out.print(s);
         } while (s.startsWith("festival>"));
         return s;
     }
