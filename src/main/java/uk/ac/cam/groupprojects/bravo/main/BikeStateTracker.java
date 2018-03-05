@@ -136,6 +136,21 @@ public class BikeStateTracker {
             System.out.println();
         }
 
+        BikeScreen newScreen = null;
+        for (ScreenEnum s : ScreenEnum.values()) {
+            BikeScreen screen = s.getBikeScreen();
+            boolean inState = screen.isActiveScreen(this);
+            if (inState) {
+                newScreen = screen;
+                break;
+            }
+        }
+        if (newScreen == null) {
+            System.out.println("Failed to identify state");
+        }
+
+        currentScreen = newScreen;
+        
         // Check if it's the time to speak, and if yes then speak
         if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
             currentScreen.speakItems(this, synthesiser);
