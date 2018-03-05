@@ -66,7 +66,6 @@ public class AudibleAppliances {
 
             ReadImage readImage = new ReadImage();
 
-
             // Created thread to track the bike
             // Main entry point
             runApplication(synthesiser, segmenter, readImage);

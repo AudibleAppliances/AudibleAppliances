@@ -8,7 +8,7 @@ import java.io.*;
 import java.net.Socket;
 
 /**
- * Reads image, communicating with daemon process to not corrupt writes.
+ * Reads image, communicating with daemon process for locking so as not to corrupt writes.
  *
  * @author Oliver Hope
  */
@@ -16,6 +16,11 @@ public class ReadImage {
 
     private Socket socket;
 
+    /**
+     * Create an image reader, opening a socket to use over all reads
+     *
+     * @throws IOException Opening the socket fails
+     */
     public ReadImage() throws IOException {
         socket = new Socket("127.0.0.1", ApplicationConstants.DAEMON_PORT);
     }
