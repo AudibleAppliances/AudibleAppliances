@@ -97,34 +97,36 @@ void writer(Semaphore &turn, Semaphore &write_guard, Mapping &mapping, raspicam:
 
 void reader(int socket, std::atomic_int &active_readers, Semaphore &turn,
             Semaphore &waiting_readers, Semaphore &write_guard) {
-        char buffer[1] = {0};
-        char response[1] = {1};
+    char buffer[1] = {0};
+    char response[1] = {1};
+    while (true) {
         read(socket, buffer, 1);
         if (buffer[0] == 2) {
-//        std::cout << "Reader thread: Acquiring turn" << std::endl;
-	    turn.wait();
-	    turn.signal();
+//            std::cout << "Reader thread: Acquiring turn" << std::endl;
+            turn.wait();
+            turn.signal();
 
-//        std::cout << "Reader thread: Acquiring waiting_readers" << std::endl;
-	    waiting_readers.wait();
-	    if (std::atomic_load(&active_readers) == 0) {
-	        write_guard.wait();
-	    }
-	    std::atomic_fetch_add(&active_readers, 1);
-	    waiting_readers.signal();
-
-//        std::cout << "Reader thread: Sending 1 to client socket" << std::endl;
-	    send(socket, response, 1, 0);
-            
-//        std::cout << "Reader thread: Wait to hear from client to read" << std::endl;
-	    read(socket, buffer, 1);
-
-//        std::cout << "Reader thread: Acquiring waiting_readers" << std::endl;
-	    waiting_readers.wait();
-	    std::atomic_fetch_sub(&active_readers, 1);
-	    if (std::atomic_load(&active_readers) == 0) {
-                write_guard.signal();
+//            std::cout << "Reader thread: Acquiring waiting_readers" << std::endl;
+            waiting_readers.wait();
+            if (std::atomic_load(&active_readers) == 0) {
+                write_guard.wait();
             }
-	    waiting_readers.signal();
+            std::atomic_fetch_add(&active_readers, 1);
+            waiting_readers.signal();
+
+//            std::cout << "Reader thread: Sending 1 to client socket" << std::endl;
+            send(socket, response, 1, 0);
+            
+//            std::cout << "Reader thread: Wait to hear from client to read" << std::endl;
+            read(socket, buffer, 1);
+
+//            std::cout << "Reader thread: Acquiring waiting_readers" << std::endl;
+            waiting_readers.wait();
+            std::atomic_fetch_sub(&active_readers, 1);
+            if (std::atomic_load(&active_readers) == 0) {
+                    write_guard.signal();
+                }
+            waiting_readers.signal();
+        }
 	}
 }
