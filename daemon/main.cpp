@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     std::atomic_int active_readers(0);
     
     std::cout << "Creating and initialising mapping object" << std::endl;
-    Mapping mapping(1.2, 2.5);
+    Mapping mapping(1.2, 2.5, true);
     
     std::cout << "Initialising Raspberry Pi camera" << std::endl;
     raspicam::RaspiCam_Cv camera;

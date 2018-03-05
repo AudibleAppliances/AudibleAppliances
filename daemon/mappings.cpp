@@ -9,7 +9,7 @@ cv::Mat * Mapping::get_mapping_y() {
     return mapping_y;
 }
 
-Mapping::Mapping(double zoom, double strength) {
+Mapping::Mapping(double zoom, double strength, bool rotate) {
     this->zoom = zoom;
     this->strength = strength;
     
@@ -41,8 +41,13 @@ Mapping::Mapping(double zoom, double strength) {
             
             
             if ((0 <= source_x) && (source_x < resolution_x) && (0 <= source_y) && (source_x < resolution_x)) {
-                mapping_x->at<float>(y,x) = source_x;
-                mapping_y->at<float>(y,x) = source_y;
+                if (rotate) {
+                    mapping_x->at<float>(y,x) = source_x;
+                    mapping_y->at<float>(y,x) = resolution_y - source_y;
+                } else {
+                    mapping_x->at<float>(y,x) = source_x;
+                    mapping_y->at<float>(y,x) = source_y;
+                }
             }
         }
     }
