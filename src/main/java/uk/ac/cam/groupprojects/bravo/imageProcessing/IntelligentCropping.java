@@ -1,48 +1,33 @@
 package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 
-/**
- * Created by david on 03/03/2018.
- *
- * Works on threshold-ed images (white on black backgrounds)
- * Basically removes anything at the top of the screen, i.e. the bottom of a label
- */
+import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;;
+
 public class IntelligentCropping {
+    private static final double THRESHOLD = 0.7; // Pixels with red component under 70% are removed
+    private static final double MAX_DEPTH_PERCENT = 0.1; // Up to 10% can be cut out
 
-    private static final int THRESHOLD_LIMIT = 40;
-    private static final int SEARCH_LIMIT = 2;
-    private static final int HEIGHT_LIMIT = 10; //percentage of height;
+    public static void intelligentCrop(BufferedImage image) {
+        SSOCRUtil.assertImageBGR(image);
 
-    public static BufferedImage intelligentCrop( BufferedImage image ){
-        FastRGB rgb = new FastRGB( image );
+        WritableRaster raw = image.getRaster();
 
-        int imageHeight = image.getHeight();
-        int height_limit = imageHeight * HEIGHT_LIMIT / 100;
+        final int HEIGHT_LIMIT = (int)(raw.getHeight() * MAX_DEPTH_PERCENT);
 
-        for ( int i = 0; i < image.getWidth(); i++ ){
-            int start = -1;
-            int height = 0;
-            int limit = SEARCH_LIMIT;
+        for (int x = 0; x < raw.getWidth(); x++) {
+            for (int y = 0; y < HEIGHT_LIMIT; y++) {
+                double red = raw.getSampleDouble(x, y, 2);
 
-            for ( int j = 0; j < limit; j++ ){
-                if ( rgb.getRGB(i, j) > THRESHOLD_LIMIT ){
-                    if ( start == -1 )
-                        start = j;
-
-                    limit++;
-                    height++;
-                }
-                if ( height > height_limit ){
+                // If the pixel is background (< thresh), then there's no bleed from something above,
+                // so we move onto the next column. Otherwise, we set the pixel to black
+                if (red < THRESHOLD) {
                     break;
+                } else {
+                    raw.setPixel(x, y, new double[] { 0, 0, 0 });
                 }
-            }
-            if ( height > 0 && height < height_limit ){
-                image.setRGB( i, start, 1, height, new int[ height ], 0, 1 );
             }
         }
-
-        return image;
     }
-
 }

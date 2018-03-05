@@ -9,11 +9,17 @@ import java.io.IOException;
 public class SegmentRecogniser {
     public static int recogniseInt(String imagePath)
                 throws IOException, NumberFormatException, UnrecognisedDigitException {
-        return Integer.parseInt(recognise(imagePath));
+        String s = recognise(imagePath);
+
+        s.replaceAll("\\.", "");
+        return Integer.parseInt(s);
     }
     public static int recogniseInt(BufferedImage img) 
                 throws IOException, NumberFormatException, UnrecognisedDigitException {
-        return Integer.parseInt(recognise(img));
+        String s = recognise(img);
+
+        s.replaceAll("\\.", "");
+        return Integer.parseInt(s);
     }
 
     public static float recogniseFloat(String imagePath)
