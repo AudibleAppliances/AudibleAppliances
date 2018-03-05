@@ -38,6 +38,11 @@ public enum BikeField {
         else return titleBoxes[0];
     }
 
+    /**
+     * Get a new instance of the ScreenNumber associated with the enum value
+     *
+     * @return new ScreenNumber instance (of relevant class)
+     */
     public ScreenNumber getScreenNumber() {
         switch(this) {
             case SPEED: return new Speed();
