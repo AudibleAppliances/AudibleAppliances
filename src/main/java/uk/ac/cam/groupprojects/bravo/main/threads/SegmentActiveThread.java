@@ -33,7 +33,10 @@ public class SegmentActiveThread implements Runnable {
                     System.out.println("Running segmentActive for " + box.name() );
                     long startTime = System.currentTimeMillis();
                     if (SegmentActive.segmentActive(imgSegs.get(box))) {
-                        activeSegs.add(box);
+                        synchronized ( activeSegs ){
+                            activeSegs.add(box);
+                        }
+
                     }
                     long elapsedTime = System.currentTimeMillis() - startTime;
                     System.out.println("segmentActive took " + elapsedTime);
@@ -45,7 +48,9 @@ public class SegmentActiveThread implements Runnable {
             for ( ScreenBox box: boxes ){
                 try {
                     if (SegmentActive.segmentActive(imgSegs.get(box))) {
-                        activeSegs.add(box);
+                        synchronized ( activeSegs ){
+                            activeSegs.add(box);
+                        }
                     }
                 } catch (IOException e) {
                     //Do nothing lol
