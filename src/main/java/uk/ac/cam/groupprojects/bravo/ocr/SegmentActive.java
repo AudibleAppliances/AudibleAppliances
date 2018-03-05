@@ -18,7 +18,7 @@ public class SegmentActive {
 
     public static double imageAverage(BufferedImage img) throws IOException {
         BufferedImage grey = SSOCRUtil.threshold(img);
-        try { ImageIO.write(grey, "jpg", new File("out.jpg")); } catch (Exception e) {}
+        //try { ImageIO.write(grey, "jpg", new File("out.jpg")); } catch (Exception e) {}
         Raster raw = grey.getRaster();
 
         double sum = 0;
