@@ -127,12 +127,13 @@ public class BikeStateTracker {
         if (bikeTime != null) { // If this is null, it just means we've only just started and don't have enough data yet
             history.add(new StateTime(currentTime, activeSegs, bikeTime.getValue()));
         }
+        // DEBUG
+        if (bikeTime == null) {
+            System.out.println("Failed to recognise the time");
+        }
 
         // Remove state information that's older than two complete blink cycles (2s) ago
         removeOldHistory(currentTime);
-        if (ApplicationConstants.DEBUG) {
-            System.out.println("Items in history: " + history.size());
-        }
 
         // Update which LCDs we know are solid/blinking
         updateSolidBlinking(currentTime);
@@ -218,14 +219,20 @@ public class BikeStateTracker {
                                .allMatch(s -> s.bikeTime == currentBikeTime);
     }
     private void removeOldHistory(LocalDateTime currentTime) {
+        System.out.println();
+        System.out.println("Removing old history. Current time " + currentTime.getNano() * 1000);
+
         while (history.size() > 0) {
+            System.out.println("Looking at " + history.getFirst().addedTime.getNano() * 1000);
             if (currentTime.minus(4 * ApplicationConstants.BLINK_FREQ, ChronoUnit.MILLIS)
                            .isAfter(history.getFirst().addedTime)) {
                 history.removeFirst();
             } else {
                 break;
-            }                
+            }
         }
+
+        System.out.println();
     }
 
     public ConfigData getConfig() {
