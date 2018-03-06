@@ -42,6 +42,6 @@ public abstract class ScreenNumber {
      * Gives a string that can be spoken out lo
      * @return
      */
-    public abstract String speakValue();
+    public abstract String formatSpeech();
 
 }

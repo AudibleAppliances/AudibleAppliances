@@ -4,17 +4,10 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
-import uk.ac.cam.groupprojects.bravo.model.menu.BikeScreen;
-import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
-/**
- * Created by david on 01/03/2018.
- */
 public class SelectProgramScreen extends BikeScreen {
-
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
-
         return !state.isTimeChanging() &&
                state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
                state.getBoxState(ScreenBox.LCD_TEXT_3) == LCDState.BLINKING &&
@@ -29,8 +22,8 @@ public class SelectProgramScreen extends BikeScreen {
     }
 
     @Override
-    public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
-        synthesiser.speak("Currently selecting program. Click Enter to select your desired program.");
+    public String formatSpeech(BikeStateTracker bikeStateTracker) {
+        return "Press enter to select a program.";
     }
 
     @Override

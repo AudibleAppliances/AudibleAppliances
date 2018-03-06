@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import org.bytedeco.javacpp.opencv_core.*;
 import org.bytedeco.javacpp.opencv_core;
-import org.bytedeco.javacpp.opencv_imgcodecs;
 import org.bytedeco.javacpp.opencv_imgproc;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter;
@@ -20,11 +19,9 @@ import uk.ac.cam.groupprojects.bravo.util.FastImageIO;
 public class SSOCRUtil {
     protected static final String IMG_TYPE = "png";
 
-    protected static final double THRESHOLD_SCALE = 1.3; // Empirically decided
-
     public static File saveTempFile(BufferedImage img) throws IOException {
-        File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
-        //File f = File.createTempFile("audible", "." + IMG_TYPE);
+        //File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
+        File f = File.createTempFile("audible", "." + IMG_TYPE);
         return saveFile(img, f);
     }
     public static File saveFile(BufferedImage img, File f) throws IOException {
@@ -54,21 +51,30 @@ public class SSOCRUtil {
         List<String> args = new ArrayList<>();
         args.add("-d");
         args.add("-1"); // Autodetect the number of digits
+
+        // Swap either of these next two?
+        args.add("-T"); // Use an iterative algorithm
+        //args.add("r_threshold"); // Threshold based on the red channel (this works well for white on blue)
+
         args.add("invert"); // Get black text on white background (required for SSOCR to work)
         args.add(inputPath);
         return startSSOCR(args);
     }
 
-    public static BufferedImage threshold(BufferedImage image) throws IOException {
+    protected static final double THRESHOLD = 160; // Empirically decided
+
+    // This method is only suitable for ROUGH thresholding - for checking if a segment is active, for example.
+    // It's not suitable for producing low-noise images for recognition with SSOCR
+    public static BufferedImage roughThreshold(BufferedImage image) throws IOException {
+        assertImageBGR(image);
+
         // https://stackoverflow.com/questions/8368078/java-bufferedimage-to-iplimage
         ToMat iplConverter = new OpenCVFrameConverter.ToMat();
         Java2DFrameConverter java2dConverter = new Java2DFrameConverter();
 
         // Convert input image to an OpenCV Matrix
         Mat src = iplConverter.convertToMat(java2dConverter.convert(image));
-        // Convert the source image from BGR to HLS
-        opencv_imgproc.cvtColor(src, src, opencv_imgproc.COLOR_BGR2HLS);
-        // Extract only the L (lightness) component
+        // Extract only one channel - input image is BGR, extract only the R component
         Mat singleChannel = new Mat(src.size(), opencv_core.CV_8UC1);
         MatVector mv = new MatVector(src.channels());
         mv.put(1, singleChannel);
@@ -76,10 +82,18 @@ public class SSOCRUtil {
 
         // Threshold the resulting image using the scaled average lightness
         Mat dst = new Mat();
-        double threshold = Math.min(opencv_core.mean(singleChannel).get() * THRESHOLD_SCALE, 255);
-        opencv_imgproc.threshold(singleChannel, dst, threshold, 255, opencv_imgproc.THRESH_BINARY);
+
+        opencv_imgproc.threshold(singleChannel, dst, THRESHOLD, 255, opencv_imgproc.THRESH_BINARY);
 
         // Convert the result back into a BufferedImage
         return java2dConverter.convert(iplConverter.convert(dst));
+    }
+
+    public static void assertImageBGR(BufferedImage image) {
+        if (image.getType() != 5) {
+            System.out.println("Input image type is " + image.getType() + ", not 5 (BGR) - developer error");
+            Thread.dumpStack();
+            System.exit(-42);
+        }
     }
 }

@@ -3,138 +3,86 @@ package uk.ac.cam.groupprojects.bravo.main;
 import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
-import uk.ac.cam.groupprojects.bravo.main.threads.SegmentActiveThread;
-import uk.ac.cam.groupprojects.bravo.main.threads.SegmentRecogniserThread;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.IntelligentCropping;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
+import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;
+import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
+import uk.ac.cam.groupprojects.bravo.util.FastImageIO;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-
-import static uk.ac.cam.groupprojects.bravo.main.ApplicationConstants.DEBUG;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by david on 13/02/2018.
  */
 public class BikeStateTracker {
-
+    // Holds data about the bike at a given time (enough to compute the state, so LCD and the recognised time)
     class StateTime {
-        public LocalDateTime addedTime;
+        public long addedMillis;
         public Set<ScreenBox> activeBoxes;
-        public int recognisedTime;
+        public int bikeTime;
 
-        public StateTime(LocalDateTime addedTime, Set<ScreenBox> activeBoxes, int recognisedTime) {
-            this.addedTime = addedTime;
+        public StateTime(long addedMillis, Set<ScreenBox> activeBoxes, int bikeTime) {
+            this.addedMillis = addedMillis;
             this.activeBoxes = activeBoxes;
+            this.bikeTime = bikeTime;
+        }
+    }
+    // Holds the last image we saw for each segment *when it was active* - no blank images here
+    class ImageTime {
+        public long addedTime;
+        public BufferedImage boxImage;
+        public ScreenNumber recognisedValue;
+
+        public ImageTime(long addedTime, BufferedImage boxImage) {
+            this.addedTime = addedTime;
+            this.boxImage = boxImage;
+
+            recognisedValue = null;
+        }
+
+        public void setRecognisedValue(ScreenNumber value) {
+            recognisedValue = value;
         }
     }
 
     // Necessary class state
-    private final Map<ScreenEnum, BikeScreen> screens = new HashMap<>();
     private final ConfigData configData;
     private final Synthesiser synthesiser;
 
-    // Current Screen state
-    private static BikeScreen currentScreen;
-
     private static long lastSpeakTime = 0;
 
-    /**
-     * Current state that we are tracking on the bike
-     */
-    private Map<BikeField, ScreenNumber> currentFields;
     // Back of the list is the most recent state added
     // We keep 2 seconds of state, so we can determine if time is changing
     // We only look at 1 second of the state to determine if a segment is blinking,
     // otherwise we introduce a lot of latency when changing state
     private final LinkedList<StateTime> history;
 
-    // State over time of the LCDs - 
-    private final Map<ScreenBox, LCDState> boxStates;
-    private boolean timeChanging;
-
-
-    private static final ScreenBox[] thread1_boxes = new ScreenBox[]{
-            ScreenBox.LCD1,
-            ScreenBox.LCD2,
-            ScreenBox.LCD3,
-            ScreenBox.LCD4,
-            ScreenBox.LCD5,
-            ScreenBox.LCD6,
-
-            ScreenBox.LCD_TEXT_1,
-            ScreenBox.LCD_TEXT_2,
-
-
-
-    };
-
-    private static final ScreenBox[] thread2_boxes = new ScreenBox[]{
-            ScreenBox.GRAPH,
-            ScreenBox.RPM,
-            ScreenBox.WATT,
-            ScreenBox.SPEED,
-            ScreenBox.LOAD,
-
-
-            ScreenBox.LCD_TEXT_10,
-            ScreenBox.LCD_TEXT_11,
-            ScreenBox.LCD_TEXT_12,
-    };
-
-    private static final ScreenBox[] thread3_boxes = new ScreenBox[]{
-            ScreenBox.LCD_TEXT_3,
-            ScreenBox.LCD_TEXT_4,
-            ScreenBox.LCD_TEXT_5_TOP,
-            ScreenBox.LCD_TEXT_5_BOTTOM,
-
-            ScreenBox.LCD_TEXT_6,
-            ScreenBox.LCD_TEXT_7,
-            ScreenBox.LCD_TEXT_8,
-            ScreenBox.LCD_TEXT_9,
-    };
+    // Current useful state of the bike, as inferred from the history    
+    private final Map<ScreenBox, LCDState> boxStates; // Which LCDs are active?
+    private final Map<ScreenBox, ImageTime> latestImages; // Latest non-blank images of each LCD
+    private BikeScreen currentScreen; // What do we think the current state is?
+    private boolean timeChanging; // Is the time LCD counting up/down?
 
     public BikeStateTracker(ConfigData config, Synthesiser synth) {
         history = new LinkedList<>();
         boxStates = new HashMap<>();
+        latestImages = new HashMap<>();
         timeChanging = false;
         configData = config;
         synthesiser = synth;
-
-        // Initialise currentFields;
-        currentFields = new HashMap<>();
-        currentFields.put(BikeField.CAL, new Calories());
-        currentFields.put(BikeField.DISTANCE, new Distance());
-        currentFields.put(BikeField.PULSE, new Pulse());
-        currentFields.put(BikeField.RPM, new RPM());
-        currentFields.put(BikeField.LOAD, new Load());
-        currentFields.put(BikeField.SPEED, new Speed());
-        currentFields.put(BikeField.TIME, new Time());
-        currentFields.put(BikeField.WATT, new Watt());
-
-        // Initialise screens
-        screens.put(ScreenEnum.OFF_SCREEN, new OffScreen());
-        screens.put(ScreenEnum.ERROR_SCREEN, new ErrorScreen());
-        screens.put(ScreenEnum.INITIAL_SCREEN, new InitialScreen());
-        screens.put(ScreenEnum.RUNNING_SCREEN, new RunningScreen());
-        screens.put(ScreenEnum.PAUSED_SCREEN, new PausedScreen());
-        screens.put(ScreenEnum.PROGRAM, new ProgramScreen());
-        screens.put(ScreenEnum.SELECT_MANUAL, new SelectManualScreen());
-        screens.put(ScreenEnum.SELECT_HRC, new SelectHRCScreen());
-        screens.put(ScreenEnum.SELECT_USER_PROGRAM, new SelectUserProgramScreen());
-        screens.put(ScreenEnum.SELECT_WATTS, new SelectWattScreen());
-        screens.put(ScreenEnum.SELECT_PROGRAM, new SelectProgramScreen());
-
-        // Set default screen
-        currentScreen = screens.get(ScreenEnum.OFF_SCREEN);
     }
 
     /**
@@ -147,148 +95,41 @@ public class BikeStateTracker {
      */
     public void updateState(Map<ScreenBox, BufferedImage> imgSegs)
                 throws IOException, UnrecognisedDigitException, NumberFormatException {
-
-        //////////////////////////////////////////
-        // Update the screen (ie overall state) //
-        //////////////////////////////////////////
-
-        if (DEBUG)
-            System.out.println("DETECTING CHANGE SCREEN STATE");
-
-        BikeScreen newScreen = null;
-        BikeScreen oldScreen = currentScreen;
-
-        for (BikeScreen screen : screens.values()) {
-            boolean inState = screen.isActiveScreen(this);
-            if (inState) {
-                newScreen = screen;
-                break;
-            }
-        }
-
-        if (newScreen != null) {
-            currentScreen = newScreen;
-            if (newScreen != oldScreen && newScreen.isSpeakFirst())
-                newScreen.speakItems(this, synthesiser);
-        }
-        else {
-            if (DEBUG)
-                System.out.println("Failed to recognise state.");
-        }
-
-        System.out.println("Establishing bike state is " + currentScreen.getEnum().toString());
-        System.out.println();
-
-        ////////////////////////////////////////
-        // Update the state (ie field values) //
-        ////////////////////////////////////////
-
-        LocalDateTime currentTime = LocalDateTime.now();
+        long currentTime = System.currentTimeMillis();
         Set<ScreenBox> activeSegs = new HashSet<>();
 
-        // Map each screen region to the image of that region
         // Compute which LCD segments are lit up (active)
-
-        Thread segmentActive1 = new Thread(
-                new SegmentActiveThread( thread1_boxes, activeSegs, imgSegs )
-        );
-
-        Thread segmentActive2 = new Thread(
-                new SegmentActiveThread( thread2_boxes, activeSegs, imgSegs )
-        );
-
-        Thread segmentActive3 = new Thread(
-                new SegmentActiveThread( thread3_boxes, activeSegs, imgSegs )
-        );
-
-        segmentActive1.start();
-        segmentActive2.start();
-        segmentActive3.start();
-
-        try {
-            //Block until these have finished
-            segmentActive1.join();
-            segmentActive2.join();
-            segmentActive3.join();
-        } catch (InterruptedException e) {
-            //Lol help us if this happens
-            if ( DEBUG )
-                e.printStackTrace();
-        }
-
-        // Recognise the text in each region of the screen
-        if (currentScreen.getEnum() == ScreenEnum.RUNNING_SCREEN || currentScreen.getEnum() == ScreenEnum.PROGRAM) {
-            Thread segmentRecogniser1 = new Thread(
-                    new SegmentRecogniserThread( thread1_boxes, activeSegs, imgSegs, currentFields )
-            );
-            Thread segmentRecogniser2 = new Thread(
-                    new SegmentRecogniserThread( thread2_boxes, activeSegs, imgSegs, currentFields )
-            );
-            Thread segmentRecogniser3 = new Thread(
-                    new SegmentRecogniserThread( thread2_boxes, activeSegs, imgSegs, currentFields )
-            );
-
-            segmentRecogniser1.start();
-            segmentRecogniser2.start();
-            segmentRecogniser3.start();
-
-            try {
-                segmentRecogniser1.join();
-                segmentRecogniser2.join();
-                segmentRecogniser3.join();
-            }catch (InterruptedException e){
-                //Lol help us even more if this happens
-                if ( DEBUG )
-                    e.printStackTrace();
+        for (ScreenBox box : ScreenBox.values()) {
+            BufferedImage boxImage = imgSegs.get(box);
+            boxImage = SSOCRUtil.roughThreshold(boxImage);
+            
+            if (SegmentActive.segmentActive(boxImage)) {
+                // If the LCD is active, record it and update the latest image we have of it
+                activeSegs.add(box);
+                System.out.println("Updating image of active box " + box.toString());
+                latestImages.put(box, new ImageTime(currentTime, boxImage));
             }
-
-        } else {
-            if ( DEBUG ){
-                try {
-                    System.out.println("Running OCR for TIME" );
-                    long startTime = System.currentTimeMillis();
-                    currentFields.get(BikeField.TIME).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(ScreenBox.LCD1)));
-                    long elapsedTime = System.currentTimeMillis() - startTime;
-                    System.out.println("That took " + elapsedTime);
-                }catch ( Exception e ){
-                    System.out.println("OCR crashed");
-                }
-            }else {
-                try {
-                    currentFields.get(BikeField.TIME).setValue(SegmentRecogniser.recogniseInt(imgSegs.get(ScreenBox.LCD1)));
-                }catch ( Exception e ){
-                    //I don't care
-                }
-            }
-        }
-        
-        // Remove state information that's older than two complete blink cycles (2s) ago
-        while (history.size() > 0) {
-            if (currentTime.minus(4 * ApplicationConstants.BLINK_FREQ, ChronoUnit.MILLIS)
-                           .isAfter(history.getFirst().addedTime)) {
-                history.removeFirst();
-            } else {
-                break;
-            }                
-        }
-
-        if (DEBUG) {
-            System.out.println("Current state snapshots:");
-            for (StateTime s : history) {
-                System.out.println(s.addedTime.get(ChronoField.MILLI_OF_DAY));
-            }
-            System.out.println();
         }
 
         // Store the new state, with the time we recognised at the moment
-        history.add(new StateTime(currentTime, activeSegs, currentFields.get(BikeField.TIME).getValue()));
+        Time bikeTime = (Time)getFieldValue(BikeField.TIME);
+        if (bikeTime != null) { // If this is null, it just means we've only just started and don't have enough data yet
+            history.add(new StateTime(currentTime, activeSegs, bikeTime.getValue()));
+        }
+        // DEBUG
+        if (bikeTime == null) {
+            System.out.println("Failed to recognise the time");
+        }
+
+        // Remove state information that's older than two complete blink cycles (2s) ago
+        removeOldHistory(currentTime);
 
         // Update which LCDs we know are solid/blinking
         updateSolidBlinking(currentTime);
         updateTimeChanging();
 
-        if (DEBUG) {
-            System.out.println("Current State:");
+        // DEBUG: Output the state of every box
+        if (ApplicationConstants.DEBUG) {
             System.out.println("Time Changing: " + isTimeChanging());
             for (ScreenBox box : ScreenBox.values()) {
                 System.out.println(box.toString() + ": " + getBoxState(box).toString());
@@ -296,18 +137,39 @@ public class BikeStateTracker {
             System.out.println();
         }
 
-        // Check if time to speak, and if yes then speak
-        if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
-            currentScreen.speakItems(this, synthesiser);
-            lastSpeakTime = System.currentTimeMillis();
-            if (DEBUG)
-                System.out.println("Spoke");
+        BikeScreen newScreen = null;
+        for (ScreenEnum s : ScreenEnum.values()) {
+            BikeScreen screen = s.getBikeScreen();
+            boolean inState = screen.isActiveScreen(this);
+            if (inState) {
+                newScreen = screen;
+                break;
+            }
+        }
+        if (newScreen == null) {
+            System.out.println("Failed to identify state");
+        } else {
+            System.out.println("In state " + newScreen.getEnum().toString());
         }
 
+        currentScreen = newScreen;
+        
+        // Check if it's the time to speak, and if yes then speak
+        if (currentScreen != null && System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
+            String speech = currentScreen.formatSpeech(this);
+
+            if (speech != null) {
+                synthesiser.speak(speech);
+
+                lastSpeakTime = System.currentTimeMillis();
+                if (ApplicationConstants.DEBUG)
+                    System.out.println("Spoke");
+            }
+        }
     }
 
-    // Update which boxes are blinking and which are solid
-    private void updateSolidBlinking(LocalDateTime currentTime) {
+    // Update which LCDs are blinking and which are solid
+    private void updateSolidBlinking(long currentTime) {
         // Reset all
         boxStates.clear();
 
@@ -321,11 +183,8 @@ public class BikeStateTracker {
                 boolean currentlyActive = isBoxActiveNow(box);
                 boolean historyMatches =
                         history.stream()
-                               .filter(s ->
-                                   currentTime.minus(2 * ApplicationConstants.BLINK_FREQ, ChronoUnit.MILLIS)
-                                              .isBefore(s.addedTime))
-                               .allMatch(s ->
-                                   s.activeBoxes.contains(box) == currentlyActive);
+                               .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
+                               .allMatch(s -> s.activeBoxes.contains(box) == currentlyActive);
 
                 if (!historyMatches) { // Changes over time => blinking
                     blinking = true;
@@ -336,22 +195,36 @@ public class BikeStateTracker {
 
             if (blinking) {
                 boxStates.put(box, LCDState.BLINKING);
-            } else if (active) {
-                boxStates.put(box, LCDState.SOLID_ON);
             } else {
-                boxStates.put(box, LCDState.SOLID_OFF);
+                boxStates.put(box, active ? LCDState.SOLID_ON : LCDState.SOLID_OFF);
             }
         }
     }
 
+    // Update whether the time LCD is counting over time or not
     private void updateTimeChanging() {
         if (history.size() == 0) {
             return;
         }
 
-        int currentTime = history.getLast().recognisedTime;
-        timeChanging = history.stream()
-                              .allMatch(s -> s.recognisedTime == currentTime);
+        int currentBikeTime = history.getLast().bikeTime;
+        timeChanging = !history.stream()
+                               .allMatch(s -> s.bikeTime == currentBikeTime);
+    }
+    private void removeOldHistory(long currentTime) {
+        System.out.println();
+        System.out.println("Removing old history. Current time " + currentTime);
+
+        while (history.size() > 0) {
+            System.out.println("Looking at " + history.getFirst().addedMillis);
+            if (currentTime - 4 * ApplicationConstants.BLINK_FREQ_MILLIS > history.getFirst().addedMillis) {
+                history.removeFirst();
+            } else {
+                break;
+            }
+        }
+
+        System.out.println();
     }
 
     public ConfigData getConfig() {
@@ -359,7 +232,49 @@ public class BikeStateTracker {
     }
 
     public ScreenNumber getFieldValue(BikeField field) {
-        return currentFields.get(field);
+        ScreenBox containingBox = field.getScreenBox();
+
+        ImageTime lastImage = latestImages.get(containingBox);
+        if (lastImage == null || lastImage.boxImage == null) { // No images for this box yet
+            System.out.println("Got lastImage as " + String.valueOf(lastImage));
+            return null;
+        }
+
+        // Not already run OCR on the image
+        if (lastImage.recognisedValue == null) {
+            long startTime = System.currentTimeMillis();
+
+            try {
+                int value = SegmentRecogniser.recogniseInt(lastImage.boxImage);
+                System.out.println("Recognised " + field.toString() + ": " + value);
+                ScreenNumber recognised = field.getScreenNumber();
+                recognised.setValue(value);
+                lastImage.recognisedValue = recognised;
+            }
+            catch (IOException e) {
+                System.out.println("IOException when recognising " + field.toString());
+                e.printStackTrace();
+                return null;
+            }
+            catch (NumberFormatException | UnrecognisedDigitException e) {
+                System.out.println("Failed to recognise digit for " + field.toString());
+                System.out.println(e.getMessage());
+                return null;
+            }
+
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            if (ApplicationConstants.DEBUG) {
+                System.out.println("OCR for " + field.toString() + " took " + elapsedTime + "ms");
+            }
+        }
+
+        if (ApplicationConstants.DEBUG) {
+            if (lastImage.recognisedValue == null)
+                System.out.println("Value of " + field.toString() + ": lastImage.recognisedValue null");
+            else
+                System.out.println("Value of " + field.toString() + ": " + lastImage.recognisedValue.getValue());
+        }
+        return lastImage.recognisedValue;
     }
 
     public LCDState getBoxState(ScreenBox box) {
@@ -370,7 +285,7 @@ public class BikeStateTracker {
         return timeChanging;
     }
 
-    // Returns true iff the given box is lit in the latest received image
+    // Returns true iff the given LCD is lit in the latest received image
     public boolean isBoxActiveNow(ScreenBox box) {
         return history.getLast().activeBoxes.contains(box);
     }

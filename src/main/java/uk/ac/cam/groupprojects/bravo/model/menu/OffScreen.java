@@ -4,11 +4,7 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
-import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
-/**
- * Created by david on 22/02/2018.
- */
 public class OffScreen extends BikeScreen {
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
@@ -26,8 +22,8 @@ public class OffScreen extends BikeScreen {
     }
 
     @Override
-    public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
-        synthesiser.speak("The screen is currently off, please click any button to continue!");
+    public String formatSpeech(BikeStateTracker bikeStateTracker) {
+        return "The screen is currently off, please click any button to continue!";
     }
 
     @Override

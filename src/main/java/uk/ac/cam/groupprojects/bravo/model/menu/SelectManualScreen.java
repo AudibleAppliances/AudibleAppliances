@@ -4,11 +4,7 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
-import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
-/**
- * Created by david on 01/03/2018.
- */
 public class SelectManualScreen extends BikeScreen {
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
@@ -27,8 +23,8 @@ public class SelectManualScreen extends BikeScreen {
     }
 
     @Override
-    public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
-        synthesiser.speak("Currently selecting manual. Please click Start/Stop to start riding!");
+    public String formatSpeech(BikeStateTracker bikeStateTracker) {
+        return "Press enter to select the manual mode.";
     }
 
     @Override

@@ -1,3 +1,6 @@
+#ifndef MAPPING
+#define MAPPING
+
 #include <opencv2/opencv.hpp>
 
 class Mapping {
@@ -15,3 +18,5 @@ class Mapping {
         cv::Mat * get_mapping_y();
     
 };
+
+#endif

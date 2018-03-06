@@ -1,7 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.model.numbers;
 
 import org.junit.Test;
-import uk.ac.cam.groupprojects.bravo.model.Program;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,13 +21,13 @@ public class ProgramTest {
     public void testOutput(){
         Program program = new Program();
         program.setValue(10);
-        assertEquals( "You have selected program 10", program.speakValue() );
+        assertEquals( "You have selected program 10", program.formatSpeech() );
 
         program.setValue(12);
-        assertEquals( "You have selected program 12", program.speakValue() );
+        assertEquals( "You have selected program 12", program.formatSpeech() );
 
         program.setValue(-40);
-        assertEquals( "You have selected program 12", program.speakValue() );
+        assertEquals( "You have selected program 12", program.formatSpeech() );
     }
 
 }

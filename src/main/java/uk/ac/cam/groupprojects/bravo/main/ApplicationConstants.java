@@ -21,7 +21,7 @@ public class ApplicationConstants {
 
     public static final int MAX_CONNECT_ATTEMPTS = 5;
 
-    public static final int BLINK_FREQ = 500; // Blink frequency in ms
+    public static final int BLINK_FREQ_MILLIS = 500; // Blink frequency in ms
 
     public static final int DEFAULT_SPEAK_FREQ = 10000;
 

@@ -12,7 +12,7 @@ public class LowerTimeDigit extends ScreenNumber {
     }
 
     @Override
-    public String speakValue() {
+    public String formatSpeech() {
         return null;
     }
 

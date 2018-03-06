@@ -1,7 +1,7 @@
 package uk.ac.cam.groupprojects.bravo.config;
 
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
-import uk.ac.cam.groupprojects.bravo.model.Program;
+import uk.ac.cam.groupprojects.bravo.model.numbers.Program;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
 
 /**
@@ -10,35 +10,44 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.*;
  * @author Oliver Hope
  */
 public enum BikeField {
-    SPEED(ScreenBox.SPEED),
+    SPEED,
     TIME,
     DISTANCE,
-    RPM(ScreenBox.RPM),
+    RPM,
     CAL,
     PULSE,
     GRAPH,
     PROGRAM,
-    LOAD(ScreenBox.LOAD),
-    WATT(ScreenBox.WATT);
+    LOAD,
+    WATT;
 
-    // Boxes containing titles showing if the display is active
-    private ScreenBox[] titleBoxes;
-
-    BikeField(ScreenBox... title) {
-        this.titleBoxes = title;
+    /**
+     * Get the ScreenBox that can contain this field
+     *
+     * @return The relevant ScreenBox
+     */
+    public ScreenBox getScreenBox() {
+        switch (this) {
+            case SPEED: return ScreenBox.LCD3;
+            case TIME: return ScreenBox.LCD1;
+            case DISTANCE: return ScreenBox.LCD4;
+            case RPM: return ScreenBox.LCD3;
+            case CAL: return ScreenBox.LCD6;
+            case PULSE: return ScreenBox.LCD2;
+            case GRAPH: return ScreenBox.GRAPH;
+            case PROGRAM: return ScreenBox.PROGRAM;
+            case LOAD: return ScreenBox.LCD5;
+            case WATT: return ScreenBox.LCD5;
+            default: return null;
+        }
     }
 
     /**
-     * Get the box containing the relevant title
+     * Get a new instance of the ScreenNumber associated with the enum value
      *
-     * @return The relevant ScreenBox, or null if there isn't one.
+     * @return new ScreenNumber instance (of relevant class)
      */
-    public ScreenBox getTitleBox() {
-        if (titleBoxes.length == 0) return null;
-        else return titleBoxes[0];
-    }
-
-    public ScreenNumber getObject() {
+    public ScreenNumber getScreenNumber() {
         switch(this) {
             case SPEED: return new Speed();
             case TIME: return new Time();

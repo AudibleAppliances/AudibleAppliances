@@ -6,11 +6,9 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
-import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
+import uk.ac.cam.groupprojects.bravo.model.numbers.Distance;
+import uk.ac.cam.groupprojects.bravo.model.numbers.Time;
 
-/**
- * Created by david on 01/03/2018.
- */
 public class PausedScreen extends BikeScreen {
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
@@ -28,15 +26,21 @@ public class PausedScreen extends BikeScreen {
     }
 
     @Override
-    public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
-        synthesiser.speak("The bike is currently paused!");
+    public String formatSpeech(BikeStateTracker bikeStateTracker) {
+        String result = "The bike is currently paused!\n";
+
         ConfigData configData = bikeStateTracker.getConfig();
-        if (configData.isSpokenField(BikeField.DISTANCE )) {
-            synthesiser.speak( bikeStateTracker.getFieldValue( BikeField.DISTANCE ).speakValue() );
+        if (configData.isSpokenField(BikeField.DISTANCE)) {
+            Distance d = (Distance)bikeStateTracker.getFieldValue(BikeField.DISTANCE);
+            if (d != null)
+                result += d.formatSpeech();
         }
-        if (configData.isSpokenField(BikeField.TIME )) {
-            synthesiser.speak( bikeStateTracker.getFieldValue( BikeField.TIME ).speakValue() );
+        if (configData.isSpokenField(BikeField.TIME)) {
+            Time t = (Time)bikeStateTracker.getFieldValue(BikeField.TIME);
+            if (t != null)
+                result += t.formatSpeech();
         }
+        return result;
     }
 
     @Override

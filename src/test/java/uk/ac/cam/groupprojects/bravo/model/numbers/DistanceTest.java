@@ -1,7 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.model.numbers;
 
 import org.junit.Test;
-import uk.ac.cam.groupprojects.bravo.model.numbers.Distance;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,13 +21,13 @@ public class DistanceTest {
     public void testOutput(){
         Distance distance = new Distance();
         distance.setValue(50, 4);
-        assertEquals( "You have currently travelled 50.4 kilometres", distance.speakValue() );
+        assertEquals( "You have currently travelled 50.4 kilometres", distance.formatSpeech() );
 
         distance.setValue(10, 3);
-        assertEquals( "You have currently travelled 10.3 kilometres", distance.speakValue() );
+        assertEquals( "You have currently travelled 10.3 kilometres", distance.formatSpeech() );
 
         distance.setValue(-40);
-        assertEquals( "You have currently travelled 10.3 kilometres", distance.speakValue() );
+        assertEquals( "You have currently travelled 10.3 kilometres", distance.formatSpeech() );
     }
 
 }

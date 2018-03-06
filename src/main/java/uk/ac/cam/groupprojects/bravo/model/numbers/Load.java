@@ -10,7 +10,7 @@ public class Load extends ScreenNumber {
     }
 
     @Override
-    public String speakValue() {
+    public String formatSpeech() {
         return String.format( "Your current load is %d", getValue() );
     }
 }

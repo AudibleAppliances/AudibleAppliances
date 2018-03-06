@@ -4,6 +4,10 @@ sudo: false
 git:
   submodules: false
 
+#cache:
+#  directories:
+#  - $HOME/.m2
+
 script: mvn package
 
 before_install:
@@ -29,4 +33,5 @@ notifications:
     api_key: axsf7bqxacq8ifnzq37k741n5uougx
     users:
     - ueqp8yjxwrezz3dupea42dnpv9uzp9
+    - uuxfqciqvc11kky86zgm9bjvijbh1c
     template: "%{repository_slug} (%{commit}) : %{message} - Build details: %{build_url}"

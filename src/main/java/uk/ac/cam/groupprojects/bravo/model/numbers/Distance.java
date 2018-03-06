@@ -27,7 +27,13 @@ public class Distance extends ScreenNumber {
     }
 
     @Override
-    public String speakValue() {
+    public String formatSpeech() {
         return String.format("You have currently travelled %d.%d kilometres", km.getValue(), m.getValue() );
     }
+
+    @Override
+    public int getValue(){
+        return this.km.getValue() * 100 + this.m.getValue();
+    }
+
 }

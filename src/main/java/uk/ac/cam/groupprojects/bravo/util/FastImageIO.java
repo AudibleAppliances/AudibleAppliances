@@ -22,5 +22,4 @@ public class FastImageIO {
         ImageIO.read(imageInputStream);
         return ImageIO.read( inputFile );
     }
-
 }

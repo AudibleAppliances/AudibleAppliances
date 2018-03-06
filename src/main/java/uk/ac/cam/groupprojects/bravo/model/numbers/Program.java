@@ -1,6 +1,4 @@
-package uk.ac.cam.groupprojects.bravo.model;
-
-import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
+package uk.ac.cam.groupprojects.bravo.model.numbers;
 
 /**
  * Created by david on 20/02/2018.
@@ -11,9 +9,8 @@ public class Program extends ScreenNumber {
         super(0, 15);
     }
 
-
     @Override
-    public String speakValue() {
+    public String formatSpeech() {
         return String.format("You have selected program %d", getValue() );
     }
 }

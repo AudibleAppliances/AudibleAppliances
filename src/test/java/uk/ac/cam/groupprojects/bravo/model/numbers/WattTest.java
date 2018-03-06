@@ -21,13 +21,13 @@ public class WattTest {
     public void testOutput(){
         Watt watt = new Watt();
         watt.setValue(50);
-        assertEquals( "Your power output is currently 50 watts", watt.speakValue() );
+        assertEquals( "Your power output is currently 50 watts", watt.formatSpeech() );
 
         watt.setValue(40);
-        assertEquals( "Your power output is currently 40 watts", watt.speakValue() );
+        assertEquals( "Your power output is currently 40 watts", watt.formatSpeech() );
 
         watt.setValue(-40);
-        assertEquals( "Your power output is currently 40 watts", watt.speakValue() );
+        assertEquals( "Your power output is currently 40 watts", watt.formatSpeech() );
     }
 
 }

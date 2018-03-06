@@ -21,13 +21,13 @@ public class LoadTest {
     public void testOutput(){
         Load load = new Load();
         load.setValue(16);
-        assertEquals( "Your current load is 16", load.speakValue() );
+        assertEquals( "Your current load is 16", load.formatSpeech() );
 
         load.setValue(9);
-        assertEquals( "Your current load is 9", load.speakValue() );
+        assertEquals( "Your current load is 9", load.formatSpeech() );
 
         load.setValue(-40);
-        assertEquals( "Your current load is 9", load.speakValue() );
+        assertEquals( "Your current load is 9", load.formatSpeech() );
     }
 
 }

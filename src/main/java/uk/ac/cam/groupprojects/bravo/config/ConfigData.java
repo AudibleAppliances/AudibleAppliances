@@ -97,14 +97,31 @@ public class ConfigData {
         }
     }
 
+    /**
+     * The voice to use when speaking to the user
+     *
+     * @return name of voice to use
+     */
     public String getVoice() {
         return mVoice;
     }
 
+    /**
+     * Gets the information for a box of particular type
+     *
+     * @param type ScreenBox to get information about
+     * @return BoxInfo containing all information of the box
+     */
     public BoxInfo getBox(ScreenBox type) {
        return mBoxes.get(type);
     }
 
+    /**
+     * Return whether that particular field is intended to be spoken to the user
+     *
+     * @param type BikeField to check whether spoken
+     * @return Whether BikeField 'type' should be spoken to user
+     */
     public boolean isSpokenField(BikeField type) {
         return mSpokenFields.get(type);
     }

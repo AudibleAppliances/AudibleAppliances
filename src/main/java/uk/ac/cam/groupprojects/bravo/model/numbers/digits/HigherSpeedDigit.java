@@ -12,7 +12,7 @@ public class HigherSpeedDigit extends ScreenNumber {
     }
 
     @Override
-    public String speakValue() {
+    public String formatSpeech() {
         return null;
     }
 }

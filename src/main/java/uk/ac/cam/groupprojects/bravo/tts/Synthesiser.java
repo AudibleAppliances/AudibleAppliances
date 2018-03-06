@@ -14,12 +14,13 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-// Interfaces with the "festival" program.
-// It has a "pipe" mode, where it just accepts commands and performs them, but that doesn't
-// report error messages and the like (which is desirable, and necessary to get the voice list).
-// This class uses the "interactive" interface, which means we have to skip the
-// "startup banner" (wall of text), and skip past any prompts ("festival> ") that are presented.
-
+/**
+ * Interfaces with the "festival" program.
+ * It has a "pipe" mode, where it just accepts commands and performs them, but that doesn't
+ * report error messages and the like (which is desirable, and necessary to get the voice list).
+ * This class uses the "interactive" interface, which means we have to skip the
+ * "startup banner" (wall of text), and skip past any prompts ("festival> ") that are presented.
+ */
 public class Synthesiser implements AutoCloseable {
     private final Process festival;
     private final PrintWriter out;
@@ -38,10 +39,7 @@ public class Synthesiser implements AutoCloseable {
         String s = "";
         while (!s.startsWith("festival>")) {
             s = in.next();
-            if (ApplicationConstants.DEBUG)
-                System.out.print(s);
         }
-        System.out.println();
 
         commandQueue = new LinkedBlockingQueue<>();
 
@@ -59,8 +57,6 @@ public class Synthesiser implements AutoCloseable {
                     // Festival only output a line after it's finished speaking, so this also causes us to
                     // block until it's done speaking (desirable behaviour).
                     String l = readLine();
-                    if (ApplicationConstants.DEBUG)
-                        System.out.println(l);
                 } catch (InterruptedException e) {
                     // Empty as we want to keep going if this happens
                 }
@@ -149,8 +145,6 @@ public class Synthesiser implements AutoCloseable {
         String s;
         do {
             s = in.next();
-            if (ApplicationConstants.DEBUG)
-                System.out.print(s);
         } while (s.startsWith("festival>"));
         return s;
     }
