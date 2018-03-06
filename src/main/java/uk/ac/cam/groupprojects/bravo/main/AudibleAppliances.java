@@ -103,12 +103,16 @@ public class AudibleAppliances {
                 System.out.println("Run while loop");
 
             try {
+                long start = System.currentTimeMillis();
                 BufferedImage image = readImage.read(ApplicationConstants.IMAGE_PATH);
+                long elapsedTime = System.currentTimeMillis() - start;
+                if (ApplicationConstants.DEBUG)
+                    System.out.println("Time taken to read image: " + elapsedTime + "ms ");
                 // Read successfully, reset the failed connection attempt counter
                 connectionAttempts = 0;
 
                 // Segment the image
-                long start = System.currentTimeMillis();
+                start = System.currentTimeMillis();
                 Map<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
                 for (ScreenBox box : ScreenBox.values()) {
                     BufferedImage boxImage = segmenter.getImageBox(box, image);
@@ -121,7 +125,7 @@ public class AudibleAppliances {
 
                     imgSegs.put(box, boxImage);
                 }
-                long elapsedTime = System.currentTimeMillis() - start;
+                elapsedTime = System.currentTimeMillis() - start;
                 if (ApplicationConstants.DEBUG)
                     System.out.println("Time taken to segment the image: " + elapsedTime + "ms ");
 

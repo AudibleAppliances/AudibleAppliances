@@ -36,9 +36,6 @@ public class ReadImage {
      */
     public BufferedImage read(String imagePath) throws IOException {
 
-        long loopStartTime = System.currentTimeMillis();
-        long elapsedTime, elapsedTime2, loopSubSetTime = System.currentTimeMillis();
-
         DataInputStream in = new DataInputStream(socket.getInputStream());
         OutputStream out = socket.getOutputStream();
 
@@ -53,36 +50,13 @@ public class ReadImage {
             out.write(2);
         }
 
-        elapsedTime = System.currentTimeMillis() - loopStartTime;
-        elapsedTime2 = System.currentTimeMillis() - loopSubSetTime;
-        if (ApplicationConstants.DEBUG)
-            System.out.println("ReadImage: Time taken to time to write to socket " + elapsedTime + "ms (" + elapsedTime2 + ")");
-        loopSubSetTime = System.currentTimeMillis();
-
         // Wait for ACK
         if (in.readByte() == 1) {
 
-            elapsedTime = System.currentTimeMillis() - loopStartTime;
-            elapsedTime2 = System.currentTimeMillis() - loopSubSetTime;
-            if (ApplicationConstants.DEBUG)
-                System.out.println("ReadImage: Time taken to time to ack to socket " + elapsedTime + "ms (" + elapsedTime2 + ")");
-            loopSubSetTime = System.currentTimeMillis();
-
             BufferedImage img = FastImageIO.read(new File(imagePath));
 
-            elapsedTime = System.currentTimeMillis() - loopStartTime;
-            elapsedTime2 = System.currentTimeMillis() - loopSubSetTime;
-            if (ApplicationConstants.DEBUG)
-                System.out.println("ReadImage: Time taken to time to read image " + elapsedTime + "ms (" + elapsedTime2 + ")");
-            loopSubSetTime = System.currentTimeMillis();
-
             // Send DONE
-            elapsedTime = System.currentTimeMillis() - loopStartTime;
-            elapsedTime2 = System.currentTimeMillis() - loopSubSetTime;
             out.write(1);
-
-            if (ApplicationConstants.DEBUG)
-                System.out.println("ReadImage: Time taken to write " + elapsedTime + "ms (" + elapsedTime2 + ")");
 
             return img;
         }
