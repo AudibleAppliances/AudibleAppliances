@@ -5,7 +5,7 @@ import json
 
 config_file = "/home/pi/config.json"
 app = Flask(__name__)
-Image_Client my_image_client = Image_Client()
+my_image_client = Image_Client()
 
 
 def gen(image_client):
