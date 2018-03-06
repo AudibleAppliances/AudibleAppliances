@@ -141,7 +141,6 @@ public class BikeStateTracker {
 
         // DEBUG: Output the state of every box
         if (ApplicationConstants.DEBUG) {
-            System.out.println("Current State:");
             System.out.println("Time Changing: " + isTimeChanging());
             for (ScreenBox box : ScreenBox.values()) {
                 System.out.println(box.toString() + ": " + getBoxState(box).toString());
