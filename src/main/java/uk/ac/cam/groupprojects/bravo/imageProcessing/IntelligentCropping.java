@@ -15,6 +15,8 @@ public class IntelligentCropping {
 
     private static final double SAFETY_HALT = 0.5; // If we're going to overwrite more of the image than this percent, don't
 
+    private static final double[] FILL_COLOUR = new double[] { 0, 0, 0 };
+
     /**
      * Crops unneeded lit edges from image that cause problems with the OCR.
      *
@@ -83,7 +85,7 @@ public class IntelligentCropping {
 
     private static void blacken(WritableRaster raw, Set<Point> points) {
         for (Point p : points) {
-            raw.setPixel(p.x, p.y, new double[] { 0, 0, 0 });
+            raw.setPixel(p.x, p.y, FILL_COLOUR);
         }
     }
     
