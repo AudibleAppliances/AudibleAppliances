@@ -99,9 +99,6 @@ public class AudibleAppliances {
 
         int connectionAttempts = 0;
         while (true) {
-            if (DEBUG)
-                System.out.println("Run while loop");
-
             try {
                 long start = System.currentTimeMillis();
                 BufferedImage image = readImage.read(ApplicationConstants.IMAGE_PATH);
@@ -131,11 +128,8 @@ public class AudibleAppliances {
 
 
                 // Update tracker state
-                start = System.currentTimeMillis();
                 bikeStateTracker.updateState(imgSegs);
                 elapsedTime = System.currentTimeMillis() - start;
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Time taken to update state: " + elapsedTime + "ms ");
 
             } catch (ConnectException e) {
                 if (DEBUG) {
