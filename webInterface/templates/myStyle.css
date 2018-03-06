@@ -147,14 +147,20 @@ h1 {
 
 .component {
     position: absolute;
-    width: 20vw;
-    height: 18vh;
     border-radius: 10px;
     background-color: white;
+    font-size: 2em;
+    text-align: center;
+    display: table;
 }
 
 .component:hover {
     opacity: 0.5;
+}
+
+.config {
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .selected_banner {

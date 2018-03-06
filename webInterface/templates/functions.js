@@ -8,6 +8,7 @@ $.getJSON("/get_boxes", function(data) {
             width: val.width * $("#canvas").width(),
             height: val.height * $("#canvas").height()
         }
+        $(document.getElementById(key)).children(".config").html("Configured");
     });
 });
 
@@ -105,6 +106,21 @@ function speek(commit_box) {
         location.reload();
     });
     picker.appendChild(no_speak);
+
+    var cancel = document.createElement("div");
+    cancel.classList.add("speak");
+    cancel.style.backgroundColor = "black";
+    cancel.innerHTML = "Cancel";
+    cancel.style.left = "42vw";
+    cancel.style.top = "60vh";
+    cancel.style.padding = "1ch 0 1ch 0";
+    cancel.addEventListener("click", function() {
+        mask.parentElement.removeChild(mask);
+        picker.parentElement.removeChild(picker);
+        location.reload();
+    });
+    picker.appendChild(cancel);
+
     document.body.appendChild(mask);
     document.body.appendChild(picker);
 }

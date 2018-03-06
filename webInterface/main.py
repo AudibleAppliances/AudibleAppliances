@@ -1,6 +1,6 @@
 # main.py
 from flask import Flask, render_template, Response, request
-from camera import VideoCamera
+from image_client import ImageClient
 import json
 
 config_file = "/home/pi/config.json"
@@ -11,6 +11,7 @@ def gen(camera):
         frame = camera.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
 
 @app.route('/')
 def index():
@@ -38,7 +39,7 @@ def javascript3():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(gen(VideoCamera()),
+    return Response(gen(ImageClient()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/new_box', methods=['POST'])
