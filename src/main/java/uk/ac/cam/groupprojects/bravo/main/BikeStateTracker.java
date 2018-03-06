@@ -18,10 +18,6 @@ import uk.ac.cam.groupprojects.bravo.util.FastImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -118,8 +114,6 @@ public class BikeStateTracker {
             }
 
             long elapsedTime = System.currentTimeMillis() - startTime;
-            if (ApplicationConstants.DEBUG)
-                System.out.println("segmentActive(" + box.toString() + ") took " + elapsedTime + "ms, got " + active);
         }
 
         // Store the new state, with the time we recognised at the moment
