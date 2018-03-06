@@ -99,7 +99,12 @@ public class AudibleAppliances {
 
         int connectionAttempts = 0;
         while (true) {
+            long overallStart = System.currentTimeMillis();
             try {
+                if (ApplicationConstants.DEBUG) {
+                    // Make it easier to see the output of each iteration
+                    Runtime.getRuntime().exec("clear");
+                }
                 long start = System.currentTimeMillis();
                 BufferedImage image = readImage.read(ApplicationConstants.IMAGE_PATH);
                 long elapsedTime = System.currentTimeMillis() - start;
@@ -147,6 +152,9 @@ public class AudibleAppliances {
                 if (DEBUG)
                     e.printStackTrace();
             }
+            long overallDuration = System.currentTimeMillis() - overallStart;
+            System.out.println();
+            System.out.println("Time for this iteration: " + overallDuration);
         }
     };
 
