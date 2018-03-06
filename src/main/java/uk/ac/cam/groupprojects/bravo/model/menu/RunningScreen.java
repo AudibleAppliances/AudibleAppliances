@@ -6,13 +6,10 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
-import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
+import uk.ac.cam.groupprojects.bravo.model.numbers.Load;
+import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
 
-/**
- * Created by david on 20/02/2018.
- */
 public class RunningScreen extends BikeScreen {
-
     private boolean loadTip = false;
 
     private int speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ;
@@ -33,24 +30,31 @@ public class RunningScreen extends BikeScreen {
     }
 
     @Override
-    public void speakItems(BikeStateTracker bikeStateTracker, Synthesiser synthesiser) {
-        if ( !loadTip ){
-            synthesiser.speak("You can use the wheel to adjust the difficulty");
+    public String formatSpeech(BikeStateTracker bikeStateTracker) {
+        if (!loadTip) {
             loadTip = true;
+            return "You can use the wheel to adjust the difficulty";
         }
 
-        if ( bikeStateTracker.isBoxActiveNow(ScreenBox.LOAD) ){
-            synthesiser.speak( bikeStateTracker.getFieldValue(BikeField.LOAD).speakValue() );
+        String result = "";
+        if (bikeStateTracker.isBoxActiveNow(ScreenBox.LOAD)) {
+            Load l = (Load)bikeStateTracker.getFieldValue(BikeField.LOAD);
+            if (l != null)
+                result += l.toString() + "\n";
             speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ / 5;
-        }else {
+        } else {
             ConfigData configData = bikeStateTracker.getConfig();
             for (BikeField field : BikeField.values()) {
                 if (configData.isSpokenField(field)) {
-                    synthesiser.speak( bikeStateTracker.getFieldValue(field).speakValue() );
+                    ScreenNumber n = bikeStateTracker.getFieldValue(field);
+                    if (n != null)
+                        result += n.toString() + "\n";
                 }
             }
             speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ;
         }
+
+        return result;
     }
 
     @Override
