@@ -1,5 +1,5 @@
 {
-	"voice": "male",
+	"voice": "cmu_us_awb_arctic_clunits",
 		"boxes": {
 			"lcd1": {
 				"corner": [17, 14.6],

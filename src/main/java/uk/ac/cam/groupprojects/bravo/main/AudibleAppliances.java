@@ -6,7 +6,6 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.IntelligentCropping;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ReadImage;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
-import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
@@ -60,6 +59,8 @@ public class AudibleAppliances {
 
             System.out.println("Config loaded successfully");
             System.out.println("Setting up required components");
+
+            synthesiser.setVoice(configData.getVoice());
 
             bikeStateTracker = new BikeStateTracker(configData, synthesiser);
             System.out.println("Components set up successfully!");
