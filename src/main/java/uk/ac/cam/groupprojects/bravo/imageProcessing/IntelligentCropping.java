@@ -29,7 +29,6 @@ public class IntelligentCropping {
         Set<Point> visited = new HashSet<>();
         Set<Point> toOverwrite = new HashSet<>();
 
-        long start = System.currentTimeMillis();
         // Flood from the entire top row, with a reasonable threshold to detect light pixels
         for (int x = 0; x < raw.getWidth(); x++) {
             Set<Point> flooded = new HashSet<>();
@@ -39,18 +38,12 @@ public class IntelligentCropping {
             }
             toOverwrite.addAll(flooded);
         }
-        long duration = System.currentTimeMillis() - start;
-        System.out.println("Initial pass: " + duration + "ms");
 
         // Actually overwrite the chosen pixels with black
-        start = System.currentTimeMillis();
         blacken(raw, toOverwrite);
-        duration = System.currentTimeMillis() - start;
-        System.out.println("Initial pass: " + duration + "ms");
 
         // Run another flood fill, this time with a super low threshold to find isolated islands in the
         // sea of black overwritten pixels. Don't set an early stop, we want to flood as large as possible
-        start = System.currentTimeMillis();
         visited = new HashSet<>();
         for (int x = 0; x < raw.getWidth(); x++) {
             for (int y = 0; y < raw.getHeight(); y++) {
@@ -59,7 +52,11 @@ public class IntelligentCropping {
                     continue;
 
                 Set<Point> flooded = new HashSet<>();
+                long start = System.currentTimeMillis();
                 floodFill(raw, new Point(x, y), BLACK_THRESHOLD, visited, Integer.MAX_VALUE, flooded);
+                long duration = System.currentTimeMillis() - start;
+                System.out.println(flooded.size() + " took " + duration + "ms");
+
                 if (flooded.size() >= earlyStop) {
                     continue; // If we've flooded a large area, we've got a significantly large island so don't remove it
                 }
@@ -67,8 +64,6 @@ public class IntelligentCropping {
                 blacken(raw, flooded);
             }
         }
-        duration = System.currentTimeMillis() - start;
-        System.out.println("Secondary pass: " + duration + "ms");
     }
 
     private static void blacken(WritableRaster raw, Set<Point> points) {
