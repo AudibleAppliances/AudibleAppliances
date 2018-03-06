@@ -11,7 +11,7 @@ def gen(camera):
         frame = camera.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
+o
 @app.route('/')
 def index():
     return render_template("index.html")
