@@ -26,7 +26,7 @@ public class IntelligentCropping {
         WritableRaster raw = image.getRaster();
 
         int earlyStop = (int)(raw.getHeight() * raw.getWidth() * SAFETY_HALT);
-        Set<Point> visited = new HashSet<>();
+        boolean[][] visited = new boolean[raw.getHeight()][raw.getWidth()];
         Set<Point> toOverwrite = new HashSet<>();
 
         // Flood from the entire top row, with a reasonable threshold to detect light pixels
@@ -55,17 +55,19 @@ public class IntelligentCropping {
 
         // Run another flood fill, this time with a super low threshold to find isolated islands in the
         // sea of black overwritten pixels. Don't set an early stop, we want to flood as large as possible
-        visited = new HashSet<>();
+        for (int y = 0; y < visited.length; y++) {
+            Arrays.fill(visited[y], false);
+        }
 
         // Add all the points that we previously filled with black to the visited set, as we don't have to check them
         for (Point p : toOverwrite) {
             p.translate(bounds.x, bounds.y);
-            visited.add(p);
+            visited[p.y][p.x] = true;
         }
         for (int x = 0; x < sub.getWidth(); x++) {
             for (int y = 0; y < sub.getHeight(); y++) {
                 Point current = new Point(x, y);
-                if (visited.contains(current)) {
+                if (visited[current.y][current.x]) {
                     continue;
                 }
 
@@ -87,7 +89,7 @@ public class IntelligentCropping {
         }
     }
     
-    private static void floodFill(Raster raw, Point start, double threshold, Set<Point> visited,
+    private static void floodFill(Raster raw, Point start, double threshold, boolean[][] visited,
                                   int earlyStop, Set<Point> outputFlood) {
         Set<Point> frontier = new HashSet<>();
         frontier.add(start);
@@ -98,7 +100,7 @@ public class IntelligentCropping {
             Point current = i.next();
             i.remove();
 
-            visited.add(current);
+            visited[current.y][current.x] = true;
             if (!isAboveThreshold(raw, current, threshold)) {
                 // If we don't need to remove this pixel, move on.
                 // Don't consider its neighbours and don't overwrite it
@@ -111,7 +113,7 @@ public class IntelligentCropping {
             }
 
             for (Point neighbour : getNeighbours(current, raw)) {
-                if (!visited.contains(neighbour)) {
+                if (!visited[neighbour.y][neighbour.x]) {
                     frontier.add(neighbour);
                 }
             }
