@@ -15,9 +15,13 @@ public enum ScreenBox {
     LCD4,
     LCD5,
     LCD6,
-    GRAPH, PROGRAM, WATT, RPM, LOAD,
+    GRAPH,
+    PROGRAM,
+    WATT,
+    RPM,
+    LOAD,
 
-    // This is disgusting but desperate times
+    // Text boxes along bottom of graph
     LCD_TEXT_1,
     LCD_TEXT_3,
     LCD_TEXT_4,
