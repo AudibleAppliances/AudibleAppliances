@@ -2,29 +2,29 @@
 	"voice": "cmu_us_awb_arctic_clunits",
 	"boxes": {
 		"lcd1": {
-			"corner": [17, 14.6],
+			"corner": [17, 8.7],
 			"width": 32,
-			"height": 17.5
+			"height": 19.5
 		},
 		"lcd2": {
-			"corner": [57, 15],
-			"width": 24,
-			"height": 16.5
+			"corner": [59, 9],
+			"width": 27,
+			"height": 19
 		},
 		"lcd3": {
-			"corner": [17, 36],
-			"width": 14,
-			"height": 13
+			"corner": [14, 32.5],
+			"width": 14.5,
+			"height": 14
 		},
 		"lcd4": {
-			"corner": [67.3, 35.3],
+			"corner": [72.3, 33.3],
 			"width": 14.7,
 			"height": 13.3
 		},
 		"lcd5": {
-			"corner": [15.5, 53],
+			"corner": [13.5, 52.5],
 			"width": 15,
-			"height": 12.5
+			"height": 13.5
 		},
 		"lcd6": {
 			"corner": [67.4, 52.4],
@@ -42,9 +42,9 @@
 			"height": 4
 		},
 		"watt": {
-			"corner": [15.7, 49.7],
-			"width": 6.1,
-			"height": 3.5
+			"corner": [11.5, 47.7],
+			"width": 7.5,
+			"height": 4.5
 		},
 		"rpm": {
 			"corner": [24.5, 32.3],
