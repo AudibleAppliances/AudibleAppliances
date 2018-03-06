@@ -63,4 +63,10 @@ public class Time extends ScreenNumber {
 
         return toReturn;
     }
+
+    @Override
+    public int getValue(){
+        return this.minutes.getValue() * 60 + this.seconds.getValue();
+    }
+
 }
