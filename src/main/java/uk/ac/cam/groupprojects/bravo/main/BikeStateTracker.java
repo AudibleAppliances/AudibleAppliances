@@ -12,8 +12,10 @@ import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
+import uk.ac.cam.groupprojects.bravo.util.FastImageIO;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -104,6 +106,11 @@ public class BikeStateTracker {
             long startTime = System.currentTimeMillis();
 
             BufferedImage boxImage = imgSegs.get(box);
+            
+            // DEBUG
+            FastImageIO.write(boxImage, "jpg", new File("/mnt/rd/temp.jpg"));
+            System.in.read();
+
             if (SegmentActive.segmentActive(boxImage)) {
                 // If the LCD is active, record it and update the latest image we have of it
                 activeSegs.add(box);
