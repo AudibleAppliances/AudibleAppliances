@@ -238,14 +238,17 @@ public class BikeStateTracker {
     public ScreenNumber getFieldValue(BikeField field) {
         ScreenBox containingBox = field.getScreenBox();
 
+        System.out.println("Debug 1");
         ImageTime lastImage = latestImages.get(containingBox);
         if (lastImage == null || lastImage.boxImage == null) { // No images for this box yet
             return null;
         }
 
+        System.out.println("Debug 2");
         // Not already run OCR on the image
         if (lastImage.recognisedValue == null) {
             long startTime = System.currentTimeMillis();
+            System.out.println("Debug 3");
 
             try {
                 int value = SegmentRecogniser.recogniseInt(lastImage.boxImage);
