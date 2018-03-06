@@ -10,6 +10,7 @@ class Image_Client(object):
         self.socket.send('\x02')
         if self.socket.recv(1) == '\x01':
             image = cv2.imread("/mnt/rd/image.jpg")
+            self.socket.send('\x01')
             ret, jpeg = cv2.imencode('.jpg', image)
             return jpeg.tobytes()
         else:

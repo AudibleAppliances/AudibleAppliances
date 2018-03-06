@@ -8,11 +8,11 @@ app = Flask(__name__)
 my_image_client = Image_Client()
 
 
-#def gen(image_client):
-#    while True:
-#        frame = image_client.get_image()
-#        yield (b'--frame\r\n'
-#               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+def gen(image_client):
+    while True:
+        frame = image_client.get_image()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 
 @app.route('/')
@@ -41,11 +41,11 @@ def javascript3():
 
 @app.route('/video_feed')
 def video_feed():
-    r =  Response(my_image_client.get_image(),
+    r =  Response(gen(my_image_client),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
-    r.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
-    r.headers['Pragma'] = 'no-cache'
-    r.headers['Expires'] = '-1'
+#    r.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+#    r.headers['Pragma'] = 'no-cache'
+#    r.headers['Expires'] = '-1'
     return r
 
 @app.route('/new_box', methods=['POST'])
