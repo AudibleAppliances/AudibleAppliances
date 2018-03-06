@@ -19,41 +19,12 @@ public class IntelligentCropping {
     private static final double THRESHOLD = 0.95; // Pixels with red component under 50% are removed
     private static final double MAX_DEPTH_PERCENT = 0.1; // Up to 10% can be cut out
 
-    public static void intelligentCrop(BufferedImage image) {
-        SSOCRUtil.assertImageBGR(image);
-
-        WritableRaster raw = image.getRaster();
-
-        final int HEIGHT_LIMIT = (int)(raw.getHeight() * MAX_DEPTH_PERCENT);
-
-        for (int y = 0; y < HEIGHT_LIMIT; y++) {
-            boolean trim = false;
-            for (int x = 0; x < raw.getWidth(); x++) {
-                double red = raw.getSampleDouble(x, y, 2) / 255;
-
-                if (red > THRESHOLD) {
-                    trim = true;  
-                    break;
-                }
-            }
-            // If we found a pixel over the threshold on this row, remove it
-            if (trim) {
-                for (int x = 0; x < raw.getWidth(); x++) {
-                    raw.setPixel(x, y, new double[] { 0, 0, 0 });
-                }
-            } else {
-                // If we haven't found any over-threshold pixels on this row, stop scanning down
-                break;
-            }
-        }
-    }
-
     /**
      * Crops unneeded lit edges from image that cause problems with the OCR.
      *
      * @param image
      */
-    public static void moreIntelligentCrop(BufferedImage image) {
+    public static void intelligentCrop(BufferedImage image) {
         SSOCRUtil.assertImageBGR(image);
 
         WritableRaster raw = image.getRaster();
@@ -74,7 +45,7 @@ public class IntelligentCropping {
         while (!queue.isEmpty()) {
             current = queue.poll();
 
-            for (Point neighbour : getNeighbours(current, maxX, maxY, raw)) {
+            for (Point neighbour : getNeighbours(current, raw)) {
                 if (!visited.contains(neighbour)) {
                     queue.offer(neighbour);
                     visited.add(neighbour);
@@ -90,8 +61,17 @@ public class IntelligentCropping {
         //}
     }
 
-    private static List<Point> getNeighbours(Point p, int maxX, int maxY, WritableRaster raw) {
+    /**
+     * Given an image and point, returns a list of "reachable neighbours". ie adjacent pixel that need overwriting
+     *
+     * @param p
+     * @param raw
+     * @return
+     */
+    private static List<Point> getNeighbours(Point p, WritableRaster raw) {
         List<Point> l = new ArrayList<>();
+        int maxX = raw.getWidth();
+        int maxY = raw.getHeight();
 
         if (p.x+1 <  maxX && threshTest(raw, p)) l.add(new Point(p.x+1, p.y));
         if (p.x-1 >= 0    && threshTest(raw, p))    l.add(new Point(p.x-1, p.y));
@@ -101,7 +81,15 @@ public class IntelligentCropping {
         return l;
     }
 
+    /**
+     * Given an point and an image, decides if it should be overwritten or not
+     *
+     * @param raw
+     * @param p
+     * @return
+     */
     private static boolean threshTest(Raster raw, Point p) {
+        // Based on empirical testing
         return raw.getSampleDouble(p.x, p.y, 2) > 250;
     }
 
