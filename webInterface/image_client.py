@@ -1,9 +1,10 @@
 import cv2
+import socket
 
 class ImageClient(object):
     def __init__(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect("localhost", 400000)
+        self.socket.connect(("localhost", 40000))
 
     def get_frame(self):
         self.socket.send('\x02')
