@@ -39,7 +39,6 @@ public class Synthesiser implements AutoCloseable {
         while (!s.startsWith("festival>")) {
             s = in.next();
         }
-        System.out.println();
 
         commandQueue = new LinkedBlockingQueue<>();
 
