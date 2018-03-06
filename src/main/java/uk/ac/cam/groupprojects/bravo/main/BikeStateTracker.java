@@ -120,10 +120,6 @@ public class BikeStateTracker {
             long elapsedTime = System.currentTimeMillis() - startTime;
             if (ApplicationConstants.DEBUG)
                 System.out.println("segmentActive(" + box.toString() + ") took " + elapsedTime + "ms, got " + active);
-
-            // DEBUG
-            FastImageIO.write(boxImage, "jpg", new File("/mnt/rd/temp.jpg"));
-            System.in.read();
         }
 
         // Store the new state, with the time we recognised at the moment
@@ -134,6 +130,9 @@ public class BikeStateTracker {
 
         // Remove state information that's older than two complete blink cycles (2s) ago
         removeOldHistory(currentTime);
+        if (ApplicationConstants.DEBUG) {
+            System.out.println("Items in history: " + history.size());
+        }
 
         // Update which LCDs we know are solid/blinking
         updateSolidBlinking(currentTime);
