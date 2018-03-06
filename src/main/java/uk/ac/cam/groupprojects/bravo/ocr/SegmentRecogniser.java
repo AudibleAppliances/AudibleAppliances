@@ -40,7 +40,6 @@ public class SegmentRecogniser {
         try (Scanner s = new Scanner(p.getInputStream())) {
             String output = s.nextLine();
             System.out.println("Got \"" + output +"\" from SSOCR");
-            Runtime.getRuntime().exec("cp " + imagePath + " /mnt/rd/output.jpg");
 
             if (output.equals("-")) {
                 throw new UnrecognisedDigitException("Failed to parse digit in file: " + imagePath);
