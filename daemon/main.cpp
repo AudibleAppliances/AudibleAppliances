@@ -108,7 +108,7 @@ void reader(int socket, std::atomic_int &active_readers, Semaphore &turn,
 	    std::cout << "Reader thread: Acquiring turn" << std::endl;
 	    turn.wait();
         clock_t clock1 = clock();
-        std::cout << "Reader thread: turn.wait() in " << double(end - begin) / CLOCKS_PER_SEC << "s" << std::endl;
+        std::cout << "Reader thread: turn.wait() in " << double(clock1 - begin) / CLOCKS_PER_SEC << "s" << std::endl;
 	    turn.signal();
         clock_t clock2 = clock();
         std::cout << "Reader thread: turn.signal() in " << double(clock2 - clock1) / CLOCKS_PER_SEC << "s" << std::endl;
