@@ -140,7 +140,7 @@ public class IntelligentCropping {
 
     private static Rectangle getBounds(Set<Point> points) {
         int x0 = Integer.MAX_VALUE, y0 = Integer.MAX_VALUE;
-        int x1 = 0, y1 = 0;
+        int x1 = 1, y1 = 1; // The minimum allowed width/height are 1
 
         for (Point p : points) {
             x0 = Math.min(p.x, x0);
@@ -149,7 +149,10 @@ public class IntelligentCropping {
             y1 = Math.max(p.y, y1);
         }
 
-        return new Rectangle(x0, y0, x1 - x0, y1 - y0);
+        int width = Math.max(1, x1 - x0);
+        int height = Math.max(1, y1 - y0);
+
+        return new Rectangle(x0, y0, width, height);
     }
 
     /**
