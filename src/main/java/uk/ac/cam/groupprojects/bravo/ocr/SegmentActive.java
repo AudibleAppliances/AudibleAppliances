@@ -1,5 +1,7 @@
 package uk.ac.cam.groupprojects.bravo.ocr;
 
+import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.IOException;
@@ -10,7 +12,14 @@ public class SegmentActive {
         return segmentActive(img, 0.01); // 1% white is a good default threshold (empirical)
     }
     public static boolean segmentActive(BufferedImage img, double threshold) throws IOException {
-        return imageAverage(img) > threshold;
+        double ave = imageAverage(img);
+        boolean result = ave > threshold;
+        if (ApplicationConstants.DEBUG) {
+            System.out.println("Threshold: "+threshold);
+            System.out.println("Average:   "+ave);
+            System.out.println("RESULT:    "+result);
+        }
+        return result;
     }
 
     public static double imageAverage(BufferedImage img) throws IOException {
