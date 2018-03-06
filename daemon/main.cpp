@@ -11,7 +11,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <atomic>
-#include "semaphore.hpp"
+#include "cv_semaphore.hpp"
+#include "spin_lock_semaphore.hpp"
 #include "mappings.hpp"
 
 void create_image(Mapping &mapping, raspicam::RaspiCam_Cv &camera);
@@ -24,9 +25,9 @@ void reader(int socket, std::atomic_int &active_readers, Semaphore &turn,
 
 int main(int argc, char *argv[]) {
     std::cout << "Creating concurrecny control variables" << std::endl;
-    Semaphore turn(1);
-    Semaphore write_guard(1);
-    Semaphore waiting_readers(1);
+    Spin_Lock_Semaphore turn(1);
+    CV_Semaphore write_guard(1);
+    CV_Semaphore waiting_readers(1);
     std::atomic_int active_readers(0);
     
     std::cout << "Creating and initialising mapping object" << std::endl;
