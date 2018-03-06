@@ -1,12 +1,12 @@
 import cv2
 import socket
 
-class ImageClient(object):
+class Image_Client(object):
     def __init__(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect(("localhost", 40000))
 
-    def get_frame(self):
+    def get_image(self):
         self.socket.send('\x02')
         if self.socket.recv(1) == 1:
             image = cv2.imread("/mnt/rd/image.jpg")
