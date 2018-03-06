@@ -236,10 +236,14 @@ public class BikeStateTracker {
 
     public ScreenNumber getFieldValue(BikeField field) {
         ScreenBox containingBox = field.getScreenBox();
+        if (containingBox == null) {
+            System.out.println("null containing box, fatal error");
+        }
 
         System.out.println("Getting box " + containingBox.toString());
         ImageTime lastImage = latestImages.get(containingBox);
         if (lastImage == null || lastImage.boxImage == null) { // No images for this box yet
+            System.out.println("Got null" + String.valueOf(lastImage));
             return null;
         }
 
