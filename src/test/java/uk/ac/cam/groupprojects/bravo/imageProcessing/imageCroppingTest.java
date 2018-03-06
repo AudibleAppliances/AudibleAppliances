@@ -15,6 +15,7 @@ public class imageCroppingTest {
         //String imgPath = URLDecoder.decode(getClass().getResource("/lcd1.jpg").getFile(), "UTF-8");
         //BufferedImage img = ImageIO.read(Paths.get(imgPath).toFile());
         //IntelligentCropping.intelligentCrop(img);
+
         //String writePath = "/Users/User/Desktop/lcd2-intellicrop.jpg";
         //ImageIO.write(img, "jpg", Paths.get(writePath).toFile());
     }
