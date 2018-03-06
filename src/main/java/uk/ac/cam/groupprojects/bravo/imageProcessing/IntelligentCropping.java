@@ -16,8 +16,6 @@ import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;;
 // A white-pixel flood-fill from the top of the image down would probably be the best approach
 
 public class IntelligentCropping {
-    private static final double THRESHOLD = 0.95; // Pixels with red component under 50% are removed
-    private static final double MAX_DEPTH_PERCENT = 0.1; // Up to 10% can be cut out
 
     /**
      * Crops unneeded lit edges from image that cause problems with the OCR.
@@ -28,8 +26,6 @@ public class IntelligentCropping {
         SSOCRUtil.assertImageBGR(image);
 
         WritableRaster raw = image.getRaster();
-        int maxX = raw.getWidth();
-        int maxY = raw.getHeight();
 
         Set<Point> visited = new HashSet<>();
         Queue<Point> queue = new LinkedList<>();
