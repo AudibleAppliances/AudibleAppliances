@@ -38,6 +38,11 @@ public class SegmentRecogniser {
         Process p = SSOCRUtil.startRecognisingSSOCR(imagePath);
 
         try (Scanner s = new Scanner(p.getInputStream())) {
+            // Wait until there's input available
+            while (!s.hasNextLine()) {
+                System.out.println("Waiting for result from SSOCR...");
+                //Thread.sleep(10);
+            }
             String output = s.nextLine();
 
             if (output.equals("-")) {
