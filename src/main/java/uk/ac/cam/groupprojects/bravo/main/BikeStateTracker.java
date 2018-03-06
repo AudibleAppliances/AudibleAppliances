@@ -106,7 +106,7 @@ public class BikeStateTracker {
             if (SegmentActive.segmentActive(boxImage)) {
                 // If the LCD is active, record it and update the latest image we have of it
                 activeSegs.add(box);
-                System.out.println("Updating image of active box " + box.toString());
+                //System.out.println("Updating image of active box " + box.toString());
                 latestImages.put(box, new ImageTime(currentTime, boxImage));
             }
         }
