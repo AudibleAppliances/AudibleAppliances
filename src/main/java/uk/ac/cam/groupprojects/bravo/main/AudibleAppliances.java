@@ -114,10 +114,11 @@ public class AudibleAppliances {
                     BufferedImage boxImage = segmenter.getImageBox(box, image);
 
                     // Crop any bleed from LCDs above this one
-                    long a = System.currentTimeMillis();
-                    IntelligentCropping.intelligentCrop(boxImage);
-                    long b = System.currentTimeMillis() - a;
-                    System.out.println("Took " + b + "ms to crop");
+                    // DEBUG Timing
+                    //long a = System.currentTimeMillis();
+                    //IntelligentCropping.intelligentCrop(boxImage);
+                    //long b = System.currentTimeMillis() - a;
+                    //System.out.println("Took " + b + "ms to crop");
 
                     imgSegs.put(box, boxImage);
                 }
