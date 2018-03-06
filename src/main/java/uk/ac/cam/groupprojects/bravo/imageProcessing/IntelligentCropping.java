@@ -155,8 +155,8 @@ public class IntelligentCropping {
             y1 = Math.max(p.y, y1);
         }
 
-        int width = Math.max(1, x1 - x0);
-        int height = Math.max(1, y1 - y0);
+        int width = x1 - x0 + 1;
+        int height = y1 - y0 + 1;
 
         return new Rectangle(x0, y0, width, height);
     }
