@@ -1,21 +1,22 @@
 package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.*;
 import java.util.List;
 
-import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;;
+import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;
 
-// This could do with being improved
-// Need to find the horizontal level at which the numbers actually start
-// Alternatively, need to eliminate white from the top of the image when neighbours are white?
-// A white-pixel flood-fill from the top of the image down would probably be the best approach
+// Improvements to be done:
+// Convex hull on the identified points? Would completely eliminate the islands.
+// Cheap approximation by removing points if all their neighbours are to be removed, even if the point itself wouldn't.
 
 public class IntelligentCropping {
+    private static final double THRESHOLD = 160;
+
+    private static final double SAFETY_HALT = 0.5; // If we're going to overwrite more of the image than this percent, don't
 
     /**
      * Crops unneeded lit edges from image that cause problems with the OCR.
@@ -28,33 +29,42 @@ public class IntelligentCropping {
         WritableRaster raw = image.getRaster();
 
         Set<Point> visited = new HashSet<>();
-        Queue<Point> queue = new LinkedList<>();
+        Set<Point> toOverwrite = new HashSet<>();
+        Set<Point> toVisit = new HashSet<>();
 
         // Entire front row is initial frontier
-        for (int i=0; i<raw.getWidth(); i++){
-            queue.add(new Point(i,0));
-            visited.add(new Point(i, 0));
+        for (int i = 0; i < raw.getWidth(); i++) {
+            toVisit.add(new Point(i, 0));
         }
 
         Point current;
 
-        while (!queue.isEmpty()) {
-            current = queue.poll();
+        while (!toVisit.isEmpty()) {
+            Iterator<Point> i = toVisit.iterator();
+            current = i.next();
+            i.remove();
+            visited.add(current);
+            if (!threshTest(raw, current)) {
+                // If we don't need to remove this pixel, move on.
+                // Don't consider its neighbours and don't overwrite it
+                continue;
+            }
+            toOverwrite.add(current);
 
             for (Point neighbour : getNeighbours(current, raw)) {
                 if (!visited.contains(neighbour)) {
-                    queue.offer(neighbour);
-                    visited.add(neighbour);
+                    toVisit.add(neighbour);
                 }
             }
         }
 
-        // TODO: If not too many selected, overwrite visited pixels
-        //if (visited.size() < 1000000000) {
-            for (Point p : visited) {
+        // If we're going to overwrite more than 50% of the image........ don't.
+        int area = raw.getWidth() * raw.getHeight();
+        if (toOverwrite.size() < area * SAFETY_HALT) {
+            for (Point p : toOverwrite) {
                 raw.setPixel(p.x, p.y, new double[] { 0, 0, 0 });
             }
-        //}
+        }
     }
 
     /**
@@ -69,10 +79,14 @@ public class IntelligentCropping {
         int maxX = raw.getWidth();
         int maxY = raw.getHeight();
 
-        if (p.x+1 <  maxX && threshTest(raw, p)) l.add(new Point(p.x+1, p.y));
-        if (p.x-1 >= 0    && threshTest(raw, p))    l.add(new Point(p.x-1, p.y));
-        if (p.y+1 <  maxY && threshTest(raw, p)) l.add(new Point(p.x, p.y+1));
-        if (p.y-1 >= 0    && threshTest(raw, p))    l.add(new Point(p.x, p.y-1));
+        if (p.x + 1 < maxX)
+            l.add(new Point(p.x + 1, p.y));
+        if (p.x - 1 >= 0)
+            l.add(new Point(p.x - 1, p.y));
+        if (p.y + 1 < maxY)
+            l.add(new Point(p.x, p.y + 1));
+        if (p.y - 1 >= 0)
+            l.add(new Point(p.x, p.y - 1));
 
         return l;
     }
@@ -86,7 +100,7 @@ public class IntelligentCropping {
      */
     private static boolean threshTest(Raster raw, Point p) {
         // Based on empirical testing
-        return raw.getSampleDouble(p.x, p.y, 2) > 250;
+        return raw.getSampleDouble(p.x, p.y, 1) > THRESHOLD;
     }
 
 }

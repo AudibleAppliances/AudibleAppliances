@@ -8,7 +8,10 @@ find_package(OpenCV REQUIRED)
 find_package(raspicam REQUIRED)
 
 set(SOURCE_FILES
-        semaphore.cpp
+        cv_semaphore.cpp
+	cv_semaphore.hpp
+	spin_lock_semaphore.cpp
+	spin_lock_semaphore.hpp
         semaphore.hpp
 	mappings.cpp
 	mappings.hpp

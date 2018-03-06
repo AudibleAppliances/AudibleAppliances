@@ -1,20 +1,16 @@
-#include "semaphore.hpp"
+#include "cv_semaphore.hpp"
 
-Semaphore::Semaphore() {
-    count = 0;
-}
-
-Semaphore::Semaphore(int initial) {
+CV_Semaphore::CV_Semaphore(int initial) {
     count = initial;
 }
 
-void Semaphore::signal() {
+void CV_Semaphore::signal() {
     std::unique_lock<decltype(mutex)> lock(mutex);
     count++;
     cv.notify_one();
 }
 
-void Semaphore::wait() {
+void CV_Semaphore::wait() {
     std::unique_lock<decltype(mutex)> lock(mutex);
     while (count == 0) {
         cv.wait(lock);
