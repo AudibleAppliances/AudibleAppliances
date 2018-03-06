@@ -249,6 +249,7 @@ public class BikeStateTracker {
 
             try {
                 int value = SegmentRecogniser.recogniseInt(lastImage.boxImage);
+                System.out.println("Recognised " + field.toString() + ": " + value);
                 ScreenNumber recognised = field.getScreenNumber();
                 recognised.setValue(value);
                 lastImage.recognisedValue = recognised;
