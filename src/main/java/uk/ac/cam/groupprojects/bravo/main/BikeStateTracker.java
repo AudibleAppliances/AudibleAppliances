@@ -236,10 +236,14 @@ public class BikeStateTracker {
 
     public ScreenNumber getFieldValue(BikeField field) {
         ScreenBox containingBox = field.getScreenBox();
+        if (containingBox == null) {
+            System.out.println("null containing box, fatal error");
+        }
 
         System.out.println("Getting box " + containingBox.toString());
         ImageTime lastImage = latestImages.get(containingBox);
         if (lastImage == null || lastImage.boxImage == null) { // No images for this box yet
+            System.out.println("Got null" + String.valueOf(lastImage));
             return null;
         }
 
@@ -254,8 +258,14 @@ public class BikeStateTracker {
                 recognised.setValue(value);
                 lastImage.recognisedValue = recognised;
             }
-            catch (IOException | NumberFormatException | UnrecognisedDigitException e) {
+            catch (IOException e) {
+                System.out.println("IOException when recognising " + field.toString());
+                e.printStackTrace();
+                return null;
+            }
+            catch (NumberFormatException | UnrecognisedDigitException e) {
                 System.out.println("Failed to recognise digit for " + field.toString());
+                System.out.println(e.getMessage());
                 return null;
             }
 
