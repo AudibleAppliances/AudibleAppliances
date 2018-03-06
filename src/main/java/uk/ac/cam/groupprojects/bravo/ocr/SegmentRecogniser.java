@@ -11,24 +11,15 @@ public class SegmentRecogniser {
                 throws IOException, NumberFormatException, UnrecognisedDigitException {
         String s = recognise(imagePath);
 
-        s.replaceAll("\\.", "");
+        s = s.replaceAll("\\.", "");
         return Integer.parseInt(s);
     }
     public static int recogniseInt(BufferedImage img) 
                 throws IOException, NumberFormatException, UnrecognisedDigitException {
         String s = recognise(img);
 
-        s.replaceAll("\\.", "");
+        s = s.replaceAll("\\.", "");
         return Integer.parseInt(s);
-    }
-
-    public static float recogniseFloat(String imagePath)
-                throws IOException, NumberFormatException, UnrecognisedDigitException {
-        return Float.parseFloat(recognise(imagePath));
-    }
-    public static float recogniseFloat(BufferedImage img)
-                throws IOException, NumberFormatException, UnrecognisedDigitException {
-        return Float.parseFloat(recognise(img));
     }
 
     public static String recognise(BufferedImage img) throws IOException, UnrecognisedDigitException {
