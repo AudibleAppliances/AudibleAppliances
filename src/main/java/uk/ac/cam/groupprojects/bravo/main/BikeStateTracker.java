@@ -164,7 +164,7 @@ public class BikeStateTracker {
         currentScreen = newScreen;
         
         // Check if it's the time to speak, and if yes then speak
-        if (System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
+        if (currentScreen != null && System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
             currentScreen.speakItems(this, synthesiser);
             lastSpeakTime = System.currentTimeMillis();
             if (ApplicationConstants.DEBUG)
