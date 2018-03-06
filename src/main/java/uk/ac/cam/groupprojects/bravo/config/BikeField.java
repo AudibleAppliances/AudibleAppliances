@@ -24,7 +24,7 @@ public enum BikeField {
     // Boxes containing titles showing if the display is active
     private ScreenBox screenBox;
 
-    BikeField(ScreenBox box) {
+    private BikeField(ScreenBox box) {
         this.screenBox = box;
     }
 
