@@ -45,17 +45,17 @@ public class IntelligentCropping {
         // Run another flood fill, this time with a super low threshold to find isolated islands in the
         // sea of black overwritten pixels. Don't set an early stop, we want to flood as large as possible
         visited = new HashSet<>();
+        visited.addAll(toOverwrite); // Optimise by saying we've already visited all black pixels
         for (int x = 0; x < raw.getWidth(); x++) {
             for (int y = 0; y < raw.getHeight(); y++) {
                 Point current = new Point(x, y);
-                if (visited.contains(current))
+                if (visited.contains(current)) {
                     continue;
+                }
 
                 Set<Point> flooded = new HashSet<>();
-                long start = System.currentTimeMillis();
                 floodFill(raw, new Point(x, y), BLACK_THRESHOLD, visited, Integer.MAX_VALUE, flooded);
-                long duration = System.currentTimeMillis() - start;
-                System.out.println(flooded.size() + " took " + duration + "ms");
+                System.out.println(flooded.size());
 
                 if (flooded.size() >= earlyStop) {
                     continue; // If we've flooded a large area, we've got a significantly large island so don't remove it
