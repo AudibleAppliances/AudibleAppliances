@@ -29,10 +29,10 @@ int main(int argc, char *argv[]) {
     Spin_Lock_Semaphore write_guard(1);
     CV_Semaphore waiting_readers(1);
     std::atomic_int active_readers(0);
-    
+
     std::cout << "Creating and initialising mapping object" << std::endl;
     Mapping mapping(1.2, 2.5, true);
-    
+
     std::cout << "Initialising Raspberry Pi camera" << std::endl;
     raspicam::RaspiCam_Cv camera;
     camera.set(CV_CAP_PROP_FORMAT, CV_8UC3);
@@ -40,24 +40,24 @@ int main(int argc, char *argv[]) {
     camera.set(CV_CAP_PROP_FRAME_HEIGHT, mapping.resolution_y);
     camera.set(CV_CAP_PROP_EXPOSURE, 30);
     camera.set(CV_CAP_PROP_MODE, 2);
-    
+
     if (!camera.open()) {
 	    std::cerr << "Failed to open the camera" << std::endl;
         return 1;
     }
-    
+
     std::cout << "Initialising server sockets" << std::endl;
     struct sockaddr_in address;
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = inet_addr("127.0.0.1");
     address.sin_port = htons(40000);
     int address_length = sizeof(address);
-    
+
     std::thread writer_thread (writer, std::ref(turn), std::ref(write_guard), std::ref(mapping), std::ref(camera));
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
     bind(server_socket, (struct sockaddr *)&address, sizeof(address));
     listen(server_socket, 5);
-    
+
     while (true) {
         int client_socket = accept(server_socket, (struct sockaddr *)&address, (socklen_t*)&address_length);
         std::cout << "New reader" << std::endl;
@@ -104,6 +104,10 @@ void reader(int socket, std::atomic_int &active_readers, Semaphore &turn,
     while (true) {
         read(socket, buffer, 1);
         if (buffer[0] == 2) {
+            std::cout << "========================================================\n"
+                      << "=======================New Reader=======================\n"
+                      << "========================================================" << std::endl;
+            
         clock_t begin = clock();
 	    std::cout << "Reader thread: Acquiring turn" << std::endl;
 	    turn.wait();
@@ -132,7 +136,7 @@ void reader(int socket, std::atomic_int &active_readers, Semaphore &turn,
 	    send(socket, response, 1, 0);
         clock_t clock7 = clock();
         std::cout << "Reader thread: send(socket, response, 1, 0) in " << double(clock6 - clock5) / CLOCKS_PER_SEC << "s" << std::endl;
-            
+
 //            std::cout << "Reader thread: Wait to hear from client to read" << std::endl;
             read(socket, buffer, 1);
 
