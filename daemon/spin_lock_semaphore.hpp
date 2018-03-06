@@ -12,7 +12,7 @@ class Spin_Lock_Semaphore : public Semaphore {
         std::atomic_flag pseudo_mutex;
         std::atomic_uint count;
     public:
-    Spin_Lock_Semaphore(int initial) : pseudo_mutex{ATOMIC_FLAG_INIT};
+        Spin_Lock_Semaphore(int initial);
         void signal();
         void wait();
 };
