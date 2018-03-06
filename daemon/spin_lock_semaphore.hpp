@@ -1,7 +1,11 @@
+#ifndef SPIN_LOCK_SEMAPHORE
+#define SPIN_LOCK_SEMAPHORE
+
+#include "semaphore.hpp"
 #include <mutex>
 #include <atomic>
 #include <condition_variable>
-#include "semaphore.hpp"
+
 
 class Spin_Lock_Semaphore : public Semaphore {
     private:
@@ -12,3 +16,4 @@ class Spin_Lock_Semaphore : public Semaphore {
         void signal();
         void wait();
 };
+#endif

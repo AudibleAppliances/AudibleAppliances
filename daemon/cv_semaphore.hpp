@@ -1,3 +1,6 @@
+#ifndef CV_SEMAPHORE
+#define CV_SEMAPHORE
+
 #include <mutex>
 #include <atomic>
 #include <condition_variable>
@@ -13,3 +16,5 @@ class CV_Semaphore : public Semaphore {
         void signal();
         void wait();
 };
+
+#endif
