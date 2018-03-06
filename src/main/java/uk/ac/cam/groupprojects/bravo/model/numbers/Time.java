@@ -37,7 +37,7 @@ public class Time extends ScreenNumber {
     }
 
     @Override
-    public String speakValue() {
+    public String formatSpeech() {
         boolean result = oldResult;
         if ( oldVal != -1 ){
             int newVal = this.minutes.getValue() * 60 + this.seconds.getValue();

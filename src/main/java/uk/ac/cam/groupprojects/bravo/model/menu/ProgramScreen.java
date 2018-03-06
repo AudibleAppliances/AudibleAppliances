@@ -34,8 +34,8 @@ public class ProgramScreen extends BikeScreen {
 
     @Override
     public String formatSpeech(BikeStateTracker bikeStateTracker) {
-        if (programValue == null) {
-            return programValue.toString();
+        if (programValue != null) {
+            return programValue.formatSpeech();
         } else {
             return null;
         }

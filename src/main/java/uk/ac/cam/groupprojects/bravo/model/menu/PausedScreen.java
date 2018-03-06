@@ -33,12 +33,12 @@ public class PausedScreen extends BikeScreen {
         if (configData.isSpokenField(BikeField.DISTANCE)) {
             Distance d = (Distance)bikeStateTracker.getFieldValue(BikeField.DISTANCE);
             if (d != null)
-                result += d.toString();
+                result += d.formatSpeech();
         }
         if (configData.isSpokenField(BikeField.TIME)) {
             Time t = (Time)bikeStateTracker.getFieldValue(BikeField.TIME);
             if (t != null)
-                result += t.toString();
+                result += t.formatSpeech();
         }
         return result;
     }

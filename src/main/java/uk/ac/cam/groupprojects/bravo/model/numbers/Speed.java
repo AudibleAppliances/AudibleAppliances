@@ -24,7 +24,7 @@ public class Speed extends ScreenNumber {
     }
 
     @Override
-    public String speakValue() {
+    public String formatSpeech() {
         return String.format( "You are currently cycling at %d.%d miles per hour", higherSpeedDigit.getValue(), lowerSpeedDigit.getValue() );
     }
 

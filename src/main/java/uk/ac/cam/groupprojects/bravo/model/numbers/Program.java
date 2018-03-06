@@ -10,7 +10,7 @@ public class Program extends ScreenNumber {
     }
 
     @Override
-    public String speakValue() {
+    public String formatSpeech() {
         return String.format("You have selected program %d", getValue() );
     }
 }

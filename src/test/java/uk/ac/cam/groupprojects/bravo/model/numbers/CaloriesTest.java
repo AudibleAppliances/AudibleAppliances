@@ -1,7 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.model.numbers;
 
 import org.junit.Test;
-import uk.ac.cam.groupprojects.bravo.model.numbers.Calories;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,13 +21,13 @@ public class CaloriesTest {
     public void testOutput(){
         Calories cal = new Calories();
         cal.setValue(50);
-        assertEquals( "You have burnt 50 calories in this session", cal.speakValue() );
+        assertEquals( "You have burnt 50 calories in this session", cal.formatSpeech() );
 
         cal.setValue(40);
-        assertEquals( "You have burnt 40 calories in this session", cal.speakValue() );
+        assertEquals( "You have burnt 40 calories in this session", cal.formatSpeech() );
 
         cal.setValue(-40);
-        assertEquals( "You have burnt 40 calories in this session", cal.speakValue() );
+        assertEquals( "You have burnt 40 calories in this session", cal.formatSpeech() );
     }
 
 }

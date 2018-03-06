@@ -1,7 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.model.numbers;
 
 import org.junit.Test;
-import uk.ac.cam.groupprojects.bravo.model.numbers.Pulse;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,13 +21,13 @@ public class PulseTest {
     public void testOutput(){
         Pulse pulse = new Pulse();
         pulse.setValue(50);
-        assertEquals( "Your current heart rate is 50 beats per minute", pulse.speakValue() );
+        assertEquals( "Your current heart rate is 50 beats per minute", pulse.formatSpeech() );
 
         pulse.setValue(40);
-        assertEquals( "Your current heart rate is 40 beats per minute", pulse.speakValue() );
+        assertEquals( "Your current heart rate is 40 beats per minute", pulse.formatSpeech() );
 
         pulse.setValue(-40);
-        assertEquals( "Your current heart rate is 40 beats per minute", pulse.speakValue() );
+        assertEquals( "Your current heart rate is 40 beats per minute", pulse.formatSpeech() );
     }
 
 }

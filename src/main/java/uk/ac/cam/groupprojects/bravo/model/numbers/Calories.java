@@ -7,7 +7,7 @@ public class Calories extends ScreenNumber{
     }
 
     @Override
-    public String speakValue() {
+    public String formatSpeech() {
         return String.format("You have burnt %d calories in this session", (int) getValue() );
     }
 }

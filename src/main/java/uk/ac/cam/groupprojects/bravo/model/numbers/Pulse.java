@@ -7,7 +7,7 @@ public class Pulse extends ScreenNumber {
     }
 
     @Override
-    public String speakValue() {
+    public String formatSpeech() {
         return String.format("Your current heart rate is %d beats per minute", getValue() );
     }
 }

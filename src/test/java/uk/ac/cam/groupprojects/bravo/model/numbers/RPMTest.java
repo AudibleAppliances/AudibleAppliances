@@ -1,7 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.model.numbers;
 
 import org.junit.Test;
-import uk.ac.cam.groupprojects.bravo.model.numbers.RPM;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,13 +21,13 @@ public class RPMTest {
     public void testOutput(){
         RPM rpm = new RPM();
         rpm.setValue(50);
-        assertEquals( "Your current rotations per minute is 50", rpm.speakValue() );
+        assertEquals( "Your current rotations per minute is 50", rpm.formatSpeech() );
 
         rpm.setValue(40);
-        assertEquals( "Your current rotations per minute is 40", rpm.speakValue() );
+        assertEquals( "Your current rotations per minute is 40", rpm.formatSpeech() );
 
         rpm.setValue(-40);
-        assertEquals( "Your current rotations per minute is 40", rpm.speakValue() );
+        assertEquals( "Your current rotations per minute is 40", rpm.formatSpeech() );
     }
 
 }
