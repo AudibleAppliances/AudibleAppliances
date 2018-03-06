@@ -5,6 +5,8 @@ import json
 
 config_file = "/home/pi/config.json"
 app = Flask(__name__)
+Image_Client my_image_client = Image_Client()
+
 
 def gen(image_client):
     while True:
@@ -39,7 +41,7 @@ def javascript3():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(gen(Image_Client()),
+    return Response(gen(my_image_client),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/new_box', methods=['POST'])
