@@ -26,7 +26,7 @@ void reader(int socket, std::atomic_int &active_readers, Semaphore &turn,
 int main(int argc, char *argv[]) {
     std::cout << "Creating concurrecny control variables" << std::endl;
     Spin_Lock_Semaphore turn(1);
-    CV_Semaphore write_guard(1);
+    Spin_Lock_Semaphore write_guard(1);
     CV_Semaphore waiting_readers(1);
     std::atomic_int active_readers(0);
     
