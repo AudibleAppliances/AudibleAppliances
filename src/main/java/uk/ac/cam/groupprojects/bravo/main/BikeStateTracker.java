@@ -236,7 +236,6 @@ public class BikeStateTracker {
     }
 
     public ScreenNumber getFieldValue(BikeField field) {
-        System.out.println("Recognising field: " + field.toString());
         ScreenBox containingBox = field.getScreenBox();
 
         System.out.println("Getting box " + containingBox.toString());

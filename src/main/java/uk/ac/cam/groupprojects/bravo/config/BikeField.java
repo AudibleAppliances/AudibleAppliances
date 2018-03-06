@@ -22,10 +22,14 @@ public enum BikeField {
     WATT(ScreenBox.LCD5);
 
     // Boxes containing titles showing if the display is active
-    private ScreenBox screenBox;
+    private final ScreenBox screenBox;
 
     private BikeField(ScreenBox box) {
         this.screenBox = box;
+        if (box == null) {
+            System.out.println(this.toString());
+            Thread.dumpStack();
+        }
     }
 
     /**
