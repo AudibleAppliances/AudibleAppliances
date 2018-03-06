@@ -55,13 +55,11 @@ public class IntelligentCropping {
 
         // Run another flood fill, this time with a super low threshold to find isolated islands in the
         // sea of black overwritten pixels. Don't set an early stop, we want to flood as large as possible
-        for (int y = 0; y < visited.length; y++) {
-            Arrays.fill(visited[y], false);
-        }
+        visited = new boolean[sub.getHeight()][sub.getWidth()];
 
         // Add all the points that we previously filled with black to the visited set, as we don't have to check them
         for (Point p : toOverwrite) {
-            p.translate(bounds.x, bounds.y);
+            p.translate(-bounds.x, -bounds.y);
             visited[p.y][p.x] = true;
         }
         for (int x = 0; x < sub.getWidth(); x++) {
