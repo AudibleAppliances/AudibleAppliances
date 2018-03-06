@@ -10,27 +10,16 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.*;
  * @author Oliver Hope
  */
 public enum BikeField {
-    SPEED(ScreenBox.LCD3),
-    TIME(ScreenBox.LCD1),
-    DISTANCE(ScreenBox.LCD4),
-    RPM(ScreenBox.LCD3),
-    CAL(ScreenBox.LCD6),
-    PULSE(ScreenBox.LCD2),
-    GRAPH(ScreenBox.GRAPH),
-    PROGRAM(ScreenBox.PROGRAM),
-    LOAD(ScreenBox.LCD5),
-    WATT(ScreenBox.LCD5);
-
-    // Boxes containing titles showing if the display is active
-    private final ScreenBox screenBox;
-
-    private BikeField(ScreenBox box) {
-        this.screenBox = box;
-        if (box == null) {
-            System.out.println(this.toString());
-            Thread.dumpStack();
-        }
-    }
+    SPEED,
+    TIME,
+    DISTANCE,
+    RPM,
+    CAL,
+    PULSE,
+    GRAPH,
+    PROGRAM,
+    LOAD,
+    WATT;
 
     /**
      * Get the ScreenBox that can contain this field
@@ -38,7 +27,19 @@ public enum BikeField {
      * @return The relevant ScreenBox
      */
     public ScreenBox getScreenBox() {
-        return screenBox;
+        switch (this) {
+            case SPEED: return ScreenBox.LCD3;
+            case TIME: return ScreenBox.LCD1;
+            case DISTANCE: return ScreenBox.LCD4;
+            case RPM: return ScreenBox.LCD3;
+            case CAL: return ScreenBox.LCD6;
+            case PULSE: return ScreenBox.LCD2;
+            case GRAPH: return ScreenBox.GRAPH;
+            case PROGRAM: return ScreenBox.PROGRAM;
+            case LOAD: return ScreenBox.LCD5;
+            case WATT: return ScreenBox.LCD5;
+            default: return null;
+        }
     }
 
     /**

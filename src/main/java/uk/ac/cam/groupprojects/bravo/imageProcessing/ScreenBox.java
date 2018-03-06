@@ -9,12 +9,12 @@ import uk.ac.cam.groupprojects.bravo.config.BikeField;
  */
 public enum ScreenBox {
 
-    LCD1(BikeField.TIME),
-    LCD2(BikeField.PULSE),
-    LCD3(BikeField.SPEED, BikeField.RPM),
-    LCD4(BikeField.DISTANCE),
-    LCD5(BikeField.WATT, BikeField.LOAD),
-    LCD6(BikeField.CAL),
+    LCD1,
+    LCD2,
+    LCD3,
+    LCD4,
+    LCD5,
+    LCD6,
     GRAPH, PROGRAM, WATT, RPM, LOAD,
 
     // This is disgusting but desperate times
@@ -26,29 +26,15 @@ public enum ScreenBox {
     LCD_TEXT_10,
     LCD_TEXT_11;
 
-    private BikeField[] fields;
-
-    ScreenBox(BikeField... fields) {
-        this.fields = fields;
-    }
-
     public BikeField[] getFields() {
-        return fields.clone();
-    }
-
-    public boolean isBlueBackground() {
-        switch(this) {
-            case LCD1:
-            case LCD2:
-            case LCD3:
-            case LCD4:
-            case LCD5:
-            case LCD6: return true;
-            // All others
-            default:   return false;
+        switch (this) {
+            case LCD1: return new BikeField[] { BikeField.TIME };
+            case LCD2: return new BikeField[] { BikeField.PULSE };
+            case LCD3: return new BikeField[] { BikeField.SPEED, BikeField.RPM };
+            case LCD4: return new BikeField[] { BikeField.DISTANCE };
+            case LCD5: return new BikeField[] { BikeField.WATT, BikeField.LOAD };
+            case LCD6: return new BikeField[] { BikeField.CAL };
+            default: return null;
         }
-    }
-    public boolean isBlackBackground() {
-        return !isBlueBackground();
     }
 }
