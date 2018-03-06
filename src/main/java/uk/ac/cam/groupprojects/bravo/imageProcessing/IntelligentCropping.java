@@ -9,12 +9,14 @@ import java.util.List;
 
 import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;
 
-// This could do with being improved
-// Need to find the horizontal level at which the numbers actually start
-// Alternatively, need to eliminate white from the top of the image when neighbours are white?
-// A white-pixel flood-fill from the top of the image down would probably be the best approach
+// Improvements to be done:
+// Convex hull on the identified points? Would completely eliminate the islands.
+// Cheap approximation by removing points if all their neighbours are to be removed, even if the point itself wouldn't.
 
 public class IntelligentCropping {
+    private static final double THRESHOLD = 160;
+
+    private static final double SAFETY_HALT = 0.5; // If we're going to overwrite more of the image than this percent, don't
 
     /**
      * Crops unneeded lit edges from image that cause problems with the OCR.
@@ -58,7 +60,7 @@ public class IntelligentCropping {
 
         // If we're going to overwrite more than 50% of the image........ don't.
         int area = raw.getWidth() * raw.getHeight();
-        if (toOverwrite.size() < area * 0.5) {
+        if (toOverwrite.size() < area * SAFETY_HALT) {
             for (Point p : toOverwrite) {
                 raw.setPixel(p.x, p.y, new double[] { 0, 0, 0 });
             }
@@ -98,7 +100,7 @@ public class IntelligentCropping {
      */
     private static boolean threshTest(Raster raw, Point p) {
         // Based on empirical testing
-        return raw.getSampleDouble(p.x, p.y, 1) > 160;
+        return raw.getSampleDouble(p.x, p.y, 1) > THRESHOLD;
     }
 
 }
