@@ -77,20 +77,15 @@ void create_image(Mapping &mapping, raspicam::RaspiCam_Cv &camera) {
     camera.retrieve(image);
     cv::remap(image, *new_image, *mapping.get_mapping_x(), *mapping.get_mapping_y(), cv::INTER_LINEAR);
     image.release();
-    cv::imwrite("/mnt/rd/image.jpg", *new_image);
+    cv::imwrite("/mnt/rd/temp_image.jpg", *new_image);
 }
 
 void writer(Semaphore &turn, Semaphore &write_guard, Mapping &mapping, raspicam::RaspiCam_Cv &camera) {
     while (true) {
-//        std::cout << "Writer thread : Acquired turn" << std::endl;
+        create_image(std::ref(mapping), std::ref(camera));
         turn.wait();
         write_guard.wait();
-        double total_time = 0;
-        clock_t begin = clock();
-        create_image(std::ref(mapping), std::ref(camera));
-        clock_t end = clock();
-        total_time += double(end - begin) / CLOCKS_PER_SEC;
-//        std::cout << "Created image in " << total_time << "s" << std::endl;
+        rename("/mnt/rd/temp_image.jpg", "/mnt/rd/image.jpg");
         write_guard.signal();
         turn.signal();
         std::this_thread::yield();
