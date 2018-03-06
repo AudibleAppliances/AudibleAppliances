@@ -117,7 +117,7 @@ public class AudibleAppliances {
                     long a = System.currentTimeMillis();
                     IntelligentCropping.intelligentCrop(boxImage);
                     long b = System.currentTimeMillis() - a;
-                    System.out.println("Took " + b + "ms to crop");
+                    System.out.println("Took " + b + "ms to crop " + box.toString());
 
                     imgSegs.put(box, boxImage);
                 }

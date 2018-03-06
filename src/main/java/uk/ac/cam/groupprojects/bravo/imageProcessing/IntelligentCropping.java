@@ -39,28 +39,38 @@ public class IntelligentCropping {
             toOverwrite.addAll(flooded);
         }
 
+        if (toOverwrite.isEmpty()) {
+            return; // Don't need to do anything else
+        }
+
         // Actually overwrite the chosen pixels with black
         blacken(raw, toOverwrite);
+
+        // Create a sub-raster that forms a bounding rectangle of the area that we overwrote pixels in
+        // We operate on this smaller raster in the second pass, as we can ignore anything that we didn't touch
+        // in the first pass
+        Rectangle bounds = getBounds(toOverwrite);
+        WritableRaster sub = raw.createWritableChild(bounds.x, bounds.y, bounds.width, bounds.height, 0, 0, null);
+        earlyStop = (int)(sub.getWidth() * sub.getHeight() * SAFETY_HALT);
 
         // Run another flood fill, this time with a super low threshold to find isolated islands in the
         // sea of black overwritten pixels. Don't set an early stop, we want to flood as large as possible
         visited = new HashSet<>();
-        visited.addAll(toOverwrite); // Optimise by saying we've already visited all black pixels
-        for (int x = 0; x < raw.getWidth(); x++) {
-            for (int y = 0; y < raw.getHeight(); y++) {
+        for (int x = 0; x < sub.getWidth(); x++) {
+            for (int y = 0; y < sub.getHeight(); y++) {
                 Point current = new Point(x, y);
                 if (visited.contains(current)) {
                     continue;
                 }
 
                 Set<Point> flooded = new HashSet<>();
-                floodFill(raw, new Point(x, y), BLACK_THRESHOLD, visited, Integer.MAX_VALUE, flooded);
+                floodFill(sub, new Point(x, y), BLACK_THRESHOLD, visited, Integer.MAX_VALUE, flooded);
 
                 if (flooded.size() >= earlyStop) {
                     continue; // If we've flooded a large area, we've got a significantly large island so don't remove it
                 }
 
-                blacken(raw, flooded);
+                blacken(sub, flooded);
             }
         }
     }
@@ -72,7 +82,7 @@ public class IntelligentCropping {
     }
     
     private static void floodFill(Raster raw, Point start, double threshold, Set<Point> visited,
-                                     int earlyStop, Set<Point> outputFlood) {
+                                  int earlyStop, Set<Point> outputFlood) {
         Set<Point> frontier = new HashSet<>();
         frontier.add(start);
 
@@ -126,6 +136,20 @@ public class IntelligentCropping {
             l.add(new Point(p.x, p.y - 1));
 
         return l;
+    }
+
+    private static Rectangle getBounds(Set<Point> points) {
+        int x0 = Integer.MAX_VALUE, y0 = Integer.MAX_VALUE;
+        int x1 = 0, y1 = 0;
+
+        for (Point p : points) {
+            x0 = Math.min(p.x, x0);
+            y0 = Math.min(p.y, y0);
+            x1 = Math.max(p.x, x1);
+            y1 = Math.max(p.y, y1);
+        }
+
+        return new Rectangle(x0, y0, x1 - x0, y1 - y0);
     }
 
     /**
