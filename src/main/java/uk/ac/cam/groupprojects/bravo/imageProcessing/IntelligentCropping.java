@@ -55,7 +55,6 @@ public class IntelligentCropping {
 
                 Set<Point> flooded = new HashSet<>();
                 floodFill(raw, new Point(x, y), BLACK_THRESHOLD, visited, Integer.MAX_VALUE, flooded);
-                System.out.println(flooded.size());
 
                 if (flooded.size() >= earlyStop) {
                     continue; // If we've flooded a large area, we've got a significantly large island so don't remove it
