@@ -11,14 +11,14 @@ public class SegmentRecogniser {
                 throws IOException, NumberFormatException, UnrecognisedDigitException {
         String s = recognise(imagePath);
 
-        s = s.replaceAll("\\.", "");
+        s = s.replaceAll("[^0-9]", "");
         return Integer.parseInt(s);
     }
     public static int recogniseInt(BufferedImage img) 
                 throws IOException, NumberFormatException, UnrecognisedDigitException {
         String s = recognise(img);
 
-        s = s.replaceAll("\\.", "");
+        s = s.replaceAll("[^0-9]", "");
         return Integer.parseInt(s);
     }
 
