@@ -11,8 +11,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <atomic>
-#include "cv_semaphore.hpp"
-#include "spin_lock_semaphore.hpp"
+#include "semaphore.hpp"
+//#include "cv_semaphore.hpp"
+//#include "spin_lock_semaphore.hpp"
 #include "mappings.hpp"
 
 void create_image(Mapping &mapping, raspicam::RaspiCam_Cv &camera);
