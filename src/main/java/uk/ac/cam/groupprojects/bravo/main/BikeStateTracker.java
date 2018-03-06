@@ -254,8 +254,14 @@ public class BikeStateTracker {
                 recognised.setValue(value);
                 lastImage.recognisedValue = recognised;
             }
-            catch (IOException | NumberFormatException | UnrecognisedDigitException e) {
+            catch (IOException e) {
+                System.out.println("IOException when recognising " + field.toString());
+                e.printStackTrace();
+                return null;
+            }
+            catch (NumberFormatException | UnrecognisedDigitException e) {
                 System.out.println("Failed to recognise digit for " + field.toString());
+                System.out.println(e.getMessage());
                 return null;
             }
 
