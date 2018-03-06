@@ -34,23 +34,23 @@ import java.util.Set;
 public class BikeStateTracker {
     // Holds data about the bike at a given time (enough to compute the state, so LCD and the recognised time)
     class StateTime {
-        public LocalDateTime addedTime;
+        public long addedMillis;
         public Set<ScreenBox> activeBoxes;
         public int bikeTime;
 
-        public StateTime(LocalDateTime addedTime, Set<ScreenBox> activeBoxes, int bikeTime) {
-            this.addedTime = addedTime;
+        public StateTime(long addedMillis, Set<ScreenBox> activeBoxes, int bikeTime) {
+            this.addedMillis = addedMillis;
             this.activeBoxes = activeBoxes;
             this.bikeTime = bikeTime;
         }
     }
     // Holds the last image we saw for each segment *when it was active* - no blank images here
     class ImageTime {
-        public LocalDateTime addedTime;
+        public long addedTime;
         public BufferedImage boxImage;
         public ScreenNumber recognisedValue;
 
-        public ImageTime(LocalDateTime addedTime, BufferedImage boxImage) {
+        public ImageTime(long addedTime, BufferedImage boxImage) {
             this.addedTime = addedTime;
             this.boxImage = boxImage;
 
@@ -99,7 +99,7 @@ public class BikeStateTracker {
      */
     public void updateState(Map<ScreenBox, BufferedImage> imgSegs)
                 throws IOException, UnrecognisedDigitException, NumberFormatException {
-        LocalDateTime currentTime = LocalDateTime.now();
+        long currentTime = System.currentTimeMillis();
         Set<ScreenBox> activeSegs = new HashSet<>();
 
         // Compute which LCD segments are lit up (active)
@@ -173,7 +173,7 @@ public class BikeStateTracker {
     }
 
     // Update which LCDs are blinking and which are solid
-    private void updateSolidBlinking(LocalDateTime currentTime) {
+    private void updateSolidBlinking(long currentTime) {
         // Reset all
         boxStates.clear();
 
@@ -187,11 +187,8 @@ public class BikeStateTracker {
                 boolean currentlyActive = isBoxActiveNow(box);
                 boolean historyMatches =
                         history.stream()
-                               .filter(s ->
-                                   currentTime.minus(2 * ApplicationConstants.BLINK_FREQ, ChronoUnit.MILLIS)
-                                              .isBefore(s.addedTime))
-                               .allMatch(s ->
-                                   s.activeBoxes.contains(box) == currentlyActive);
+                               .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
+                               .allMatch(s -> s.activeBoxes.contains(box) == currentlyActive);
 
                 if (!historyMatches) { // Changes over time => blinking
                     blinking = true;
@@ -218,14 +215,13 @@ public class BikeStateTracker {
         timeChanging = !history.stream()
                                .allMatch(s -> s.bikeTime == currentBikeTime);
     }
-    private void removeOldHistory(LocalDateTime currentTime) {
+    private void removeOldHistory(long currentTime) {
         System.out.println();
-        System.out.println("Removing old history. Current time " + currentTime.getNano() * 1000);
+        System.out.println("Removing old history. Current time " + currentTime);
 
         while (history.size() > 0) {
-            System.out.println("Looking at " + history.getFirst().addedTime.getNano() * 1000);
-            if (currentTime.minus(4 * ApplicationConstants.BLINK_FREQ, ChronoUnit.MILLIS)
-                           .isAfter(history.getFirst().addedTime)) {
+            System.out.println("Looking at " + history.getFirst().addedMillis);
+            if (currentTime - 4 * ApplicationConstants.BLINK_FREQ_MILLIS > history.getFirst().addedMillis) {
                 history.removeFirst();
             } else {
                 break;
