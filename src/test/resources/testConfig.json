@@ -1,5 +1,5 @@
 {
-	"voice": "cmu_us_awb_arctic_clunits",
+	"voice": "kal_diphone",
 	"boxes": {
 		"lcd1": {
 			"corner": [17, 8.7],
