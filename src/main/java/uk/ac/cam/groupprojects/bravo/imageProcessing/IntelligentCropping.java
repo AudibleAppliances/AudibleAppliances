@@ -95,53 +95,33 @@ public class IntelligentCropping {
         Set<Point> flooded = new HashSet<>();
         while (!frontier.isEmpty()) {
             Iterator<Point> i = frontier.iterator();
-            Point current = i.next();
+            Point p = i.next();
             i.remove();
 
-            visited[current.y][current.x] = true;
-            if (!isAboveThreshold(raw, current, threshold)) {
+            visited[p.y][p.x] = true;
+            if (!isAboveThreshold(raw, p, threshold)) {
                 // If we don't need to remove this pixel, move on.
                 // Don't consider its neighbours and don't overwrite it
                 continue;
             }
 
-            flooded.add(current);
+            flooded.add(p);
             if (flooded.size() > earlyStop) { // If we're going to overwrite too many pixels, stop
                 break;
             }
 
-            for (Point neighbour : getNeighbours(current, raw)) {
-                if (!visited[neighbour.y][neighbour.x]) {
-                    frontier.add(neighbour);
-                }
-            }
+            // Compute neighbours. Done nastily here because it's faster than eg. using a helper function
+            if (p.x + 1 < raw.getWidth() && !visited[p.y][p.x + 1])
+                frontier.add(new Point(p.x + 1, p.y));
+            if (p.x - 1 >= 0 && !visited[p.y][p.x - 1])
+                frontier.add(new Point(p.x - 1, p.y));
+            if (p.y + 1 < raw.getHeight() && !visited[p.y + 1][p.x])
+                frontier.add(new Point(p.x, p.y + 1));
+            if (p.y - 1 >= 0 && !visited[p.y - 1][p.x])
+                frontier.add(new Point(p.x, p.y - 1));
         }
 
         outputFlood.addAll(flooded);
-    }
-
-    /**
-     * Given an image and point, returns a list of "reachable neighbours". ie adjacent pixel that need overwriting
-     *
-     * @param p
-     * @param raw
-     * @return
-     */
-    private static List<Point> getNeighbours(Point p, Raster raw) {
-        List<Point> l = new ArrayList<>();
-        int maxX = raw.getWidth();
-        int maxY = raw.getHeight();
-
-        if (p.x + 1 < maxX)
-            l.add(new Point(p.x + 1, p.y));
-        if (p.x - 1 >= 0)
-            l.add(new Point(p.x - 1, p.y));
-        if (p.y + 1 < maxY)
-            l.add(new Point(p.x, p.y + 1));
-        if (p.y - 1 >= 0)
-            l.add(new Point(p.x, p.y - 1));
-
-        return l;
     }
 
     private static Rectangle getBounds(Set<Point> points) {
@@ -172,5 +152,4 @@ public class IntelligentCropping {
         // Based on empirical testing
         return raw.getSampleDouble(p.x, p.y, 1) > threshold;
     }
-
 }
