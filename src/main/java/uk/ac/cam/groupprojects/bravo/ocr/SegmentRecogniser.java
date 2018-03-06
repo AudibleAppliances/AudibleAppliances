@@ -38,12 +38,8 @@ public class SegmentRecogniser {
         Process p = SSOCRUtil.startRecognisingSSOCR(imagePath);
 
         try (Scanner s = new Scanner(p.getInputStream())) {
-            // Wait until there's input available
-            while (!s.hasNextLine()) {
-                System.out.println("Waiting for result from SSOCR...");
-                //Thread.sleep(10);
-            }
             String output = s.nextLine();
+            System.out.println("Got \"" + output +"\" from SSOCR");
 
             if (output.equals("-")) {
                 throw new UnrecognisedDigitException("Failed to parse digit in file: " + imagePath);

@@ -35,6 +35,7 @@ public class SSOCRUtil {
         pArgs.addAll(args);
 
         ProcessBuilder builder = new ProcessBuilder(pArgs);
+        builder.redirectErrorStream(true); // Merge stderr and stdout
 
         return builder.start();
     }
