@@ -8,6 +8,7 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.IntelligentCropping;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.menu.*;
 import uk.ac.cam.groupprojects.bravo.model.numbers.*;
+import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
@@ -106,12 +107,11 @@ public class BikeStateTracker {
             long startTime = System.currentTimeMillis();
 
             BufferedImage boxImage = imgSegs.get(box);
+            boxImage = SSOCRUtil.roughThreshold(boxImage);
             
-            // DEBUG
-            FastImageIO.write(boxImage, "jpg", new File("/mnt/rd/temp.jpg"));
-            System.in.read();
-
+            boolean active = false;
             if (SegmentActive.segmentActive(boxImage)) {
+                active = true;
                 // If the LCD is active, record it and update the latest image we have of it
                 activeSegs.add(box);
                 latestImages.put(box, new ImageTime(currentTime, boxImage));
@@ -119,7 +119,11 @@ public class BikeStateTracker {
 
             long elapsedTime = System.currentTimeMillis() - startTime;
             if (ApplicationConstants.DEBUG)
-                System.out.println("segmentActive(" + box.toString() + ") took " + elapsedTime + "ms");
+                System.out.println("segmentActive(" + box.toString() + ") took " + elapsedTime + "ms, got " + active);
+
+            // DEBUG
+            FastImageIO.write(boxImage, "jpg", new File("/mnt/rd/temp.jpg"));
+            System.in.read();
         }
 
         // Store the new state, with the time we recognised at the moment

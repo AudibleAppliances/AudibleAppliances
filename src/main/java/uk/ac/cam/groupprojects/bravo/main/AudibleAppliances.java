@@ -111,6 +111,8 @@ public class AudibleAppliances {
                 Map<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
                 for (ScreenBox box : ScreenBox.values()) {
                     BufferedImage boxImage = segmenter.getImageBox(box, image);
+
+                    // Crop any bleed from LCDs above this one
                     IntelligentCropping.intelligentCrop(boxImage);
 
                     imgSegs.put(box, boxImage);

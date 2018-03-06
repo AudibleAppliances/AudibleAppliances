@@ -91,7 +91,8 @@ public class SSOCRUtil {
 
     public static void assertImageBGR(BufferedImage image) {
         if (image.getType() != 5) {
-            System.out.println("Input image type isn't 5 (BGR) - developer error");
+            System.out.println("Input image type is " + image.getType() + ", not 5 (BGR) - developer error");
+            Thread.dumpStack();
             System.exit(-42);
         }
     }
