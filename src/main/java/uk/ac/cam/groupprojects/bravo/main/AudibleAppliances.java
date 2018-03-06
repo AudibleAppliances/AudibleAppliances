@@ -113,8 +113,7 @@ public class AudibleAppliances {
                     BufferedImage boxImage = segmenter.getImageBox(box, image);
 
                     // Crop any bleed from LCDs above this one
-                    // Currently disabled as it was causing issues with segmentActive
-                    //IntelligentCropping.intelligentCrop(boxImage);
+                    IntelligentCropping.intelligentCrop(boxImage);
 
                     imgSegs.put(box, boxImage);
                 }
