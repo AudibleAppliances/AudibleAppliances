@@ -100,24 +100,15 @@ public class BikeStateTracker {
 
         // Compute which LCD segments are lit up (active)
         for (ScreenBox box : ScreenBox.values()) {
-            long startTime = System.currentTimeMillis();
-
             BufferedImage boxImage = imgSegs.get(box);
             boxImage = SSOCRUtil.roughThreshold(boxImage);
             
-            boolean active = false;
             if (SegmentActive.segmentActive(boxImage)) {
-                active = true;
                 // If the LCD is active, record it and update the latest image we have of it
                 activeSegs.add(box);
                 System.out.println("Updating image of active box " + box.toString());
                 latestImages.put(box, new ImageTime(currentTime, boxImage));
             }
-            else {
-                System.out.println(box.toString() + " inactive");
-            }
-
-            long elapsedTime = System.currentTimeMillis() - startTime;
         }
 
         // Store the new state, with the time we recognised at the moment
@@ -157,6 +148,8 @@ public class BikeStateTracker {
         }
         if (newScreen == null) {
             System.out.println("Failed to identify state");
+        } else {
+            System.out.println("In state " + newScreen.toString());
         }
 
         currentScreen = newScreen;
@@ -241,7 +234,6 @@ public class BikeStateTracker {
     public ScreenNumber getFieldValue(BikeField field) {
         ScreenBox containingBox = field.getScreenBox();
 
-        System.out.println("Getting box " + containingBox.toString());
         ImageTime lastImage = latestImages.get(containingBox);
         if (lastImage == null || lastImage.boxImage == null) { // No images for this box yet
             System.out.println("Got lastImage as " + String.valueOf(lastImage));
