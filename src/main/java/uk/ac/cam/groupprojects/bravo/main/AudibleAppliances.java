@@ -99,6 +99,9 @@ public class AudibleAppliances {
 
         int connectionAttempts = 0;
         while (true) {
+            // Clear the history
+            Runtime.getRuntime().exec("clear-history");
+
             long overallStart = System.currentTimeMillis();
             try {
                 long start = System.currentTimeMillis();
@@ -112,19 +115,11 @@ public class AudibleAppliances {
                 // Segment the image
                 start = System.currentTimeMillis();
                 Map<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
-                long maxTime = Long.MIN_VALUE;
                 for (ScreenBox box : ScreenBox.values()) {
                     BufferedImage boxImage = segmenter.getImageBox(box, image);
 
-                    // Crop any bleed from LCDs above this one
-                    long a = System.currentTimeMillis();
-                    IntelligentCropping.intelligentCrop(boxImage.getRaster());
-                    long b = System.currentTimeMillis() - a;
-                    maxTime = Math.max(maxTime, b);
-
                     imgSegs.put(box, boxImage);
                 }
-                System.out.println("Took max " + maxTime + "ms to intelligently crop.");
                 elapsedTime = System.currentTimeMillis() - start;
                 if (ApplicationConstants.DEBUG)
                     System.out.println("Time taken to segment the image: " + elapsedTime + "ms ");
@@ -136,8 +131,9 @@ public class AudibleAppliances {
 
             } catch (ConnectException e) {
                 if (DEBUG) {
-                    System.out.println("Failed to connect to image server.");
+                    System.out.println("Failed to connect to image server. Waiting 1s");
                 }
+                try { Thread.sleep(1000); } catch (InterruptedException ie) { }
 
                 connectionAttempts++;
                 if (connectionAttempts == ApplicationConstants.MAX_CONNECT_ATTEMPTS) {

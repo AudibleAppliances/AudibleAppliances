@@ -45,12 +45,14 @@ public class BikeStateTracker {
         public long addedTime;
         public BufferedImage boxImage;
         public ScreenNumber recognisedValue;
+        public boolean isCropped;
 
         public ImageTime(long addedTime, BufferedImage boxImage) {
             this.addedTime = addedTime;
             this.boxImage = boxImage;
 
             recognisedValue = null;
+            isCropped = false;
         }
 
         public void setRecognisedValue(ScreenNumber value) {
@@ -247,7 +249,13 @@ public class BikeStateTracker {
             long startTime = System.currentTimeMillis();
 
             try {
-                int value = SegmentRecogniser.recogniseInt(lastImage.boxImage);
+                BufferedImage picture = lastImage.boxImage;
+                if (!lastImage.isCropped) {
+                    IntelligentCropping.intelligentCrop(picture.getRaster());
+                    lastImage.isCropped = true;
+                }
+
+                int value = SegmentRecogniser.recogniseInt(picture);
                 System.out.println("Recognised " + field.toString() + ": " + value);
                 ScreenNumber recognised = field.getScreenNumber();
                 recognised.setValue(value);
@@ -266,7 +274,7 @@ public class BikeStateTracker {
 
             long elapsedTime = System.currentTimeMillis() - startTime;
             if (ApplicationConstants.DEBUG) {
-                System.out.println("OCR for " + field.toString() + " took " + elapsedTime + "ms");
+                System.out.println("OCR and smart cropping for " + field.toString() + " took " + elapsedTime + "ms");
             }
         }
 
