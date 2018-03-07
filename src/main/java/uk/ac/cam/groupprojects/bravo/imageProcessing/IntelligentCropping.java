@@ -20,6 +20,7 @@ public class IntelligentCropping {
      * @param image
      */
     public static void intelligentCrop(WritableRaster raw) {
+        System.out.println("Cropping image: " + raw.getBounds().toString());
         int earlyStop = (int)(raw.getHeight() * raw.getWidth() * SAFETY_HALT);
         boolean[][] visited = new boolean[raw.getHeight()][raw.getWidth()];
         Set<Point> frontier = new HashSet<>();
@@ -49,6 +50,8 @@ public class IntelligentCropping {
         // in the first pass
         Rectangle bounds = getBounds(raw, flooded);
         WritableRaster sub = raw.createWritableChild(bounds.x, bounds.y, bounds.width, bounds.height, 0, 0, null);
+        System.out.println("Cropping subimage: " + raw.getBounds().toString());
+        System.out.println();
         earlyStop = (int)(sub.getWidth() * sub.getHeight() * SECOND_SAFETY_HALT);
 
         // Run another flood fill, this time with a super low threshold to find isolated islands in the
