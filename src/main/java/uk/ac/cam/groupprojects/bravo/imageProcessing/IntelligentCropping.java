@@ -21,11 +21,7 @@ public class IntelligentCropping {
      *
      * @param image
      */
-    public static void intelligentCrop(BufferedImage image) {
-        SSOCRUtil.assertImageBGR(image);
-
-        WritableRaster raw = image.getRaster();
-
+    public static void intelligentCrop(WritableRaster raw) {
         int earlyStop = (int)(raw.getHeight() * raw.getWidth() * SAFETY_HALT);
         boolean[][] visited = new boolean[raw.getHeight()][raw.getWidth()];
         Set<Point> frontier = new HashSet<>();
