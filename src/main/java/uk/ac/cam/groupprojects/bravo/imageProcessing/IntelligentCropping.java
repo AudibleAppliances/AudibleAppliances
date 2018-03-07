@@ -50,7 +50,6 @@ public class IntelligentCropping {
         Rectangle bounds = getBounds(raw, flooded);
         WritableRaster sub = raw.createWritableChild(bounds.x, bounds.y, bounds.width, bounds.height, 0, 0, null);
         earlyStop = (int)(sub.getWidth() * sub.getHeight() * SECOND_SAFETY_HALT);
-        System.out.println("2nd pass earlyStop: " + earlyStop);
 
         // Run another flood fill, this time with a super low threshold to find isolated islands in the
         // sea of black overwritten pixels. Don't set an early stop, we want to flood as large as possible
@@ -73,7 +72,6 @@ public class IntelligentCropping {
 
             HashSet<Point> island = new HashSet<>();
             floodFill(sub, p, BLACK_THRESHOLD, visited, Integer.MAX_VALUE, island, null);
-            System.out.println("Island of: " + island.size());
 
             if (island.size() < earlyStop) {
                 flooded.addAll(island); // Only flood the island if it's small enough
