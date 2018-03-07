@@ -103,12 +103,11 @@ public class BikeStateTracker {
         // Compute which LCD segments are lit up (active)
         for (ScreenBox box : ScreenBox.values()) {
             BufferedImage boxImage = imgSegs.get(box);
-            boxImage = SSOCRUtil.roughThreshold(boxImage);
+            BufferedImage thresholded = SSOCRUtil.roughThreshold(boxImage);
             
-            if (SegmentActive.segmentActive(boxImage)) {
+            if (SegmentActive.segmentActive(thresholded)) {
                 // If the LCD is active, record it and update the latest image we have of it
                 activeSegs.add(box);
-                //System.out.println("Updating image of active box " + box.toString());
                 latestImages.put(box, new ImageTime(currentTime, boxImage));
             }
         }
