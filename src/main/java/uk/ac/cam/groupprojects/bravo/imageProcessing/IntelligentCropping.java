@@ -23,17 +23,21 @@ public class IntelligentCropping {
         System.out.println("Cropping image: " + raw.getBounds().toString());
         int earlyStop = (int)(raw.getHeight() * raw.getWidth() * SAFETY_HALT);
         boolean[][] visited = new boolean[raw.getHeight()][raw.getWidth()];
-        Set<Point> frontier = new HashSet<>();
-        for (int x = 0; x < raw.getWidth(); x++) {
-            frontier.add(new Point(x, 0));
-        }
 
         // Keep track of the sets of points that we explored and flooded, and the point we explored but chose not
         // to flood - this 2nd set is used in the second pass
         Set<Point> flooded = new HashSet<>();
         Set<Point> notFlooded = new HashSet<>();
+
+        Set<Point> frontier = new HashSet<>();
         for (int x = 0; x < raw.getWidth(); x++) {
-            floodFill(raw, new Point(x, 0), THRESHOLD, visited, earlyStop, flooded, notFlooded);
+            frontier.add(new Point(x, 0));
+        }
+        for (Point p : frontier) {
+            if (visited[p.y][p.x])
+                continue;
+
+            floodFill(raw, p, THRESHOLD, visited, earlyStop, flooded, notFlooded);
             if (flooded.size() >= earlyStop)
                 return; // Don't overwrite more than a safe amount of the image
         }
