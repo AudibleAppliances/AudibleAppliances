@@ -7,6 +7,7 @@ import java.awt.image.WritableRaster;
 import java.util.*;
 
 import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;
+import uk.ac.cam.groupprojects.bravo.imageProcessing.Point;
 
 public class IntelligentCropping {
     private static final double THRESHOLD = 150;
