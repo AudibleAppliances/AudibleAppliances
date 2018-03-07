@@ -1,11 +1,10 @@
 package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.*;
-import java.util.List;
 
 import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;
 
@@ -34,7 +33,7 @@ public class IntelligentCropping {
         // Flood from the entire top row, with a reasonable threshold to detect light pixels
         for (int x = 0; x < raw.getWidth(); x++) {
             Set<Point> flooded = new HashSet<>();
-            floodFill(raw, new Point(x, 0), THRESHOLD, visited, earlyStop, flooded);
+            floodFill(raw, new Point(x, 0, raw.getWidth()), THRESHOLD, visited, earlyStop, flooded);
             if (flooded.size() >= earlyStop) {
                 return; // If we're going to overwrite too much, don't do it
             }
@@ -66,13 +65,13 @@ public class IntelligentCropping {
         }
         for (int x = 0; x < sub.getWidth(); x++) {
             for (int y = 0; y < sub.getHeight(); y++) {
-                Point current = new Point(x, y);
+                Point current = new Point(x, y, sub.getWidth());
                 if (visited[current.y][current.x]) {
                     continue;
                 }
 
                 Set<Point> flooded = new HashSet<>();
-                floodFill(sub, new Point(x, y), BLACK_THRESHOLD, visited, Integer.MAX_VALUE, flooded);
+                floodFill(sub, new Point(x, y, sub.getWidth()), BLACK_THRESHOLD, visited, Integer.MAX_VALUE, flooded);
 
                 if (flooded.size() >= earlyStop) {
                     continue; // If we've flooded a large area, we've got a significantly large island so don't remove it
@@ -114,13 +113,13 @@ public class IntelligentCropping {
 
             // Compute neighbours. Done nastily here because it's faster than eg. using a helper function
             if (p.x + 1 < raw.getWidth() && !visited[p.y][p.x + 1])
-                frontier.add(new Point(p.x + 1, p.y));
+                frontier.add(new Point(p.x + 1, p.y, raw.getWidth()));
             if (p.x - 1 >= 0 && !visited[p.y][p.x - 1])
-                frontier.add(new Point(p.x - 1, p.y));
+                frontier.add(new Point(p.x - 1, p.y, raw.getWidth()));
             if (p.y + 1 < raw.getHeight() && !visited[p.y + 1][p.x])
-                frontier.add(new Point(p.x, p.y + 1));
+                frontier.add(new Point(p.x, p.y + 1, raw.getWidth()));
             if (p.y - 1 >= 0 && !visited[p.y - 1][p.x])
-                frontier.add(new Point(p.x, p.y - 1));
+                frontier.add(new Point(p.x, p.y - 1, raw.getWidth()));
         }
 
         outputFlood.addAll(flooded);
