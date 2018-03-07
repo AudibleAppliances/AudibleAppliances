@@ -4,10 +4,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="myStyle.css">
     <script src="functions.js"></script>
-    <script>
-	setInterval(function ($("#image_canvas").src = "/video_feed") {}, 500);
-	
-    </script>
 </head>
 
 <body>
@@ -30,7 +26,7 @@
     </div>
 
     <div id="select_pane">
-        <img id="image_canvas"></img>
+        <img src="/video_feed"></img>
         <div onmousedown="mouse_down(event)" id="canvas"></div>
     </div>
 </body>

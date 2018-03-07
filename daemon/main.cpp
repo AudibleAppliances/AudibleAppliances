@@ -97,26 +97,30 @@ void reader(int socket, std::atomic_int &active_readers, Semaphore &turn,
     char buffer[1] = {0};
     char response[1] = {1};
     while (true) {
-        read(socket, buffer, 1);
-        if (buffer[0] == 2) {
-            turn.wait();
-            turn.signal();
+        if (read(socket, buffer, 1) != -1) {
+            if (buffer[0] == 2) {
+                turn.wait();
+                turn.signal();
 
-            waiting_readers.wait();
-            if (std::atomic_load(&active_readers) == 0) {
-                write_guard.wait();
-            }
-            std::atomic_fetch_add(&active_readers, 1);
-            waiting_readers.signal();
-            send(socket, response, 1, 0);
-            read(socket, buffer, 1);
-
-            waiting_readers.wait();
-            std::atomic_fetch_sub(&active_readers, 1);
-            if (std::atomic_load(&active_readers) == 0) {
-                    write_guard.signal();
+                waiting_readers.wait();
+                if (std::atomic_load(&active_readers) == 0) {
+                    write_guard.wait();
                 }
-            waiting_readers.signal();
+                std::atomic_fetch_add(&active_readers, 1);
+                waiting_readers.signal();
+                send(socket, response, 1, 0);
+                read(socket, buffer, 1);
+
+                waiting_readers.wait();
+                std::atomic_fetch_sub(&active_readers, 1);
+                if (std::atomic_load(&active_readers) == 0) {
+                        write_guard.signal();
+                    }
+                waiting_readers.signal();
+            }
+        } else {
+            std::cout << "Reader disconnected" << std::endl;
+            return;
         }
 	}
 }
