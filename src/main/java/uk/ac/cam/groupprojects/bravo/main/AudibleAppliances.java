@@ -99,9 +99,6 @@ public class AudibleAppliances {
 
         int connectionAttempts = 0;
         while (true) {
-            // Clear the history
-            Runtime.getRuntime().exec("clear");
-
             long overallStart = System.currentTimeMillis();
             try {
                 long start = System.currentTimeMillis();
