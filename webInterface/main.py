@@ -79,23 +79,6 @@ def get_voice():
         config = json.load(fp)
         return json.dumps({"voice" : config["voice"]})
 
-@app.route('/set_frequency', methods=['POST'])
-def set_frequency():
-    content = request.get_json(silent=False, force=True)
-    with open(config_file, 'r') as fp:
-        content_type = content.pop("frequency", None)
-        config = json.load(fp)
-        config["frequency"] = content_type
-    with open(config_file, 'w') as fp:
-        json.dump(config, fp)
-    return ("frequency successfully set", 200, "")
-
-@app.route('/get_frequency', methods=['GET'])
-def get_frequency():
-    with open(config_file, 'r') as fp:
-        config = json.load(fp)
-        return json.dumps({"frequency" : config["frequency"]})
-
 @app.route('/get_boxes')
 def get_boxes():
     with open(config_file, 'r') as fp:

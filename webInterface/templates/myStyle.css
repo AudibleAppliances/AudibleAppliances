@@ -116,7 +116,7 @@ h1 {
     border-radius: 4px;
 }
 
-#voice_choice, #frequency_choice {
+#voice_choice {
     width: 60vw;
     margin: 2vh 0 2vh 3vw;
 }
