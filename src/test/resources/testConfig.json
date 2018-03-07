@@ -2,34 +2,34 @@
 	"voice": "kal_diphone",
 	"boxes": {
 		"lcd1": {
-			"corner": [17, 8.7],
+			"corner": [16.5, 10.7],
 			"width": 32,
-			"height": 19.5
+			"height": 16.8
 		},
 		"lcd2": {
-			"corner": [59, 9],
-			"width": 27,
-			"height": 19
+			"corner": [57.5, 11.7],
+			"width": 22,
+			"height": 17
 		},
 		"lcd3": {
-			"corner": [14, 32.5],
+			"corner": [16, 31.2],
 			"width": 14.5,
-			"height": 14
+			"height": 12.3
 		},
 		"lcd4": {
-			"corner": [72.3, 33.3],
-			"width": 14.7,
-			"height": 13.3
+			"corner": [66.3, 33],
+			"width": 14,
+			"height": 12
 		},
 		"lcd5": {
-			"corner": [13.5, 52.5],
-			"width": 15,
-			"height": 13.5
+			"corner": [16.5, 48.5],
+			"width": 14,
+			"height": 12.5
 		},
 		"lcd6": {
-			"corner": [67.4, 52.4],
-			"width": 14,
-			"height": 12.8
+			"corner": [66.4, 49.2],
+			"width": 15,
+			"height": 11.8
 		},
 		"graph": {
 			"corner": [31, 31.3],
@@ -42,58 +42,58 @@
 			"height": 4
 		},
 		"watt": {
-			"corner": [11.5, 47.7],
-			"width": 7.5,
-			"height": 4.5
+			"corner": [16.1, 44.4],
+			"width": 6.5,
+			"height": 3.9
 		},
 		"rpm": {
-			"corner": [24.5, 32.3],
+			"corner": [24.5, 28.3],
 			"width": 5,
 			"height": 3.5
 		},
 		"load": {
-			"corner": [23.2, 49.6],
-			"width": 6.5,
+			"corner": [23.7, 44.6],
+			"width": 6.6,
 			"height": 3.5
 		},
 		"program": {
-			"corner": [58, 56.5],
-			"width": 6,
+			"corner": [57.4, 51.9],
+			"width": 5.7,
 			"height": 8.5
 		},
 		"lcd_text_1": {
-			"corner": [30.7, 56.7],
+			"corner": [31.2, 51.9],
 			"width": 3.2,
-			"height": 9.5
+			"height": 8.5
 		},
 		"lcd_text_3": {
-			"corner": [36.7, 56.7],
+			"corner": [37.1, 51.9],
 			"width": 3.1,
-			"height": 9.5
+			"height": 8.5
 		},
 		"lcd_text_4": {
-			"corner": [39.5, 56.7],
-			"width": 3.6,
-			"height": 9
+			"corner": [40.1, 51.9],
+			"width": 3.1,
+			"height": 8.5
 		},
 		"lcd_text_5_top": {
-			"corner": [42.8, 56.7],
-			"width": 3.6,
-			"height": 5
+			"corner": [43.1, 51.9],
+			"width": 2.8,
+			"height": 4.2
 		},
 		"lcd_text_9": {
-			"corner": [54.9, 56.7],
-			"width": 3.2,
+			"corner": [54.6, 51.9],
+			"width": 2.8,
 			"height": 8.5
 		},
 		"lcd_text_10": {
-			"corner": [57.8, 56.7],
-			"width": 3.2,
+			"corner": [57.4, 51.9],
+			"width": 3.0,
 			"height": 8.5
 		},
 		"lcd_text_11": {
-			"corner": [60.8, 56.5],
-			"width": 3.2,
+			"corner": [60.2, 51.9],
+			"width": 3.0,
 			"height": 8.5
 		}
 	},
