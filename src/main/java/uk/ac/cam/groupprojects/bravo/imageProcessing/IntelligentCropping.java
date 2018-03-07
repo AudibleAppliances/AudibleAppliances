@@ -1,12 +1,9 @@
 package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.*;
-
-import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;
 
 public class IntelligentCropping {
     private static final double THRESHOLD = 150;
