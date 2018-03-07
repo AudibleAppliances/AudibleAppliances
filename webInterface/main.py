@@ -42,10 +42,7 @@ def javascript3():
 @app.route('/video_feed')
 def video_feed():
     r =  Response(gen(my_image_client),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
-#    r.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
-#    r.headers['Pragma'] = 'no-cache'
-#    r.headers['Expires'] = '-1'
+                  mimetype='multipart/x-mixed-replace; boundary=frame')
     return r
 
 @app.route('/new_box', methods=['POST'])
@@ -68,7 +65,13 @@ def set_voice():
     with open(config_file, 'r') as fp:
         content_type = content.pop("voice", None)
         config = json.load(fp)
-        config["voice"] = content_type
+        if content_type == "male_american":
+            config["voice"] = "kal_diphone"
+        elif content_type == "female_american":
+            config["voice"] = "us1_mbrola"
+        elif content_type == "scottish":
+            config["voice"] = "cmu_us_awb_arctic_clunits"
+
     with open(config_file, 'w') as fp:
         json.dump(config, fp)
     return ("Voice successfully set", 200, "")
@@ -77,7 +80,15 @@ def set_voice():
 def get_voice():
     with open(config_file, 'r') as fp:
         config = json.load(fp)
-        return json.dumps({"voice" : config["voice"]})
+        voice = config["voice"]
+        if voice == "kal_diphone":
+            nice_description = "male_american"
+        elif voice == "us1_mbrola":
+            nice_description = "female_american"
+        else:
+            nice_description = "scottish"
+        
+        return json.dumps({"voice" : nice_description})
 
 @app.route('/get_boxes')
 def get_boxes():
