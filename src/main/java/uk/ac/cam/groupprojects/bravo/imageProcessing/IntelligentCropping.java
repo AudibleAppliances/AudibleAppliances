@@ -6,10 +6,11 @@ import java.awt.image.WritableRaster;
 import java.util.*;
 
 public class IntelligentCropping {
-    private static final double THRESHOLD = 150;
+    private static final double THRESHOLD = 200;
     private static final double BLACK_THRESHOLD = 20;
 
     private static final double SAFETY_HALT = 0.5; // If we're going to overwrite more of the image than this percent, don't
+    private static final double SECOND_SAFETY_HALT = 0.1; // In the second pass, use a lower safety
 
     private static final double[] FILL_COLOUR = new double[] { 0, 0, 0 };
 
@@ -48,7 +49,8 @@ public class IntelligentCropping {
         // in the first pass
         Rectangle bounds = getBounds(raw, flooded);
         WritableRaster sub = raw.createWritableChild(bounds.x, bounds.y, bounds.width, bounds.height, 0, 0, null);
-        earlyStop = (int)(sub.getWidth() * sub.getHeight() * SAFETY_HALT);
+        earlyStop = (int)(sub.getWidth() * sub.getHeight() * SECOND_SAFETY_HALT);
+        System.out.println("2nd pass earlyStop: " + earlyStop);
 
         // Run another flood fill, this time with a super low threshold to find isolated islands in the
         // sea of black overwritten pixels. Don't set an early stop, we want to flood as large as possible
@@ -61,21 +63,26 @@ public class IntelligentCropping {
         }
 
         // Iterate over the edges of what we flooded in the first pass
+        flooded = new HashSet<>();
         for (Point p : notFlooded) {
             p.translate(-bounds.x, -bounds.y);
+            flooded.add(p); // Always flood the edge of the existing flooded area (1-pixel border)
             if (!sub.getBounds().contains(p) || visited[p.y][p.x]) {
                 continue;
             }
 
-            flooded = new HashSet<>();
-            floodFill(sub, p, BLACK_THRESHOLD, visited, Integer.MAX_VALUE, flooded, null);
+            HashSet<Point> island = new HashSet<>();
+            floodFill(sub, p, BLACK_THRESHOLD, visited, Integer.MAX_VALUE, island, null);
+            System.out.println("Island of: " + island.size());
 
-            if (flooded.size() >= earlyStop) {
-                continue; // If we've flooded a large area, we've got a significantly large island so don't remove it
+            if (island.size() < earlyStop) {
+                flooded.addAll(island); // Only flood the island if it's small enough
             }
 
-            blacken(sub, flooded);
         }
+
+        // Overwrite all the islands
+        blacken(sub, flooded);
     }
 
     private static void floodFill(Raster raw, Point start, double threshold, boolean[][] visited,
