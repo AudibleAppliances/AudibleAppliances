@@ -3,10 +3,10 @@ boxes = {}
 $.getJSON("/get_boxes", function(data) {
     $.each(data.boxes, function(key, val) {
         boxes[key] = {
-            left_percentage: val.corner[0],
-            top_percentage: val.corner[1],
-            width: val.width * $("#canvas").width(),
-            height: val.height * $("#canvas").height()
+            left_percentage: val.corner[0] / 100.0,
+            top_percentage: val.corner[1] / 100.0,
+            width: (val.width / 100.0) * $("#canvas").width(),
+            height: (val.height / 100.0) * $("#canvas").height()
         }
         $(document.getElementById(key)).children(".config").html("Configured");
     });
@@ -33,11 +33,11 @@ function do_select(component_name) {
                 box: {
                     type: type,
                     corner: [
-                        (($(box).position().left - $("#canvas").position().left) / $("#canvas").width()),
-                        (($(box).position().top - $("#canvas").position().top) / $("#canvas").height())
+                        (($(box).position().left - $("#canvas").position().left) / $("#canvas").width()) * 100.0,
+                        (($(box).position().top - $("#canvas").position().top) / $("#canvas").height()) * 100.0
                     ],
-                    width: $(box).width() / $("#canvas").width(),
-                    height: $(box).height() / $("#canvas").height()
+                    width: 100.0 * $(box).width() / $("#canvas").width(),
+                    height: 100.0 * $(box).height() / $("#canvas").height()
                 }
             });
             $.ajax({
