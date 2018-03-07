@@ -38,9 +38,9 @@ public class IntelligentCropping {
                 continue;
 
             floodFill(raw, p, THRESHOLD, visited, earlyStop, flooded, notFlooded);
-            if (flooded.size() >= earlyStop)
-                return; // Don't overwrite more than a safe amount of the image
         }
+        if (flooded.size() >= earlyStop)
+            return; // Don't overwrite more than a safe amount of the image
 
         if (flooded.isEmpty()) {
             return; // Don't need to do anything else
