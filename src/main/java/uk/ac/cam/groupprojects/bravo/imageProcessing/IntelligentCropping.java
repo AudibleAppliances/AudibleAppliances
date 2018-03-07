@@ -39,9 +39,9 @@ public class IntelligentCropping {
 
             floodFill(raw, p, THRESHOLD, visited, earlyStop, flooded, notFlooded);
         }
+
         if (flooded.size() >= earlyStop)
             return; // Don't overwrite more than a safe amount of the image
-
         if (flooded.isEmpty()) {
             return; // Don't need to do anything else
         }
@@ -58,15 +58,15 @@ public class IntelligentCropping {
         System.out.println();
         earlyStop = (int)(sub.getWidth() * sub.getHeight() * SECOND_SAFETY_HALT);
 
-        // Run another flood fill, this time with a super low threshold to find isolated islands in the
-        // sea of black overwritten pixels. Don't set an early stop, we want to flood as large as possible
-        visited = new boolean[sub.getHeight()][sub.getWidth()];
-
         // Add all the points that we previously filled with black to the visited set, as we don't have to check them
+        visited = new boolean[sub.getHeight()][sub.getWidth()];
         for (Point p : flooded) {
             p.translate(-bounds.x, -bounds.y);
             visited[p.y][p.x] = true;
         }
+
+        // Run another flood fill, this time with a super low threshold to find isolated islands in the
+        // sea of black overwritten pixels. Don't set an early stop, we want to flood as large as possible
 
         // Iterate over the edges of what we flooded in the first pass
         flooded = new HashSet<>();
@@ -165,6 +165,8 @@ public class IntelligentCropping {
      * @return
      */
     private static boolean isAboveThreshold(Raster raw, Point p, double threshold) {
+        // DEBUG
+        System.out.println(p.toString() + " in " + raw.getBounds().toString());
         // Based on empirical testing
         return raw.getSampleDouble(p.x, p.y, 1) > threshold;
     }
