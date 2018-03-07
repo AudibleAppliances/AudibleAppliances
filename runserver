@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./AudibleAppliances/daemon/build/daemon
