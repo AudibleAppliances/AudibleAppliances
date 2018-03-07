@@ -20,7 +20,6 @@ public class IntelligentCropping {
      * @param image
      */
     public static void intelligentCrop(WritableRaster raw) {
-        System.out.println("Cropping image: " + raw.getBounds().toString());
         int earlyStop = (int)(raw.getHeight() * raw.getWidth() * SAFETY_HALT);
         boolean[][] visited = new boolean[raw.getHeight()][raw.getWidth()];
 
@@ -54,8 +53,6 @@ public class IntelligentCropping {
         // in the first pass
         Rectangle bounds = getBounds(raw, flooded);
         WritableRaster sub = raw.createWritableChild(bounds.x, bounds.y, bounds.width, bounds.height, 0, 0, null);
-        System.out.println("Cropping subimage: " + raw.getBounds().toString());
-        System.out.println();
         earlyStop = (int)(sub.getWidth() * sub.getHeight() * SECOND_SAFETY_HALT);
 
         // Add all the points that we previously filled with black to the visited set, as we don't have to check them
@@ -165,8 +162,6 @@ public class IntelligentCropping {
      * @return
      */
     private static boolean isAboveThreshold(Raster raw, Point p, double threshold) {
-        // DEBUG
-        System.out.println(p.toString() + " in " + raw.getBounds().toString());
         // Based on empirical testing
         return raw.getSampleDouble(p.x, p.y, 1) > threshold;
     }
