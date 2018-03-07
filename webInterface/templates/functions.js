@@ -33,11 +33,11 @@ function do_select(component_name) {
                 box: {
                     type: type,
                     corner: [
-                        (($(box).position().left - $("#canvas").position().left) / $("#canvas").width()),
-                        (($(box).position().top - $("#canvas").position().top) / $("#canvas").height())
+                        (($(box).position().left - $("#canvas").position().left) / $("#canvas").width()) * 100.0,
+                        (($(box).position().top - $("#canvas").position().top) / $("#canvas").height()) * 100.0
                     ],
-                    width: $(box).width() / $("#canvas").width(),
-                    height: $(box).height() / $("#canvas").height()
+                    width: 100.0 * $(box).width() / $("#canvas").width(),
+                    height: 100.0 * $(box).height() / $("#canvas").height()
                 }
             });
             $.ajax({
@@ -127,10 +127,10 @@ function speek(commit_box) {
 
 function update_box(box, top_x_coord, top_y_coord, e) {
     $(box).css({
-        "left": top_x_coord * 100.0,
-        "top": top_y_coord * 100.0,
-        "width": (e.pageX - top_x_coord) * 100.0,
-        "height": (e.pageY - top_y_coord) * 100.0
+        "left": top_x_coord,
+        "top": top_y_coord,
+        "width": (e.pageX - top_x_coord),
+        "height": (e.pageY - top_y_coord)
     });
     $("#canvas").append(box);
 }
