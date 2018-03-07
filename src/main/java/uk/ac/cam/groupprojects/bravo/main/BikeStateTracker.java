@@ -216,9 +216,9 @@ public class BikeStateTracker {
     private void removeOldHistory(long currentTime) {
         System.out.println();
         System.out.println("Removing old history. Current time " + currentTime);
+        System.out.println(history.size() + " items in history.");
 
         while (history.size() > 0) {
-            System.out.println("Looking at " + history.getFirst().addedMillis);
             if (currentTime - 4 * ApplicationConstants.BLINK_FREQ_MILLIS > history.getFirst().addedMillis) {
                 history.removeFirst();
             } else {

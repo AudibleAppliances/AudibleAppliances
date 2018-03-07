@@ -101,10 +101,6 @@ public class AudibleAppliances {
         while (true) {
             long overallStart = System.currentTimeMillis();
             try {
-                if (ApplicationConstants.DEBUG) {
-                    // Make it easier to see the output of each iteration
-                    Runtime.getRuntime().exec("clear");
-                }
                 long start = System.currentTimeMillis();
                 BufferedImage image = readImage.read(ApplicationConstants.IMAGE_PATH);
                 long elapsedTime = System.currentTimeMillis() - start;
@@ -116,6 +112,7 @@ public class AudibleAppliances {
                 // Segment the image
                 start = System.currentTimeMillis();
                 Map<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
+                long maxTime = Long.MIN_VALUE;
                 for (ScreenBox box : ScreenBox.values()) {
                     BufferedImage boxImage = segmenter.getImageBox(box, image);
 
@@ -123,10 +120,11 @@ public class AudibleAppliances {
                     long a = System.currentTimeMillis();
                     IntelligentCropping.intelligentCrop(boxImage.getRaster());
                     long b = System.currentTimeMillis() - a;
-                    System.out.println("Took " + b + "ms to crop " + box.toString());
+                    maxTime = Math.max(maxTime, b);
 
                     imgSegs.put(box, boxImage);
                 }
+                System.out.println("Took max " + maxTime + "ms to intelligently crop.");
                 elapsedTime = System.currentTimeMillis() - start;
                 if (ApplicationConstants.DEBUG)
                     System.out.println("Time taken to segment the image: " + elapsedTime + "ms ");
