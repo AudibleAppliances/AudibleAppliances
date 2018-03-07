@@ -86,7 +86,7 @@ public class IntelligentCropping {
     }
 
     private static void floodFill(Raster raw, Point start, double threshold, boolean[][] visited,
-                                  int earlyStop, Set<Point> outputFlood, Set<Point> outputNotFlooded) {
+                                  int earlyStop, final Set<Point> outputFlood, final Set<Point> outputNotFlooded) {
         Set<Point> frontier = new HashSet<>();
         frontier.add(start);
 
@@ -98,7 +98,7 @@ public class IntelligentCropping {
             i.remove();
 
             visited[p.y][p.x] = true;
-            if (!isAboveThreshold(raw, p, threshold)) {
+            if (!isAboveThreshold(raw, p, threshold) && outputNotFlooded != null) {
                 // If we don't need to remove this pixel, move on.
                 // Don't consider its neighbours and don't overwrite it
                 notFlooded.add(p);
