@@ -7,7 +7,7 @@ import java.io.IOException;
 public class SegmentActive {
     // "Threshold" is effectively the percentage (100% = 1.0) of the image that's white
     public static boolean segmentActive(BufferedImage img) throws IOException {
-        return segmentActive(img, 0.01); // 1% white is a good default threshold (empirical)
+        return segmentActive(img, 0.03); // 3% white is a good default threshold (empirical)
     }
     public static boolean segmentActive(BufferedImage img, double threshold) throws IOException {
         return imageAverage(img) > threshold;

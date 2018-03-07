@@ -7,11 +7,7 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.URLDecoder;
 
-/**
- * Created by david on 02/03/2018.
- */
 public class SplitImage {
 
     public static void main( String args[] ) throws Exception{
@@ -24,7 +20,6 @@ public class SplitImage {
         ImageSegments segments = new ImageSegments(cd);
 
         for ( ScreenBox box: ScreenBox.values() ){
-            //ScreenBox box = ScreenBox.LCD6;
             BufferedImage output = segments.getImageBox( box, img );
             ImageIO.write( output, "jpg", new File( "output/" + box.toString().toLowerCase() + ".jpg" ) );
         }
