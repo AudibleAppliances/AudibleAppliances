@@ -3,10 +3,10 @@ boxes = {}
 $.getJSON("/get_boxes", function(data) {
     $.each(data.boxes, function(key, val) {
         boxes[key] = {
-            left_percentage: val.corner[0],
-            top_percentage: val.corner[1],
-            width: val.width * $("#canvas").width(),
-            height: val.height * $("#canvas").height()
+            left_percentage: val.corner[0] / 100.0,
+            top_percentage: val.corner[1] / 100.0,
+            width: (val.width / 100.0) * $("#canvas").width(),
+            height: (val.height / 100.0) * $("#canvas").height()
         }
         $(document.getElementById(key)).children(".config").html("Configured");
     });
@@ -127,10 +127,10 @@ function speek(commit_box) {
 
 function update_box(box, top_x_coord, top_y_coord, e) {
     $(box).css({
-        "left": top_x_coord,
-        "top": top_y_coord,
-        "width": (e.pageX - top_x_coord),
-        "height": (e.pageY - top_y_coord)
+        "left": top_x_coord * 100.0,
+        "top": top_y_coord * 100.0,
+        "width": (e.pageX - top_x_coord) * 100.0,
+        "height": (e.pageY - top_y_coord) * 100.0
     });
     $("#canvas").append(box);
 }
