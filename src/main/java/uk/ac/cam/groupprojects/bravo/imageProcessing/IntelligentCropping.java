@@ -5,6 +5,9 @@ import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.*;
 
+/**
+ * Removes lit areas from the edges of images that cause our OCR implementation to fail
+ */
 public class IntelligentCropping {
     private static final double THRESHOLD = 200;
     private static final double BLACK_THRESHOLD = 20;
@@ -17,7 +20,7 @@ public class IntelligentCropping {
     /**
      * Crops unneeded lit edges from image that cause problems with the OCR.
      *
-     * @param image
+     * @param raw image to intelligently crop
      */
     public static void intelligentCrop(WritableRaster raw) {
         int earlyStop = (int)(raw.getHeight() * raw.getWidth() * SAFETY_HALT);
@@ -87,6 +90,18 @@ public class IntelligentCropping {
         blacken(sub, flooded);
     }
 
+    /**
+     * "Flood" the image from a given point, flooding pixels over a certain threshold. Does not actually modify the
+     * image, only indicates in the sets given as arguments which points were flooded and which were not.
+     *
+     * @param raw image to flood
+     * @param start point to start from
+     * @param threshold level above which to flood pixels
+     * @param visited pixels already visited
+     * @param earlyStop how many pixels indicate flood size too big so break instead
+     * @param outputFlood pixels flooded
+     * @param outputNotFlooded pixels not flooded
+     */
     private static void floodFill(Raster raw, Point start, double threshold, boolean[][] visited,
                                   int earlyStop, final Set<Point> outputFlood, final Set<Point> outputNotFlooded) {
         Set<Point> frontier = new HashSet<>();
@@ -129,6 +144,12 @@ public class IntelligentCropping {
             outputNotFlooded.addAll(notFlooded);
     }
 
+    /**
+     * Given a set of points and an image, paints those points black in the image
+     *
+     * @param raw image to modify
+     * @param points points on the image to blacken
+     */
     private static void blacken(WritableRaster raw, Set<Point> points) {
         for (Point p : points) {
             raw.setPixel(p.x, p.y, FILL_COLOUR);
@@ -157,12 +178,12 @@ public class IntelligentCropping {
     /**
      * Given an point and an image, decides if it should be overwritten or not
      *
-     * @param raw
-     * @param p
-     * @return
+     * @param raw image containing the point to test
+     * @param point point to check threshold
+     * @return Whether to overwrite or not
      */
-    private static boolean isAboveThreshold(Raster raw, Point p, double threshold) {
+    private static boolean isAboveThreshold(Raster raw, Point point, double threshold) {
         // Based on empirical testing
-        return raw.getSampleDouble(p.x, p.y, 1) > threshold;
+        return raw.getSampleDouble(point.x, point.y, 1) > threshold;
     }
 }
