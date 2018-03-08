@@ -1,4 +1,4 @@
-# Audible Appliances - Bravo Group
+# Audible Appliances - Bravo Group (Part 1B Group Project)
 
 [![Build Status](https://travis-ci.org/AudibleAppliances/AudibleAppliances.svg?branch=master)](https://travis-ci.org/AudibleAppliances/AudibleAppliances)
 
