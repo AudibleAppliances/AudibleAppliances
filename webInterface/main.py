@@ -55,6 +55,13 @@ def new_box():
         config = json.load(fp)
         config["boxes"][content_type] = content_box
         config["spoken_fields"][content_type] = spoken
+        if content_type == "text_10" or content_type == "text_11":
+            config["boxes"]["program"] = {
+                left_percentage: config["boxes"]["text_10"]["left_percentage"],
+                top_percentage: min(config["boxes"]["text_10"]["top_percentage"], config["boxes"]["text_11"]["top_percentage"]),
+                width: config["boxes"]["text_10"]["width"] + config["boxes"]["text_11"]["width"],
+                height: max(config["boxes"]["text_10"]["height"], config["boxes"]["text_11"]["height"])
+            }
     with open(config_file, 'w') as fp:
         json.dump(config, fp)
     return ("Box successfully created", 200, "")

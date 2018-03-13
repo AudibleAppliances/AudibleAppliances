@@ -145,13 +145,17 @@ h1 {
     top: 5vh;
 }
 
-.component {
+.component, .non_active_component {
     position: absolute;
     border-radius: 10px;
-    background-color: white;
     font-size: 2em;
     text-align: center;
     display: table;
+    background-color: white;
+}
+
+.non_active_component {
+    opacity: 0.5;
 }
 
 .component:hover {

@@ -1,34 +1,53 @@
 <html>
-
-<head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="myStyle.css">
-    <script src="functions.js"></script>
-</head>
-
-<body>
-    <div id=first_screen>
-        <div id="choose_component">
-            <div id="lcd1" class="component" style="width:36.5vw; height: 22vh; left: 3vw; top:5vh" onclick="do_select('lcd1')"><span class="config"></span></div>
-            <div id="lcd2" class="component" style="width:36.5vw; height: 22vh; right: 3vw; top:5vh" onclick="do_select('lc21')"><span class="config"></span></div>
-            <div id="lcd3" class="component" style="width:18vw; height: 23vh; left:3vw; top:28vh" onclick="do_select('lcd3')"><span class="config"></span></div>
-            <div id="lcd4" class="component" style="width:18vw; height: 23vh; right:3vw; top:28vh" onclick="do_select('lcd4')"><span class="config"></span></div>
-            <div id="lcd5" class="component" style="width:18vw; height: 23vh; left:3vw; bottom:5vh" onclick="do_select('lcd5')"><span class="config"></span></div>
-            <div id="lcd6" class="component" style="width:18vw; height: 23vh; right:3vw; bottom:5vh" onclick="do_select('lcd6')"><span class="config"></span></div>
-            <div id="graph" class="component" style="width:36vw; height: 37vh; left:22vw; bottom:15vh" onclick="do_select('graph')"><span class="config"></span></div>
-            <div id="text" class="component" style="width:36vw; height: 9vh; left:22vw; bottom:5vh" onclick="do_select('text')"><span class="config"></span></div>
-        </div>
-        <a href="/">
-            <div class="button" id="done_selection_button">
-                <h2>Done</h2>
+    
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="myStyle.css">
+        <script src="functions.js"></script>
+    </head>
+    
+    <body>
+        <div id=first_screen>
+            <div id="choose_component">
+                <div id="lcd1" class="component" style="width:36.5vw; height: 22vh; left: 3vw; top:5vh" onclick="do_select('lcd1')"><span class="config"></span></div>
+                <div id="lcd2" class="component" style="width:36.5vw; height: 22vh; right: 3vw; top:5vh" onclick="do_select('lc21')"><span class="config"></span></div>
+                <div id="lcd3" class="component" style="width:18vw; height: 18vh; left:3vw; top:33vh" onclick="do_select('lcd3')"><span class="config"></span></div>
+                <div id="lcd4" class="component" style="width:18vw; height: 18vh; right:3vw; top:33vh" onclick="do_select('lcd4')"><span class="config"></span></div>
+                <div id="lcd5" class="component" style="width:18vw; height: 18vh; left:3vw; bottom:5vh" onclick="do_select('lcd5')"><span class="config"></span></div>
+                <div id="lcd6" class="component" style="width:18vw; height: 18vh; right:3vw; bottom:5vh" onclick="do_select('lcd6')"><span class="config"></span></div>
+                <div id="graph" class="component" style="width:36vw; height: 37vh; left:22vw; bottom:15vh" onclick="do_select('graph')"><span class="config"></span></div>
+                
+                <div id="text_1" class="component" style="width:2.75vw; height: 9vh; left:22vw; bottom:5vh" onclick="do_select('lcd_text_1')"><span class="config"></span></div>
+                <div class="non_active_component" style="width:2.75vw; height: 9vh; left:25vw; bottom:5vh"><span class="config"></span></div>
+                <div id="text_3" class="component" style="width:2.75vw; height: 9vh; left:28vw; bottom:5vh" onclick="do_select('lcd_text_3')"><span class="config"></span></div>
+                <div id="text_4" class="component" style="width:2.75vw; height: 9vh; left:31vw; bottom:5vh" onclick="do_select('lcd_text_4')"><span class="config"></span></div>
+                <div id="text_5_upper" class="component" style="width:2.75vw; height: 4.25vh; left:34vw; bottom:9.75vh" onclick="do_select('lcd_text_5_top')"><span class="config"></span></div>
+                <div class="non_active_component" style="width:2.75vw; height: 4.25vh; left:34vw; bottom:5vh"><span class="config"></span></div>
+                <div class="non_active_component" style="width:2.75vw; height: 9vh; left:37vw; bottom:5vh"><span class="config"></span></div>
+                <div class="non_active_component" style="width:2.75vw; height: 9vh; left:40vw; bottom:5vh"><span class="config"></span></div>
+                <div class="non_active_component" style="width:2.75vw; height: 9vh; left:43vw; bottom:5vh"><span class="config"></span></div>
+                <div id="text_9" class="component" style="width:2.75vw; height: 9vh; left:46vw; bottom:5vh" onclick="do_select('lcd_text_9')"><span class="config"></span></div>
+                <div id="text_10" class="component" style="width:2.75vw; height: 9vh; left:49vw; bottom:5vh" onclick="do_select('lcd_text_9')"><span class="config"></span></div>
+                <div id="text_11" class="component" style="width:2.75vw; height: 9vh; left:52vw; bottom:5vh" onclick="do_select('lcd_text_9')"><span class="config"></span></div>
+                <div class="non_active_component" style="width:2.75vw; height: 9vh; left:55vw; bottom:5vh"><span class="config"></span></div>
+                
+                <div id="load" class="component" style="width:8.75vw; height: 5vh; left:12.25vw; bottom:23.5vh" onclick="do_select('load')"><span class="config"></span></div>
+                <div id="watts" class="component" style="width:8.75vw; height: 5vh; left:3vw; bottom:23.5vh" onclick="do_select('watts')"><span class="config"></span></div>
+                <div id="rpm" class="component" style="width:8.75vw; height: 5vh; left:12.25vw; top:27.5vh" onclick="do_select('rpm')"><span class="config"></span></div>
+                <div id="speed" class="component" style="width:8.75vw; height: 5vh; left:3vw; top:27.5vh" onclick="do_select('speed')"><span class="config"></span></div>
             </div>
-        </a>
-    </div>
-
-    <div id="select_pane">
-        <img src="/video_feed"></img>
-        <div onmousedown="mouse_down(event)" id="canvas"></div>
-    </div>
-</body>
-
+            <a href="/">
+                <div class="button" id="done_selection_button">
+                    <h2>Done</h2>
+                </div>
+            </a>
+        </div>
+        
+        <div id="select_pane">
+            <img src="/video_feed"></img>
+            <div onmousedown="mouse_down(event)" id="canvas"></div>
+        </div>
+    </body>
+    
 </html>
+
