@@ -8,7 +8,7 @@ python AudibleAppliances/gpio/gpio.py &
 ./runserver
 
 # Start the interface web server
-python AudibleAppliances/webInterface/main.py &
+./runwebserver
 
 # Run the actual program
 ~/runjar

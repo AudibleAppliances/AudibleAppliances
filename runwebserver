@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd /home/pi/AudibleAppliances/webInterface;
+gunicorn --bind 0.0.0.0:5000 -w 6 -t 600 wsgi;
