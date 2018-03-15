@@ -1,5 +1,5 @@
 # main.py
-from flask import Flask, render_template, Response, request
+from flask import Flask, render_template, Response, request, stream_with_context
 from image_client import Image_Client
 import json
 
@@ -41,7 +41,7 @@ def javascript3():
 
 @app.route('/video_feed')
 def video_feed():
-    r =  Response(gen(my_image_client),
+    r =  Response(stream_with_context(gen(my_image_client)),
                   mimetype='multipart/x-mixed-replace; boundary=frame')
     return r
 
