@@ -28,7 +28,15 @@ public class Distance extends ScreenNumber {
 
     @Override
     public String formatSpeech() {
-        return String.format("You have cycled %d.%d kilometres", km.getValue(), m.getValue() );
+        int lower = m.getValue();
+        String lowerStr;
+        if (lower > 10) {
+            lowerStr = "0"+Integer.toString(lower);
+        }
+        else {
+            lowerStr = Integer.toString(lower);
+        }
+        return String.format("You have cycled %d.%s kilometres", km.getValue(), lowerStr);
     }
 
     @Override
