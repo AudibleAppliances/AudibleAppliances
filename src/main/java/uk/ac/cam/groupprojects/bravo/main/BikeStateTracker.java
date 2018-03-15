@@ -154,6 +154,10 @@ public class BikeStateTracker {
             System.out.println();
         }
 
+        if (currentScreen != newScreen) {
+            synthesiser.clearSpeech();
+        }
+
         currentScreen = newScreen;
         
         // Check if it's the time to speak, and if yes then speak
