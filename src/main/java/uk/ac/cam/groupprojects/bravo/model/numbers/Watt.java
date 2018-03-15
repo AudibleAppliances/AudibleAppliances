@@ -11,6 +11,6 @@ public class Watt extends ScreenNumber {
 
     @Override
     public String formatSpeech() {
-        return String.format("Your power output is currently %d watts", getValue() );
+        return String.format("Your power output is  %d watts", getValue() );
     }
 }

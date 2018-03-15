@@ -11,6 +11,6 @@ public class Load extends ScreenNumber {
 
     @Override
     public String formatSpeech() {
-        return String.format( "Your current load is %d", getValue() );
+        return String.format( "Current difficulty is %d", getValue() );
     }
 }

@@ -11,6 +11,6 @@ public class Program extends ScreenNumber {
 
     @Override
     public String formatSpeech() {
-        return String.format("You are selecting program %d", getValue() );
+        return String.format("Press enter to select program %d, or rotate to choose a different program.", getValue());
     }
 }

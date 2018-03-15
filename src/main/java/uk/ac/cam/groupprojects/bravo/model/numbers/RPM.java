@@ -9,6 +9,6 @@ public class RPM extends ScreenNumber {
 
     @Override
     public String formatSpeech() {
-        return String.format("Your current rotations per minute is %d", getValue() );
+        return String.format("Your current R P M is %d", getValue() );
     }
 }

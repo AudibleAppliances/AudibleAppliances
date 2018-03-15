@@ -11,7 +11,7 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
 
 public class RunningScreen extends BikeScreen {
 
-    private int speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ;
+    private int speakDelay = ApplicationConstants.RUNNING_SPEAK_FREQ;
 
     private boolean wasActive = false;
     private boolean isActive = false;
@@ -39,8 +39,9 @@ public class RunningScreen extends BikeScreen {
     @Override
     public String formatSpeech(BikeStateTracker bikeStateTracker) {
         String result = "";
+
         if (isActive && !wasActive) {
-            result += "Now running program, you can use the wheel to adjust the difficulty.";
+            result += "Now cycling, you can use the wheel to adjust the difficulty.";
         }
 
         if (bikeStateTracker.isBoxActiveNow(ScreenBox.LOAD)) {

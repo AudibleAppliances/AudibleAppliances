@@ -28,7 +28,7 @@ public class Distance extends ScreenNumber {
 
     @Override
     public String formatSpeech() {
-        return String.format("You have currently travelled %d.%d kilometres", km.getValue(), m.getValue() );
+        return String.format("You have cycled %d.%d kilometres", km.getValue(), m.getValue() );
     }
 
     @Override
