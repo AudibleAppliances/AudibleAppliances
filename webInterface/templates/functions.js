@@ -64,8 +64,8 @@ function do_select(component_name) {
         box.className = "square";
         box.style.borderColor = allowed_colours[Math.floor(Math.random() * allowed_colours.length)];
         $(box).css({
-            left: (0.1 * window.innerWidth) + (boxes[component_name].left_percentage) * $("#canvas").width(),
-            top: (0.1 * window.innerHeight) + (boxes[component_name].top_percentage) * $("#canvas").height(),
+            left: (0.1 * window.innerWidth) + (boxes[component_name].left_percentage * $("#canvas").width()),
+            top: (0.1 * window.innerHeight) + (boxes[component_name].top_percentage * $("#canvas").height()),
             width: boxes[component_name].width,
             height: boxes[component_name].height
         });
