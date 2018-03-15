@@ -190,13 +190,6 @@ public class Synthesiser implements AutoCloseable {
         }
     }
 
-    // Clears command queue and cuts off current speech
-    public void clearSpeech() throws IOException {
-        commandQueue.clear();
-        // Send SIGINT to end speech early (very hacky)
-        Runtime.getRuntime().exec("kill -INT -`ps ax -o tpgid,comm | grep fest | awk '{print $1}'`");
-    }
-
     // Create a process in interactive mode, ready for usage
     private static Process spawnFestivalProcess() throws FestivalMissingException {
         try {
