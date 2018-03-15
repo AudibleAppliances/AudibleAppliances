@@ -3,8 +3,8 @@ boxes = {}
 $.getJSON("/get_boxes", function(data) {
     $.each(data.boxes, function(key, val) {
         boxes[key] = {
-            left_percentage: val.corner[0] / 100.0,
-            top_percentage: val.corner[1] / 100.0,
+            left_percentage: $("#canvas").width() * val.corner[0] / 100.0 ,
+            top_percentage: $("#canvas").height() * (val.corner[1] / 100.0,
             width: (val.width / 100.0) * $("#canvas").width(),
             height: (val.height / 100.0) * $("#canvas").height()
         }
