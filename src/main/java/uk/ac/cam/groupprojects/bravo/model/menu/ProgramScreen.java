@@ -22,7 +22,11 @@ public class ProgramScreen extends BikeScreen {
 
         if (isActive) {
             programValue = (Program)state.getFieldValue(BikeField.PROGRAM);
-            System.out.println("Got program value: " + programValue.getValue());
+            if (programValue == null) {
+                System.out.println("Program value is null");
+            } else {
+                System.out.println("Got program value: " + programValue.getValue());
+            }
         }
 
         return isActive;
