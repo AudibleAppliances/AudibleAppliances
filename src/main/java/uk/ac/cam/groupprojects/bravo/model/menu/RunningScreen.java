@@ -13,9 +13,13 @@ public class RunningScreen extends BikeScreen {
 
     private int speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ;
 
+    private boolean wasActive = false;
+    private boolean isActive = false;
+
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
-        boolean isActive = state.isTimeChanging() &&
+        wasActive = isActive;
+        isActive = state.isTimeChanging() &&
                            state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
                            state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.SOLID_ON &&
                            state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON;
@@ -35,6 +39,10 @@ public class RunningScreen extends BikeScreen {
     @Override
     public String formatSpeech(BikeStateTracker bikeStateTracker) {
         String result = "";
+        if (isActive && !wasActive) {
+            result += "Now running program, you can use the wheel to adjust the difficulty.";
+        }
+
         if (bikeStateTracker.isBoxActiveNow(ScreenBox.LOAD)) {
             Load l = (Load)bikeStateTracker.getFieldValue(BikeField.LOAD);
             if (l != null)
