@@ -16,7 +16,6 @@ public enum ScreenBox {
     LCD5,
     LCD6,
     GRAPH,
-    PROGRAM,
     WATT,
     RPM,
     LOAD,
@@ -28,7 +27,10 @@ public enum ScreenBox {
     LCD_TEXT_5_TOP,
     LCD_TEXT_9,
     LCD_TEXT_10,
-    LCD_TEXT_11;
+    LCD_TEXT_11,
+
+    // Program is the combination of two of the LCD boxes
+    PROGRAM;
 
     public BikeField[] getFields() {
         switch (this) {
