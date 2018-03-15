@@ -6,6 +6,7 @@ package uk.ac.cam.groupprojects.bravo.model.menu;
 public enum ScreenEnum {
     OFF_SCREEN,
 
+    INVALID_SCREEN,
     ERROR_SCREEN,
     INITIAL_SCREEN,
     RUNNING_SCREEN,
@@ -21,6 +22,7 @@ public enum ScreenEnum {
     public BikeScreen getBikeScreen() {
         switch(this) {
             case OFF_SCREEN: return new OffScreen();
+            case INVALID_SCREEN: return new InvalidScreen();
             case ERROR_SCREEN: return new ErrorScreen();
             case INITIAL_SCREEN: return new InitialScreen();
             case RUNNING_SCREEN: return new RunningScreen();

@@ -53,7 +53,7 @@ public class RunningScreen extends BikeScreen {
                         result += n.formatSpeech() + "\n";
                 }
             }
-            speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ;
+            speakDelay = ApplicationConstants.RUNNING_SPEAK_FREQ;
         }
 
         return result;
