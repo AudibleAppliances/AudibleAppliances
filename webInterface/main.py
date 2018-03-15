@@ -57,8 +57,8 @@ def new_box():
         config["spoken_fields"][content_type] = spoken
         if content_type == "lcd_text_10" or content_type == "lcd_text_11":
             config["boxes"]["program"] = {
-                corner: [config["boxes"]["lcd_text_10"]["left_percentage"],
-                         min(config["boxes"]["lcd_text_10"]["top_percentage"], config["boxes"]["lcd_text_11"]["top_percentage"])],
+                corner: [config["boxes"]["lcd_text_10"]["corner"][0],
+                         min(config["boxes"]["lcd_text_10"]["corner"][1], config["boxes"]["lcd_text_11"]["corner"][1])],
                 width: config["boxes"]["lcd_text_10"]["width"] + config["boxes"]["lcd_text_11"]["width"],
                 height: max(config["boxes"]["lcd_text_10"]["height"], config["boxes"]["lcd_text_11"]["height"])
             }

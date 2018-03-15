@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd /home/pi/AudibleAppliances/webInterface;
-sudo gunicorn --bind 0.0.0.0:80 -w 2 -t 600 -k "eventlet" wsgi;
+gunicorn --bind 0.0.0.0:5000 -w 3 -t 60 wsgi;
