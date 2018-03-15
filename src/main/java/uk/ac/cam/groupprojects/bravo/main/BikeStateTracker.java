@@ -129,13 +129,13 @@ public class BikeStateTracker {
         updateTimeChanging();
 
         // DEBUG: Output the state of every box
-        //if (ApplicationConstants.DEBUG) {
-        //    System.out.println("Time Changing: " + isTimeChanging());
-        //    for (ScreenBox box : ScreenBox.values()) {
-        //        System.out.println(box.toString() + ": " + getBoxState(box).toString());
-        //    }
-        //    System.out.println();
-        //}
+        if (ApplicationConstants.DEBUG) {
+            System.out.println("Time Changing: " + isTimeChanging());
+            for (ScreenBox box : ScreenBox.values()) {
+                System.out.println(box.toString() + ": " + getBoxState(box).toString());
+            }
+            System.out.println();
+        }
 
         BikeScreen newScreen = null;
         for (ScreenEnum s : ScreenEnum.values()) {
