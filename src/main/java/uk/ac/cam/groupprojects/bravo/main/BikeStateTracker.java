@@ -154,6 +154,7 @@ public class BikeStateTracker {
             System.out.println();
         }
 
+        // End speech early if state has changed
         if (currentScreen != newScreen) {
             synthesiser.clearSpeech();
         }
