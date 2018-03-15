@@ -266,7 +266,7 @@ public class BikeStateTracker {
         ScreenBox containingBox = field.getScreenBox();
 
         ImageTime image = null;
-        if (!blinking) {
+        if (!blinking && latestImages.get(containingBox).size() > 0) {
             image = latestImages.get(containingBox).getLast();
         } else {
             ImageTime maxBrightness = null;
