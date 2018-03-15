@@ -56,9 +56,8 @@ public class SSOCRUtil {
         args.add("-d");
         args.add("-1"); // Autodetect the number of digits
 
-        // Swap either of these next two?
-        args.add("-T"); // Use an iterative algorithm
-        //args.add("r_threshold"); // Threshold based on the red channel (this works well for white on blue)
+        args.add("-t");
+        args.add("80");
 
         args.add("invert"); // Get black text on white background (required for SSOCR to work)
         args.add(inputPath);

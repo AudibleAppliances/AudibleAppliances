@@ -9,7 +9,7 @@ import java.util.*;
  * Removes lit areas from the edges of images that cause our OCR implementation to fail
  */
 public class IntelligentCropping {
-    private static final double THRESHOLD = 200;
+    private static final double THRESHOLD = 190;
     private static final double BLACK_THRESHOLD = 20;
 
     private static final double SAFETY_HALT = 0.5; // If we're going to overwrite more of the image than this percent, don't
