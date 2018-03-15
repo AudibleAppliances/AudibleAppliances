@@ -26,6 +26,10 @@ public class SSOCRUtil {
     }
     public static File saveFile(BufferedImage img, File f) throws IOException {
         FastImageIO.write(img, IMG_TYPE, f);
+
+        System.out.println("Wrote to " + f.toString() + ", waiting for input...");
+        System.in.read();
+
         return f;
     }
 
