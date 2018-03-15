@@ -38,7 +38,7 @@ def call(c):
 
 	# dec/increment	
 	
-	if (c == 9):
+	if (c == 10):
 		volume+= 3
 		if(volume > 100):
 			volume = 100

@@ -71,6 +71,6 @@ public class RunningScreen extends BikeScreen {
 
     @Override
     public boolean isSpeakFirst() {
-        return false;
+        return true;
     }
 }
