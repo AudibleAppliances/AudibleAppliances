@@ -12,11 +12,16 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.Time;
 public class PausedScreen extends BikeScreen {
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
+        boolean isActive = !state.isTimeChanging() &&
+                            state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
+                            state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.SOLID_ON &&
+                            state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON;
 
-        return !state.isTimeChanging() &&
-               state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
-               state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.SOLID_ON &&
-               state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON;
+        if (isActive) {
+            System.out.println("Distance is " + state.getFieldValue(BikeField.DISTANCE).getValue());
+        }
+
+        return isActive;
     }
 
     @Override
