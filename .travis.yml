@@ -29,8 +29,7 @@ deploy:
     branch: master
 
 notifications:
-  notifications:
-    slack: groupbravo:eMMzsze9EPMrSurLwIc2uiVM
+  slack: groupbravo:eMMzsze9EPMrSurLwIc2uiVM
   pushover:
     api_key: axsf7bqxacq8ifnzq37k741n5uougx
     users:
