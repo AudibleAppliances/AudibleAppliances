@@ -28,6 +28,7 @@ h1 {
 }
 
 .button {
+    cursor: pointer;
     text-align: center;
     font-size: 1.2em;
     background-color: black;
@@ -87,6 +88,7 @@ h1 {
 }
 
 .color_choice, .speak {
+    cursor: pointer;
     margin: 1ch;
     border-radius: 10px;
     border: 2px solid black;
