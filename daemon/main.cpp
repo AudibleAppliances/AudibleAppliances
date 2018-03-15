@@ -52,9 +52,12 @@ int main(int argc, char *argv[]) {
     address.sin_addr.s_addr = inet_addr("127.0.0.1");
     address.sin_port = htons(40000);
     int address_length = sizeof(address);
+    int optval = 1;
 
     std::thread writer_thread (writer, std::ref(turn), std::ref(write_guard), std::ref(mapping), std::ref(camera));
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    
+    setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, (char *) &optval, sizeof(int));
     bind(server_socket, (struct sockaddr *)&address, sizeof(address));
     listen(server_socket, 5);
 
