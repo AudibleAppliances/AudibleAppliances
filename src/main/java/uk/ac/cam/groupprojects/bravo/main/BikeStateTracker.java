@@ -13,7 +13,6 @@ import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
-import uk.ac.cam.groupprojects.bravo.util.FastImageIO;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

@@ -1,6 +1,9 @@
 package uk.ac.cam.groupprojects.bravo.ocr;
 
 import java.util.List;
+
+import javax.imageio.ImageIO;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +17,9 @@ import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter.ToMat;
 
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
-import uk.ac.cam.groupprojects.bravo.util.FastImageIO;
 
 public class SSOCRUtil {
-    protected static final String IMG_TYPE = "png";
+    protected static final String IMG_TYPE = "jpg";
 
     public static File saveTempFile(BufferedImage img) throws IOException {
         File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
@@ -25,7 +27,7 @@ public class SSOCRUtil {
         return saveFile(img, f);
     }
     public static File saveFile(BufferedImage img, File f) throws IOException {
-        FastImageIO.write(img, IMG_TYPE, f);
+        ImageIO.write(img, IMG_TYPE, f);
 
         System.out.println("Wrote to " + f.toString() + ", waiting for input...");
         System.in.read();
