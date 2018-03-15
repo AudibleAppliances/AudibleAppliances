@@ -32,7 +32,7 @@ def call(c):
 	# check switch
 	
 	if not RPi.GPIO.input(14):
-		print 'VOLUME MUTED'
+		#print 'VOLUME MUTED'
 		set_volume(0)
 		return
 
@@ -42,12 +42,12 @@ def call(c):
 		volume+= 3
 		if(volume > 100):
 			volume = 100
-		print 'VOLUME++:' + str(volume)
+		#print 'VOLUME++:' + str(volume)
 	else :
 		volume-= 3
 		if(volume < 0):
 			volume = 0
-		print  'VOLUME--:' + str(volume)
+		#print  'VOLUME--:' + str(volume)
 	set_volume(volume)
 
 # detect rising edges with debounce time
@@ -62,8 +62,8 @@ RPi.GPIO.add_event_callback(10, call)
 while True:
 	RPi.GPIO.wait_for_edge(14, RPi.GPIO.BOTH, bouncetime=500)
 	if not RPi.GPIO.input(14):
-		print 'SWITCH OFF'
+		#print 'SWITCH OFF'
 		set_volume(0)
 	else:
 		set_volume(volume)
-		print 'SWITCH ON'
+		#print 'SWITCH ON'
