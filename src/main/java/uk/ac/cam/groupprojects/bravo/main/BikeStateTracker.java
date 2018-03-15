@@ -129,13 +129,13 @@ public class BikeStateTracker {
         updateTimeChanging();
 
         // DEBUG: Output the state of every box
-        if (ApplicationConstants.DEBUG) {
-            System.out.println("Time Changing: " + isTimeChanging());
-            for (ScreenBox box : ScreenBox.values()) {
-                System.out.println(box.toString() + ": " + getBoxState(box).toString());
-            }
-            System.out.println();
-        }
+        //if (ApplicationConstants.DEBUG) {
+        //    System.out.println("Time Changing: " + isTimeChanging());
+        //    for (ScreenBox box : ScreenBox.values()) {
+        //        System.out.println(box.toString() + ": " + getBoxState(box).toString());
+        //    }
+        //    System.out.println();
+        //}
 
         BikeScreen newScreen = null;
         for (ScreenEnum s : ScreenEnum.values()) {
@@ -214,9 +214,9 @@ public class BikeStateTracker {
                                .allMatch(s -> s.bikeTime == currentBikeTime);
     }
     private void removeOldHistory(long currentTime) {
-        System.out.println();
-        System.out.println("Removing old history. Current time " + currentTime);
-        System.out.println(history.size() + " items in history.");
+        //System.out.println();
+        //System.out.println("Removing old history. Current time " + currentTime);
+        //System.out.println(history.size() + " items in history.");
 
         while (history.size() > 0) {
             if (currentTime - 4 * ApplicationConstants.BLINK_FREQ_MILLIS > history.getFirst().addedMillis) {
@@ -234,24 +234,24 @@ public class BikeStateTracker {
     }
 
     public ScreenNumber getFieldValue(BikeField field) {
-        System.out.println("Getting field value " + field.toString());
+        //System.out.println("Getting field value " + field.toString());
         ScreenBox containingBox = field.getScreenBox();
 
         ImageTime lastImage = latestImages.get(containingBox);
         if (lastImage == null || lastImage.boxImage == null) { // No images for this box yet
-            System.out.println("Got lastImage as " + String.valueOf(lastImage));
+            //System.out.println("Got lastImage as " + String.valueOf(lastImage));
             return null;
         }
 
         // Not already run OCR on the image
         if (lastImage.recognisedValue == null) {
-            System.out.println("Running OCR");
+            //System.out.println("Running OCR");
             long startTime = System.currentTimeMillis();
 
             try {
                 BufferedImage picture = lastImage.boxImage;
                 if (!lastImage.isCropped) {
-                    System.out.println("Cropping");
+                    //System.out.println("Cropping");
                     IntelligentCropping.intelligentCrop(picture.getRaster());
                     lastImage.isCropped = true;
                 }
@@ -274,9 +274,9 @@ public class BikeStateTracker {
             }
 
             long elapsedTime = System.currentTimeMillis() - startTime;
-            if (ApplicationConstants.DEBUG) {
-                System.out.println("OCR and smart cropping for " + field.toString() + " took " + elapsedTime + "ms");
-            }
+            //if (ApplicationConstants.DEBUG) {
+            //    System.out.println("OCR and smart cropping for " + field.toString() + " took " + elapsedTime + "ms");
+            //}
         }
 
         if (ApplicationConstants.DEBUG) {

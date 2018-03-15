@@ -103,8 +103,8 @@ public class AudibleAppliances {
                 long start = System.currentTimeMillis();
                 BufferedImage image = readImage.read(ApplicationConstants.IMAGE_PATH);
                 long elapsedTime = System.currentTimeMillis() - start;
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Time taken to read image: " + elapsedTime + "ms ");
+                //if (ApplicationConstants.DEBUG)
+                //    System.out.println("Time taken to read image: " + elapsedTime + "ms ");
                 // Read successfully, reset the failed connection attempt counter
                 connectionAttempts = 0;
 
@@ -117,8 +117,8 @@ public class AudibleAppliances {
                     imgSegs.put(box, boxImage);
                 }
                 elapsedTime = System.currentTimeMillis() - start;
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Time taken to segment the image: " + elapsedTime + "ms ");
+                //if (ApplicationConstants.DEBUG)
+                //    System.out.println("Time taken to segment the image: " + elapsedTime + "ms ");
 
 
                 // Update tracker state
