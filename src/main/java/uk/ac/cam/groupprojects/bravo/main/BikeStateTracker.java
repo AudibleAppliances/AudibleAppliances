@@ -57,7 +57,7 @@ public class BikeStateTracker {
             if (recognisedValue == null) {
                 IntelligentCropping.intelligentCrop(boxImage.getRaster());
 
-                int value = SegmentRecogniser.recogniseInt(boxImage);
+                int value = SegmentRecogniser.recogniseInt(boxImage, field.getScreenBox().getThreshold());
                 System.out.println("Recognised " + field.toString() + ": " + value);
 
                 recognisedValue = field.getScreenNumber();

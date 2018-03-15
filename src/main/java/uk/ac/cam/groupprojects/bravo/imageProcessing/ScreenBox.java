@@ -8,7 +8,6 @@ import uk.ac.cam.groupprojects.bravo.config.BikeField;
  * @author Oliver Hope
  */
 public enum ScreenBox {
-
     LCD1,
     LCD2,
     LCD3,
@@ -32,6 +31,9 @@ public enum ScreenBox {
     // Program is the combination of two of the LCD boxes
     PROGRAM;
 
+    private static final double BLACK_THRESHOLD = 60;
+    private static final double BLUE_THRESHOLD = 80;
+
     public BikeField[] getFields() {
         switch (this) {
             case LCD1: return new BikeField[] { BikeField.TIME };
@@ -41,6 +43,34 @@ public enum ScreenBox {
             case LCD5: return new BikeField[] { BikeField.WATT, BikeField.LOAD };
             case LCD6: return new BikeField[] { BikeField.CAL };
             default: return null;
+        }
+    }
+
+
+    public boolean isBlueBackground() {
+        switch (this) {
+            case LCD1:
+            case LCD2:
+            case LCD3:
+            case LCD4:
+            case LCD5:
+            case LCD6:
+            case GRAPH:
+            case WATT:
+            case RPM:
+            case LOAD: return true;
+            default:   return false;
+        }
+    }
+    public boolean isBlackBackground() {
+        return !isBlueBackground();
+    }
+
+    public double getThreshold() {
+        if (isBlackBackground()) {
+            return BLACK_THRESHOLD;
+        } else {
+            return BLUE_THRESHOLD;
         }
     }
 }

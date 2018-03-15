@@ -7,26 +7,26 @@ import java.io.File;
 import java.io.IOException;
 
 public class SegmentRecogniser {
-    public static int recogniseInt(String imagePath)
+    public static int recogniseInt(String imagePath, double threshold)
                 throws IOException, NumberFormatException, UnrecognisedDigitException {
-        String s = recognise(imagePath);
+        String s = recognise(imagePath, threshold);
 
         s = s.replaceAll("[^0-9]", "");
         return Integer.parseInt(s);
     }
-    public static int recogniseInt(BufferedImage img) 
+    public static int recogniseInt(BufferedImage img, double threshold)
                 throws IOException, NumberFormatException, UnrecognisedDigitException {
-        String s = recognise(img);
+        String s = recognise(img, threshold);
 
         s = s.replaceAll("[^0-9]", "");
         return Integer.parseInt(s);
     }
 
-    public static String recognise(BufferedImage img) throws IOException, UnrecognisedDigitException {
+    public static String recognise(BufferedImage img, double threshold) throws IOException, UnrecognisedDigitException {
         File f = null;
         try {
             f = SSOCRUtil.saveTempFile(img);
-            return recognise(f.getPath());
+            return recognise(f.getPath(), threshold);
         }
         finally {
             if (f != null)
@@ -34,12 +34,11 @@ public class SegmentRecogniser {
         }
     }
 
-    public static String recognise(String imagePath) throws IOException, UnrecognisedDigitException {
-        Process p = SSOCRUtil.startRecognisingSSOCR(imagePath);
+    public static String recognise(String imagePath, double threshold) throws IOException, UnrecognisedDigitException {
+        Process p = SSOCRUtil.startRecognisingSSOCR(imagePath, threshold);
 
         try (Scanner s = new Scanner(p.getInputStream())) {
             String output = s.nextLine();
-            System.out.println("Got \"" + output +"\" from SSOCR");
 
             if (output.equals("-")) {
                 throw new UnrecognisedDigitException("Failed to parse digit in file: " + imagePath);

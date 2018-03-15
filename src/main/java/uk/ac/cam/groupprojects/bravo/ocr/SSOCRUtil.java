@@ -22,8 +22,8 @@ public class SSOCRUtil {
     protected static final String IMG_TYPE = "jpg";
 
     public static File saveTempFile(BufferedImage img) throws IOException {
-        File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
-        //File f = File.createTempFile("audible", "." + IMG_TYPE);
+        //File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
+        File f = File.createTempFile("audible", "." + IMG_TYPE);
         return saveFile(img, f);
     }
     public static File saveFile(BufferedImage img, File f) throws IOException {
@@ -51,13 +51,13 @@ public class SSOCRUtil {
         }
     }
 
-    public static Process startRecognisingSSOCR(String inputPath) throws IOException {
+    public static Process startRecognisingSSOCR(String inputPath, double threshold) throws IOException {
         List<String> args = new ArrayList<>();
         args.add("-d");
         args.add("-1"); // Autodetect the number of digits
 
         args.add("-t"); // Threshold at 80% "white"
-        args.add("80");
+        args.add(String.valueOf(threshold));
 
         args.add("invert"); // Get black text on white background (required for SSOCR to work)
         args.add(inputPath);
