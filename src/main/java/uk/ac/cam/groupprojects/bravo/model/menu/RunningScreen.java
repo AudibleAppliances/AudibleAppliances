@@ -10,7 +10,6 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.Load;
 import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
 
 public class RunningScreen extends BikeScreen {
-    private boolean loadTip = false;
 
     private int speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ;
 
@@ -35,11 +34,6 @@ public class RunningScreen extends BikeScreen {
 
     @Override
     public String formatSpeech(BikeStateTracker bikeStateTracker) {
-        if (!loadTip) {
-            loadTip = true;
-            return "You can use the wheel to adjust the difficulty";
-        }
-
         String result = "";
         if (bikeStateTracker.isBoxActiveNow(ScreenBox.LOAD)) {
             Load l = (Load)bikeStateTracker.getFieldValue(BikeField.LOAD);

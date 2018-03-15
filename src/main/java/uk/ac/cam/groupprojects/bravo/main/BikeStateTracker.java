@@ -155,6 +155,11 @@ public class BikeStateTracker {
             System.out.println();
         }
 
+        // Do speech differently for the running screen (ie only talk once)
+        if (newScreen.getEnum() == ScreenEnum.RUNNING_SCREEN && currentScreen != newScreen) {
+            synthesiser.speak("Now running program, you can use the wheel to adjust the difficulty.");
+        }
+
         currentScreen = newScreen;
         
         // Check if it's the time to speak, and if yes then speak
