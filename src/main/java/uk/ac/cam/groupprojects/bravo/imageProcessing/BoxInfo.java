@@ -8,18 +8,14 @@ import java.awt.geom.Point2D;
  * @author Oliver Hope
  */
 public class BoxInfo {
-
-    private ScreenBox mType;
     private Point2D.Double mCorner;
     private double mWidth;
     private double mHeight;
 
-    public BoxInfo(ScreenBox type, Point2D.Double corner, double width, double height) {
-        mType = type;
+    public BoxInfo(Point2D.Double corner, double width, double height) {
         mCorner = corner;
         mWidth = width;
         mHeight = height;
-        new Point2D.Double(1.0,2.0);
     }
 
     public double getWidth() {

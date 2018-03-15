@@ -60,9 +60,21 @@ public class ConfigData {
                 double cornerY = corner.get(1).getAsDouble();
 
                 // Create box info and place in data structure.
-                BoxInfo newBox = new BoxInfo(type, new Point2D.Double(cornerX, cornerY), boxWidth, boxHeight);
+                BoxInfo newBox = new BoxInfo(new Point2D.Double(cornerX, cornerY), boxWidth, boxHeight);
                 mBoxes.put(type, newBox);
             }
+
+            // Calculate the PROGRAM box from LCD_TEXT_10 and LCD_TEXT_11
+            BoxInfo text_10 = mBoxes.get(ScreenBox.LCD_TEXT_10);
+            BoxInfo text_11 = mBoxes.get(ScreenBox.LCD_TEXT_11);
+
+            double x = Math.min(text_10.getCorner().getX(), text_11.getCorner().getX());
+            double y = Math.min(text_10.getCorner().getY(), text_11.getCorner().getY());
+            double w = text_10.getWidth() + text_11.getWidth();
+            double h = Math.max(text_10.getHeight(), text_11.getHeight());
+
+            BoxInfo program = new BoxInfo(new Point2D.Double(x, y), w, h);
+            mBoxes.put(ScreenBox.PROGRAM, program);
 
             // Parse voice
             JsonPrimitive voice = config.getAsJsonPrimitive("voice");
