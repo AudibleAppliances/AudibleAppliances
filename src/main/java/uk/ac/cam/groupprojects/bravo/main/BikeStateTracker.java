@@ -145,7 +145,7 @@ public class BikeStateTracker {
         // Remove state information that's older than two complete blink cycles (2s) ago
         removeOldHistory(currentTime);
         System.out.println("Items in state history: " + history.size());
-        System.out.println("Items in image history: " + latestImages.size());
+        System.out.println("Items in image history: " + latestImages.get(ScreenBox.PROGRAM).size());
 
         // Update which LCDs we know are solid/blinking
         updateSolidBlinking(currentTime);
@@ -246,7 +246,7 @@ public class BikeStateTracker {
             }
         }
         for (ScreenBox box : ScreenBox.values()) {
-            while (latestImages.size() > 0) {
+            while (latestImages.get(box).size() > 0) {
                 if (currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS > latestImages.get(box).getFirst().addedMillis) {
                     latestImages.get(box).removeFirst();
                 } else {
@@ -267,7 +267,7 @@ public class BikeStateTracker {
         ScreenBox containingBox = field.getScreenBox();
 
         ImageTime image = null;
-        if (!blinking) {
+        if (!blinking && latestImages.get(containingBox).size() > 0) {
             image = latestImages.get(containingBox).getLast();
         } else {
             ImageTime maxBrightness = null;
