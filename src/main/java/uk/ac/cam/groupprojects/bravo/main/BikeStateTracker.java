@@ -170,6 +170,7 @@ public class BikeStateTracker {
             }
         }
         if (newScreen == null) {
+            newScreen = ScreenEnum.INVALID_SCREEN.getBikeScreen();
             System.out.println("Failed to identify state");
         } else {
             System.out.println();

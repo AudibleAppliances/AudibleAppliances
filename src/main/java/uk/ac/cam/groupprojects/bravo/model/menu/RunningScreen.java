@@ -48,7 +48,7 @@ public class RunningScreen extends BikeScreen {
             Load l = (Load)bikeStateTracker.getFieldValue(BikeField.LOAD, false);
             if (l != null)
                 result += l.formatSpeech() + "\n";
-            speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ / 5;
+            speakDelay = ApplicationConstants.RUNNING_SPEAK_FREQ / 5;
         } else {
             ConfigData configData = bikeStateTracker.getConfig();
             for (BikeField field : BikeField.values()) {
@@ -58,7 +58,7 @@ public class RunningScreen extends BikeScreen {
                         result += n.formatSpeech() + "\n";
                 }
             }
-            speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ;
+            speakDelay = ApplicationConstants.RUNNING_SPEAK_FREQ;
         }
 
         return result;
