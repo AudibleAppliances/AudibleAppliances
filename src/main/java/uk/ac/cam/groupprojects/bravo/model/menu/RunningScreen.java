@@ -6,7 +6,6 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
-import uk.ac.cam.groupprojects.bravo.model.numbers.Load;
 import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
 
 public class RunningScreen extends BikeScreen {
@@ -23,10 +22,6 @@ public class RunningScreen extends BikeScreen {
                            state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
                            state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.SOLID_ON &&
                            state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON;
-
-        if (isActive) {
-            System.out.println("Distance is " + state.getFieldValue(BikeField.DISTANCE, false).getValue());
-        }
 
         return isActive;
     }
@@ -45,9 +40,9 @@ public class RunningScreen extends BikeScreen {
         }
 
         if (bikeStateTracker.isBoxActiveNow(ScreenBox.LOAD)) {
-            Load l = (Load)bikeStateTracker.getFieldValue(BikeField.LOAD, false);
-            if (l != null)
-                result += l.formatSpeech() + "\n";
+            ScreenNumber n = bikeStateTracker.getFieldValue(BikeField.LOAD, false);
+            if (n != null)
+                result += n.formatSpeech() + "\n";
             speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ / 5;
         } else {
             ConfigData configData = bikeStateTracker.getConfig();
