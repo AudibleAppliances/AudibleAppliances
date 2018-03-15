@@ -76,6 +76,7 @@ public class ConfigData {
             BoxInfo program = new BoxInfo(new Point2D.Double(x, y), w, h);
             mBoxes.put(ScreenBox.PROGRAM, program);
 
+
             // Parse voice
             JsonPrimitive voice = config.getAsJsonPrimitive("voice");
             mVoice = voice.getAsString();
