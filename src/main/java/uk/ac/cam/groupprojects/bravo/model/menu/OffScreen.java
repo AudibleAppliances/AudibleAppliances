@@ -1,5 +1,7 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
+import java.util.Arrays;
+
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
@@ -10,10 +12,7 @@ public class OffScreen extends BikeScreen {
     public boolean isActiveScreen(BikeStateTracker state) {
 
         return !state.isTimeChanging() &&
-               state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
-               state.getBoxState(ScreenBox.LCD_TEXT_3) == LCDState.SOLID_OFF &&
-               state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.SOLID_OFF &&
-               state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_OFF;
+                Arrays.stream(ScreenBox.values()).allMatch(b -> state.getBoxState(b) == LCDState.SOLID_OFF);
     }
 
     @Override
