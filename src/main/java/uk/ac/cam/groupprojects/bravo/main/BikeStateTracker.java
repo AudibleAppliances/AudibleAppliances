@@ -234,6 +234,7 @@ public class BikeStateTracker {
     }
 
     public ScreenNumber getFieldValue(BikeField field) {
+        System.out.println("Getting field value " + field.toString());
         ScreenBox containingBox = field.getScreenBox();
 
         ImageTime lastImage = latestImages.get(containingBox);
@@ -244,11 +245,13 @@ public class BikeStateTracker {
 
         // Not already run OCR on the image
         if (lastImage.recognisedValue == null) {
+            System.out.println("Running OCR");
             long startTime = System.currentTimeMillis();
 
             try {
                 BufferedImage picture = lastImage.boxImage;
                 if (!lastImage.isCropped) {
+                    System.out.println("Cropping");
                     IntelligentCropping.intelligentCrop(picture.getRaster());
                     lastImage.isCropped = true;
                 }
