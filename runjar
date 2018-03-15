@@ -1,3 +1,3 @@
 #!/bin/bash
 
-java -classpath "audible-1.0-SNAPSHOT.jar:javacv-bin/*.jar" uk.ac.cam.groupprojects.bravo.main.AudibleAppliances.java -d
+java -classpath "audible-1.0-SNAPSHOT.jar:javacv-bin/*.jar" uk.ac.cam.groupprojects.bravo.main.AudibleAppliances -d

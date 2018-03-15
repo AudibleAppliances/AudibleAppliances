@@ -127,15 +127,8 @@ public class IntelligentCropping {
                 break;
             }
 
-            // Compute neighbours. Done nastily here because it's faster than eg. using a helper function
-            if (p.x + 1 < raw.getWidth() && !visited[p.y][p.x + 1])
-                frontier.add(new Point(p.x + 1, p.y));
-            if (p.x - 1 >= 0 && !visited[p.y][p.x - 1])
-                frontier.add(new Point(p.x - 1, p.y));
-            if (p.y + 1 < raw.getHeight() && !visited[p.y + 1][p.x])
-                frontier.add(new Point(p.x, p.y + 1));
-            if (p.y - 1 >= 0 && !visited[p.y - 1][p.x])
-                frontier.add(new Point(p.x, p.y - 1));
+            // Compute neighbours
+            addNeighbours(p, frontier, raw, visited);
         }
 
         if (outputFlood != null)
@@ -144,6 +137,16 @@ public class IntelligentCropping {
             outputNotFlooded.addAll(notFlooded);
     }
 
+    private static void addNeighbours(Point p, Set<Point> frontier, Raster raw, boolean[][] visited) {
+        if (p.x + 1 < raw.getWidth() && !visited[p.y][p.x + 1])
+            frontier.add(new Point(p.x + 1, p.y));
+        if (p.x - 1 >= 0 && !visited[p.y][p.x - 1])
+            frontier.add(new Point(p.x - 1, p.y));
+        if (p.y + 1 < raw.getHeight() && !visited[p.y + 1][p.x])
+            frontier.add(new Point(p.x, p.y + 1));
+        if (p.y - 1 >= 0 && !visited[p.y - 1][p.x])
+            frontier.add(new Point(p.x, p.y - 1));
+    }
     /**
      * Given a set of points and an image, paints those points black in the image
      *
