@@ -3,8 +3,8 @@ boxes = {}
 $.getJSON("/get_boxes", function(data) {
     $.each(data.boxes, function(key, val) {
         boxes[key] = {
-            left_percentage: $("#canvas").width() * val.corner[0] / 100.0 ,
-            top_percentage: $("#canvas").height() * (val.corner[1] / 100.0,
+            left_percentage: (val.corner[0] / 100.0),
+            top_percentage: (val.corner[1] / 100.0),
             width: (val.width / 100.0) * $("#canvas").width(),
             height: (val.height / 100.0) * $("#canvas").height()
         }
@@ -33,8 +33,8 @@ function do_select(component_name) {
                 box: {
                     type: type,
                     corner: [
-                        (($(box).position().left - $("#canvas").position().left) / $("#canvas").width()) * 100.0,
-                        (($(box).position().top - $("#canvas").position().top) / $("#canvas").height()) * 100.0
+                        100.0 * (($(box).position().left - $("#canvas").offset().left) / $("#canvas").width()),
+                        100.0 * (($(box).position().top - $("#canvas").offset().top) / $("#canvas").height())
                     ],
                     width: 100.0 * $(box).width() / $("#canvas").width(),
                     height: 100.0 * $(box).height() / $("#canvas").height()
@@ -63,7 +63,6 @@ function do_select(component_name) {
         var box = document.createElement("div");
         box.className = "square";
         box.style.borderColor = allowed_colours[Math.floor(Math.random() * allowed_colours.length)];
-        console.log(boxes[component_name].top_percentage);
         $(box).css({
             left: (0.1 * window.innerWidth) + (boxes[component_name].left_percentage) * $("#canvas").width(),
             top: (0.1 * window.innerHeight) + (boxes[component_name].top_percentage) * $("#canvas").height(),

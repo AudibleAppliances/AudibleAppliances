@@ -1,6 +1,7 @@
 package uk.ac.cam.groupprojects.bravo.imageProcessing;
 
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
+import uk.ac.cam.groupprojects.bravo.util.FastImageIO;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -54,7 +55,7 @@ public class ReadImage {
         // Wait for ACK
         if (in.readByte() == 1) {
 
-            BufferedImage img = ImageIO.read(new File(imagePath));
+            BufferedImage img = FastImageIO.read(new File(imagePath));
 
             // Send DONE
             out.write(1);
