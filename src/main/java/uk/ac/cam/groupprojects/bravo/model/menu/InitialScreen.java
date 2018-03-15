@@ -13,7 +13,8 @@ public class InitialScreen extends BikeScreen {
                state.getBoxState(ScreenBox.LCD_TEXT_3) == LCDState.SOLID_OFF &&
                state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.SOLID_OFF &&
                state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON &&
-               state.getBoxState(ScreenBox.LCD_TEXT_9) == LCDState.SOLID_OFF;
+               state.getBoxState(ScreenBox.LCD_TEXT_9) == LCDState.SOLID_OFF &&
+               state.getBoxState(ScreenBox.LCD6) == LCDState.BLINKING;
     }
 
     @Override
@@ -23,7 +24,7 @@ public class InitialScreen extends BikeScreen {
 
     @Override
     public String formatSpeech(BikeStateTracker bikeStateTracker) {
-        return "Please click the start stop button";
+        return "Please click the start button";
     }
 
     @Override

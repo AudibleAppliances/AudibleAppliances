@@ -56,7 +56,7 @@ public class SSOCRUtil {
         args.add("-d");
         args.add("-1"); // Autodetect the number of digits
 
-        args.add("-t");
+        args.add("-t"); // Threshold at 80% "white"
         args.add("80");
 
         args.add("invert"); // Get black text on white background (required for SSOCR to work)
