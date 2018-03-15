@@ -19,7 +19,6 @@ public class RunningScreen extends BikeScreen {
 
         return state.isTimeChanging() &&
                state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
-               state.getBoxState(ScreenBox.LCD_TEXT_3) == LCDState.SOLID_ON &&
                state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.SOLID_ON &&
                state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON;
     }
