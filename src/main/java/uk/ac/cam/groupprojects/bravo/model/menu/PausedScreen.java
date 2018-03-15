@@ -18,7 +18,7 @@ public class PausedScreen extends BikeScreen {
                             state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON;
 
         if (isActive) {
-            System.out.println("Distance is " + state.getFieldValue(BikeField.DISTANCE).getValue());
+            System.out.println("Distance is " + state.getFieldValue(BikeField.DISTANCE, false).getValue());
         }
 
         return isActive;
@@ -35,12 +35,12 @@ public class PausedScreen extends BikeScreen {
 
         ConfigData configData = bikeStateTracker.getConfig();
         if (configData.isSpokenField(BikeField.DISTANCE)) {
-            Distance d = (Distance)bikeStateTracker.getFieldValue(BikeField.DISTANCE);
+            Distance d = (Distance)bikeStateTracker.getFieldValue(BikeField.DISTANCE, false);
             if (d != null)
                 result += d.formatSpeech();
         }
         if (configData.isSpokenField(BikeField.TIME)) {
-            Time t = (Time)bikeStateTracker.getFieldValue(BikeField.TIME);
+            Time t = (Time)bikeStateTracker.getFieldValue(BikeField.TIME, false);
             if (t != null)
                 result += t.formatSpeech();
         }

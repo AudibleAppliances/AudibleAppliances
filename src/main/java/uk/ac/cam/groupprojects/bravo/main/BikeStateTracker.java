@@ -3,7 +3,6 @@ package uk.ac.cam.groupprojects.bravo.main;
 import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
-import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.IntelligentCropping;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.menu.*;
@@ -29,9 +28,9 @@ import java.util.Set;
 public class BikeStateTracker {
     // Holds data about the bike at a given time (enough to compute the state, so LCD and the recognised time)
     class StateTime {
-        public long addedMillis;
-        public Set<ScreenBox> activeBoxes;
-        public int bikeTime;
+        public final long addedMillis;
+        public final Set<ScreenBox> activeBoxes;
+        public final int bikeTime;
 
         public StateTime(long addedMillis, Set<ScreenBox> activeBoxes, int bikeTime) {
             this.addedMillis = addedMillis;
@@ -41,21 +40,39 @@ public class BikeStateTracker {
     }
     // Holds the last image we saw for each segment *when it was active* - no blank images here
     class ImageTime {
-        public long addedTime;
-        public BufferedImage boxImage;
-        public ScreenNumber recognisedValue;
-        public boolean isCropped;
+        public final long addedMillis;
+        private final BufferedImage boxImage;
+        private ScreenNumber recognisedValue;
+        private Double brightness;
 
-        public ImageTime(long addedTime, BufferedImage boxImage) {
-            this.addedTime = addedTime;
+        public ImageTime(long addedMillis, BufferedImage boxImage) {
+            this.addedMillis = addedMillis;
             this.boxImage = boxImage;
 
             recognisedValue = null;
-            isCropped = false;
+            brightness = null;
         }
 
-        public void setRecognisedValue(ScreenNumber value) {
-            recognisedValue = value;
+        public ScreenNumber getRecognisedValue(BikeField field) throws IOException, UnrecognisedDigitException {
+            if (recognisedValue == null) {
+                IntelligentCropping.intelligentCrop(boxImage.getRaster());
+
+                int value = SegmentRecogniser.recogniseInt(boxImage);
+                System.out.println("Recognised " + field.toString() + ": " + value);
+
+                recognisedValue = field.getScreenNumber();
+                recognisedValue.setValue(value);
+            }
+
+            return recognisedValue;
+        }
+
+        public double getBrightness() {
+            if (brightness == null) {
+                brightness = SegmentActive.imageAverage(boxImage, 0.5, 0);
+            }
+
+            return brightness;
         }
     }
 
@@ -73,7 +90,7 @@ public class BikeStateTracker {
 
     // Current useful state of the bike, as inferred from the history    
     private final Map<ScreenBox, LCDState> boxStates; // Which LCDs are active?
-    private final Map<ScreenBox, ImageTime> latestImages; // Latest non-blank images of each LCD
+    private final Map<ScreenBox, LinkedList<ImageTime>> latestImages; // Latest non-blank images of each LCD
     private BikeScreen currentScreen; // What do we think the current state is?
     private boolean timeChanging; // Is the time LCD counting up/down?
 
@@ -81,6 +98,9 @@ public class BikeStateTracker {
         history = new LinkedList<>();
         boxStates = new HashMap<>();
         latestImages = new HashMap<>();
+        for (ScreenBox b : ScreenBox.values())
+            latestImages.put(b, new LinkedList<>());
+
         timeChanging = false;
         configData = config;
         synthesiser = synth;
@@ -107,15 +127,16 @@ public class BikeStateTracker {
             if (SegmentActive.segmentActive(thresholded)) {
                 // If the LCD is active, record it and update the latest image we have of it
                 activeSegs.add(box);
-                latestImages.put(box, new ImageTime(currentTime, boxImage));
+                latestImages.get(box).add(new ImageTime(currentTime, boxImage));
             }
         }
 
         // Store the new state, with the time we recognised at the moment
-        Time bikeTime = (Time)getFieldValue(BikeField.TIME);
+        Time bikeTime = (Time)getFieldValue(BikeField.TIME, false);
         if (bikeTime != null) { // If this is null, it just means we've only just started and don't have enough data yet
             history.add(new StateTime(currentTime, activeSegs, bikeTime.getValue()));
         }
+
         // DEBUG
         if (bikeTime == null) {
             System.out.println("Failed to recognise the time");
@@ -123,7 +144,8 @@ public class BikeStateTracker {
 
         // Remove state information that's older than two complete blink cycles (2s) ago
         removeOldHistory(currentTime);
-        System.out.println("Items in history: " + history.size());
+        System.out.println("Items in state history: " + history.size());
+        System.out.println("Items in image history: " + latestImages.size());
 
         // Update which LCDs we know are solid/blinking
         updateSolidBlinking(currentTime);
@@ -215,15 +237,20 @@ public class BikeStateTracker {
                                .allMatch(s -> s.bikeTime == currentBikeTime);
     }
     private void removeOldHistory(long currentTime) {
-        //System.out.println();
-        //System.out.println("Removing old history. Current time " + currentTime);
-        //System.out.println(history.size() + " items in history.");
-
         while (history.size() > 0) {
             if (currentTime - 4 * ApplicationConstants.BLINK_FREQ_MILLIS > history.getFirst().addedMillis) {
                 history.removeFirst();
             } else {
                 break;
+            }
+        }
+        for (ScreenBox box : ScreenBox.values()) {
+            while (latestImages.size() > 0) {
+                if (currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS > latestImages.get(box).getFirst().addedMillis) {
+                    latestImages.get(box).removeFirst();
+                } else {
+                    break;
+                }
             }
         }
 
@@ -234,59 +261,53 @@ public class BikeStateTracker {
         return configData;
     }
 
-    public ScreenNumber getFieldValue(BikeField field) {
+    public ScreenNumber getFieldValue(BikeField field, boolean blinking) {
         //System.out.println("Getting field value " + field.toString());
         ScreenBox containingBox = field.getScreenBox();
 
-        ImageTime lastImage = latestImages.get(containingBox);
-        if (lastImage == null || lastImage.boxImage == null) { // No images for this box yet
-            //System.out.println("Got lastImage as " + String.valueOf(lastImage));
+        ImageTime image = null;
+        if (!blinking) {
+            image = latestImages.get(containingBox).getLast();
+        } else {
+            ImageTime maxBrightness = null;
+            for (ImageTime i : latestImages.get(containingBox)) {
+                if (maxBrightness == null || i.getBrightness() > maxBrightness.getBrightness()) {
+                    maxBrightness = i;
+                }
+            }
+            image = maxBrightness;
+            if (image != null) {
+                System.out.println("Got max brightness of blinking field " + field.toString() + " as " + image.brightness);
+            }
+        }
+        if (image == null) { // No images for this box yet
+            System.out.println("Got null image");
             return null;
         }
 
-        // Not already run OCR on the image
-        if (lastImage.recognisedValue == null) {
-            //System.out.println("Running OCR");
-            long startTime = System.currentTimeMillis();
-
-            try {
-                BufferedImage picture = lastImage.boxImage;
-                if (!lastImage.isCropped) {
-                    //System.out.println("Cropping");
-                    IntelligentCropping.intelligentCrop(picture.getRaster());
-                    lastImage.isCropped = true;
-                }
-
-                int value = SegmentRecogniser.recogniseInt(picture);
-                System.out.println("Recognised " + field.toString() + ": " + value);
-                ScreenNumber recognised = field.getScreenNumber();
-                recognised.setValue(value);
-                lastImage.recognisedValue = recognised;
-            }
-            catch (IOException e) {
-                System.out.println("IOException when recognising " + field.toString());
-                e.printStackTrace();
-                return null;
-            }
-            catch (NumberFormatException | UnrecognisedDigitException e) {
-                System.out.println("Failed to recognise digit for " + field.toString());
-                System.out.println(e.getMessage());
-                return null;
-            }
-
-            long elapsedTime = System.currentTimeMillis() - startTime;
-            //if (ApplicationConstants.DEBUG) {
-            //    System.out.println("OCR and smart cropping for " + field.toString() + " took " + elapsedTime + "ms");
-            //}
+        ScreenNumber recognisedValue = null;
+        try {
+            recognisedValue = image.getRecognisedValue(field);
         }
+        catch (IOException e) {
+            System.out.println("IOException when recognising " + field.toString());
+            e.printStackTrace();
+            return null;
+        }
+        catch (NumberFormatException | UnrecognisedDigitException e) {
+            System.out.println("Failed to recognise digit for " + field.toString());
+            System.out.println(e.getMessage());
+            return null;
+        }
+
 
         if (ApplicationConstants.DEBUG) {
-            if (lastImage.recognisedValue == null)
+            if (recognisedValue == null)
                 System.out.println("Value of " + field.toString() + ": lastImage.recognisedValue null");
             else
-                System.out.println("Value of " + field.toString() + ": " + lastImage.recognisedValue.getValue());
+                System.out.println("Value of " + field.toString() + ": " + image.recognisedValue.getValue());
         }
-        return lastImage.recognisedValue;
+        return recognisedValue;
     }
 
     public LCDState getBoxState(ScreenBox box) {
