@@ -23,7 +23,7 @@ public class SelectHRCScreen extends BikeScreen {
 
     @Override
     public String formatSpeech(BikeStateTracker bikeStateTracker) {
-        return "Press enter to select the HRC mode.";
+        return "Rotate right to choose a program.";
     }
 
     @Override

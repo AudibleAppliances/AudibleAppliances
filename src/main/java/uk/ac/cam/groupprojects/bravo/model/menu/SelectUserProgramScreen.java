@@ -23,7 +23,7 @@ public class SelectUserProgramScreen extends BikeScreen {
 
     @Override
     public String formatSpeech(BikeStateTracker bikeStateTracker) {
-        return "Press enter to select a user program.";
+        return "Rotate left to choose program.";
     }
 
     @Override

@@ -25,7 +25,7 @@ public class SelectWattScreen extends BikeScreen {
 
     @Override
     public String formatSpeech(BikeStateTracker bikeStateTracker) {
-        return "Press enter to select the Watt mode";
+        return "Rotate right to choose program.";
     }
 
     @Override

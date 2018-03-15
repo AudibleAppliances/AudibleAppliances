@@ -23,7 +23,7 @@ public class InitialScreen extends BikeScreen {
 
     @Override
     public String formatSpeech(BikeStateTracker bikeStateTracker) {
-        return "Please click the start/stop button";
+        return "Please click the start stop button";
     }
 
     @Override

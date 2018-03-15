@@ -26,7 +26,7 @@ public class PausedScreen extends BikeScreen {
 
     @Override
     public String formatSpeech(BikeStateTracker bikeStateTracker) {
-        String result = "The bike is currently paused!\n";
+        String result = "The bike is currently paused.\n";
 
         ConfigData configData = bikeStateTracker.getConfig();
         if (configData.isSpokenField(BikeField.DISTANCE)) {

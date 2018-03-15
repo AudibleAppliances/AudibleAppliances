@@ -24,7 +24,7 @@ public class SelectManualScreen extends BikeScreen {
 
     @Override
     public String formatSpeech(BikeStateTracker bikeStateTracker) {
-        return "Press enter to select the manual mode.";
+        return "Press enter to cycle without program or rotate right to choose a program.";
     }
 
     @Override
