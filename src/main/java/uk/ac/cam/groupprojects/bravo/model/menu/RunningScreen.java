@@ -25,7 +25,7 @@ public class RunningScreen extends BikeScreen {
                            state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON;
 
         if (isActive) {
-            System.out.println("Distance is " + state.getFieldValue(BikeField.DISTANCE).getValue());
+            System.out.println("Distance is " + state.getFieldValue(BikeField.DISTANCE, false).getValue());
         }
 
         return isActive;
@@ -45,7 +45,7 @@ public class RunningScreen extends BikeScreen {
         }
 
         if (bikeStateTracker.isBoxActiveNow(ScreenBox.LOAD)) {
-            Load l = (Load)bikeStateTracker.getFieldValue(BikeField.LOAD);
+            Load l = (Load)bikeStateTracker.getFieldValue(BikeField.LOAD, false);
             if (l != null)
                 result += l.formatSpeech() + "\n";
             speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ / 5;
@@ -53,7 +53,7 @@ public class RunningScreen extends BikeScreen {
             ConfigData configData = bikeStateTracker.getConfig();
             for (BikeField field : BikeField.values()) {
                 if (configData.isSpokenField(field)) {
-                    ScreenNumber n = bikeStateTracker.getFieldValue(field);
+                    ScreenNumber n = bikeStateTracker.getFieldValue(field, false);
                     if (n != null)
                         result += n.formatSpeech() + "\n";
                 }

@@ -21,7 +21,7 @@ public class ProgramScreen extends BikeScreen {
                state.getBoxState(ScreenBox.LCD_TEXT_9) == LCDState.SOLID_OFF;
 
         if (isActive) {
-            programValue = (Program)state.getFieldValue(BikeField.PROGRAM);
+            programValue = (Program)state.getFieldValue(BikeField.PROGRAM, true);
             if (programValue == null) {
                 System.out.println("Program value is null");
             } else {

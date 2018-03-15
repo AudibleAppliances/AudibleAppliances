@@ -7,7 +7,7 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
  */
 public class LowerDistanceDigit extends ScreenNumber {
     public LowerDistanceDigit() {
-        super(0, 9);
+        super(0, 99);
     }
 
     @Override

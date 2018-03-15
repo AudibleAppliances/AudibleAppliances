@@ -5,23 +5,23 @@ import java.awt.image.Raster;
 import java.io.IOException;
 
 public class SegmentActive {
-    // "Threshold" is effectively the percentage (100% = 1.0) of the image that's white
     public static boolean segmentActive(BufferedImage img) throws IOException {
-        return segmentActive(img, 0.03); // Default threshold, empirically chosen
+        return segmentActive(img, 0.03); // Default percentage lit up, empirically chosen
     }
-    public static boolean segmentActive(BufferedImage img, double threshold) throws IOException {
-        return imageAverage(img) > threshold;
+    public static boolean segmentActive(BufferedImage img, double percent) throws IOException {
+        // Use the 0th channel as our input should be black and white - threshold 0.5 for same reason
+        return imageAverage(img, 0.5, 0) > percent;
     }
 
-    public static double imageAverage(BufferedImage img) throws IOException {
+    public static double imageAverage(BufferedImage img, double threshold, int channel) {
         Raster raw = img.getRaster();
 
         double sum = 0;
         for (int y = 0; y < raw.getHeight(); y++) {
             for (int x = 0; x < raw.getWidth(); x++) {
-                double pixelVal = raw.getSampleDouble(x, y, 0) / 255;
+                double pixelVal = raw.getSampleDouble(x, y, channel) / 255;
 
-                if (pixelVal > 0.4) {
+                if (pixelVal > threshold) {
                     sum += 1;
                 }
             }
