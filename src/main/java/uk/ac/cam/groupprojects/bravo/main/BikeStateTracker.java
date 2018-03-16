@@ -214,7 +214,10 @@ public class BikeStateTracker {
                                          .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
                                          .allMatch(s -> s.state != null && s.state.getEnum() == currentScreen.getEnum());
 
-            boolean stateChanged = !history.isEmpty() && history.getFirst().state.getEnum() != history.getLast().state.getEnum();
+            boolean stateChanged = !history.isEmpty() &&
+                                    history.getFirst().state != null &&
+                                    history.getLast().state != null &&
+                                    history.getFirst().state.getEnum() != history.getLast().state.getEnum();
 
             if (stateChanged) {
                 synthesiser.clearQueue();
