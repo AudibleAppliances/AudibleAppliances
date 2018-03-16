@@ -162,6 +162,11 @@ public class BikeStateTracker {
         System.out.println("Items in image history: " + imageHistoryMaxLength);
 
         // Update which LCDs we know are solid/blinking
+        System.out.println();
+        for (ImageTime i : latestImages.get(ScreenBox.LCD6)) {
+            System.out.println(i.segmentActive);
+        }
+        System.out.println();
         updateSolidBlinking(currentTime);
         updateTimeChanging();
 
@@ -307,16 +312,13 @@ public class BikeStateTracker {
         if (!blinking) {
             // Get the latest active image - we don't care about whether it's the brightest, as it's not blinking
             Iterator<ImageTime> i = latestImages.get(containingBox).descendingIterator();
-            System.out.println("Starting iteration");
             while (i.hasNext()) {
                 ImageTime img = i.next();
-                System.out.println(img.addedMillis);
                 if (img.segmentActive) {
                     image = img;
                     break;
                 }
             }
-            System.out.println();
         }
         else {
             // Get the image in the history with the greatest brightness - not the latest active one
