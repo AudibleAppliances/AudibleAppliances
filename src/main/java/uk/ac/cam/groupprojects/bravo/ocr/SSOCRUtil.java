@@ -16,8 +16,6 @@ import org.bytedeco.javacv.Java2DFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter.ToMat;
 
-import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
-
 public class SSOCRUtil {
     protected static final String IMG_TYPE = "jpg";
 
@@ -59,7 +57,10 @@ public class SSOCRUtil {
         args.add("-t"); // Threshold at 80% "white"
         args.add(String.valueOf(threshold));
 
+        args.add("-T");
+
         args.add("invert"); // Get black text on white background (required for SSOCR to work)
+        args.add("remove_isolated"); // Remove odd pixels
         args.add(inputPath);
         return startSSOCR(args);
     }

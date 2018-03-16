@@ -10,7 +10,6 @@ import uk.ac.cam.groupprojects.bravo.model.LCDState;
 public class OffScreen extends BikeScreen {
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
-
         return !state.isTimeChanging() &&
                 Arrays.stream(ScreenBox.values()).allMatch(b -> state.getBoxState(b) == LCDState.SOLID_OFF);
     }
