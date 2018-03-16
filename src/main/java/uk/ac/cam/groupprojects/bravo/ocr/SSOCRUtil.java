@@ -16,12 +16,14 @@ import org.bytedeco.javacv.Java2DFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter.ToMat;
 
+import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
+
 public class SSOCRUtil {
     protected static final String IMG_TYPE = "jpg";
 
     public static File saveTempFile(BufferedImage img) throws IOException {
-        //File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
-        File f = File.createTempFile("audible", "." + IMG_TYPE);
+        File f = File.createTempFile("audible", "." + IMG_TYPE, ApplicationConstants.TMP_DIR);
+        //File f = File.createTempFile("audible", "." + IMG_TYPE);
         return saveFile(img, f);
     }
     public static File saveFile(BufferedImage img, File f) throws IOException {
