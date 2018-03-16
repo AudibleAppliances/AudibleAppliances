@@ -26,6 +26,7 @@ import java.util.Set;
  * Created by david on 13/02/2018.
  */
 public class BikeStateTracker {
+
     // Holds data about the bike at a given time (enough to compute the state, so LCD and the recognised time)
     class StateTime {
         public final long addedMillis;
@@ -38,6 +39,7 @@ public class BikeStateTracker {
             this.bikeTime = bikeTime;
         }
     }
+
     // Holds the last image we saw for each segment *when it was active* - no blank images here
     class ImageTime {
         public final long addedMillis;
@@ -87,6 +89,7 @@ public class BikeStateTracker {
     // We only look at 1 second of the state to determine if a segment is blinking,
     // otherwise we introduce a lot of latency when changing state
     private final LinkedList<StateTime> history;
+    private final LinkedList<ScreenEnum> stateHistory;
 
     // Current useful state of the bike, as inferred from the history    
     private final Map<ScreenBox, LCDState> boxStates; // Which LCDs are active?
@@ -96,6 +99,7 @@ public class BikeStateTracker {
 
     public BikeStateTracker(ConfigData config, Synthesiser synth) {
         history = new LinkedList<>();
+        stateHistory = new LinkedList<>();
         boxStates = new HashMap<>();
         latestImages = new HashMap<>();
         for (ScreenBox b : ScreenBox.values())
@@ -169,19 +173,30 @@ public class BikeStateTracker {
                 break;
             }
         }
+
         if (newScreen == null) {
             newScreen = ScreenEnum.INVALID_SCREEN.getBikeScreen();
             System.out.println("Failed to identify state");
-        } else {
+        }
+        else {
             System.out.println();
             System.out.println("State: " + newScreen.getEnum().toString());
             System.out.println();
         }
 
         currentScreen = newScreen;
-        
+
+        // Maintain history of state and see if last 4 previous ones are the same state
+        stateHistory.add(currentScreen.getEnum());
+        while (stateHistory.size() > 4) {
+            stateHistory.removeFirst();
+        }
+        boolean enoughSimilar = stateHistory.stream().allMatch(x -> x.equals(stateHistory.getLast()));
+
         // Check if it's the time to speak, and if yes then speak
-        if (currentScreen != null && System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
+        if (currentScreen != null &&
+                System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay() &&
+                enoughSimilar) {
             String speech = currentScreen.formatSpeech(this);
 
             if (speech != null) {
@@ -237,19 +252,23 @@ public class BikeStateTracker {
         timeChanging = !history.stream()
                                .allMatch(s -> s.bikeTime == currentBikeTime);
     }
+
     private void removeOldHistory(long currentTime) {
         while (history.size() > 0) {
             if (currentTime - 4 * ApplicationConstants.BLINK_FREQ_MILLIS > history.getFirst().addedMillis) {
                 history.removeFirst();
-            } else {
+            }
+            else {
                 break;
             }
         }
+
         for (ScreenBox box : ScreenBox.values()) {
             while (latestImages.get(box).size() > 0) {
                 if (currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS > latestImages.get(box).getFirst().addedMillis) {
                     latestImages.get(box).removeFirst();
-                } else {
+                }
+                else {
                     break;
                 }
             }
@@ -269,18 +288,22 @@ public class BikeStateTracker {
         ImageTime image = null;
         if (!blinking && latestImages.get(containingBox).size() > 0) {
             image = latestImages.get(containingBox).getLast();
-        } else {
+        }
+        else {
             ImageTime maxBrightness = null;
+
             for (ImageTime i : latestImages.get(containingBox)) {
                 if (maxBrightness == null || i.getBrightness() > maxBrightness.getBrightness()) {
                     maxBrightness = i;
                 }
             }
+
             image = maxBrightness;
             if (image != null) {
                 System.out.println("Got max brightness of blinking field " + field.toString() + " as " + image.brightness);
             }
         }
+
         if (image == null) { // No images for this box yet
             System.out.println("Got null image");
             return null;
