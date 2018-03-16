@@ -6,13 +6,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
+import uk.ac.cam.groupprojects.bravo.tts.Command;
+import uk.ac.cam.groupprojects.bravo.tts.DelayCommand;
+import uk.ac.cam.groupprojects.bravo.tts.SpeakCommand;
 
 /**
  * Interfaces with the "festival" program.
