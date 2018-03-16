@@ -204,6 +204,9 @@ public class BikeStateTracker {
             if ((stableState && stateChanged && currentScreen.isSpeakFirst()) ||
                  System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
 
+                if (stateChanged)
+                    synthesiser.clearQueue();
+
                 List<String> dialogs = currentScreen.formatSpeech(this);
                 for (String text : dialogs) {
                     synthesiser.speak(text);
