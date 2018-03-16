@@ -35,7 +35,7 @@ cd ../../.. &&
 
 echo "Copying scripts" &&
 cd AudibleAppliances &&
-cp -f pi_run.sh ~/pi_run.sh
+cp -f pi_run.sh ~/
 cp -f killstartups ~/
 cp -f runserver ~/
 cp -f runjar ~/
