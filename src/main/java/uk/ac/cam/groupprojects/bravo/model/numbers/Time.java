@@ -53,7 +53,7 @@ public class Time extends ScreenNumber {
         }
 
         String toReturn;
-        toReturn = String.format("The time elapsed so far is %d minutes and %d seconds", minutes.getValue(), seconds.getValue());
+        toReturn = String.format("You've been going for %d minutes and %d seconds", minutes.getValue(), seconds.getValue());
         oldResult = result;
 
         return toReturn;
