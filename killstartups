@@ -1,3 +1,5 @@
 #!/bin/bash
 
-kill "$(cat pids)"
+killall python
+killall java
+killall daemon
