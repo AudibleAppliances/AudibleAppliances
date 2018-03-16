@@ -6,6 +6,8 @@ echo $! >  pids
 /home/pi/runserver &>/dev/null &
 echo $! >> pids
 
+sleep 5
+
 # Start the interface web server
 /home/pi/runwebserver &>/dev/null &
 echo $! >> pids
