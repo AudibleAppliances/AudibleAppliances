@@ -304,20 +304,22 @@ public class BikeStateTracker {
         ScreenBox containingBox = field.getScreenBox();
 
         ImageTime image = null;
-        if (!blinking && latestImages.get(containingBox).size() > 0) {
+        if (!blinking) {
             // Get the latest active image - we don't care about whether it's the brightest, as it's not blinking
             Iterator<ImageTime> i = latestImages.get(containingBox).descendingIterator();
+            System.out.println("Starting iteration");
             while (i.hasNext()) {
                 ImageTime img = i.next();
+                System.out.println(img.addedMillis);
                 if (img.segmentActive) {
                     image = img;
                     break;
                 }
             }
+            System.out.println();
         }
         else {
             // Get the image in the history with the greatest brightness - not the latest active one
-
             ImageTime maxBrightness = null;
             for (ImageTime i : latestImages.get(containingBox)) {
                 if (maxBrightness == null || i.getBrightness() > maxBrightness.getBrightness()) {
