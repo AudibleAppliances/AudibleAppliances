@@ -162,11 +162,6 @@ public class BikeStateTracker {
         System.out.println("Items in image history: " + imageHistoryMaxLength);
 
         // Update which LCDs we know are solid/blinking
-        System.out.println();
-        for (ImageTime i : latestImages.get(ScreenBox.LCD6)) {
-            System.out.println(i.segmentActive);
-        }
-        System.out.println();
         updateSolidBlinking(currentTime);
         updateTimeChanging();
 
@@ -200,7 +195,9 @@ public class BikeStateTracker {
         }
 
         currentScreen = newScreen;
-        if (!history.isEmpty())
+
+        // If we added new history, update the state we recorded ourselves in
+        if (bikeTime != null && !history.isEmpty())
             history.getLast().state = newScreen;
 
         System.out.println("Items in speak queue: " + synthesiser.getQueueSize());
@@ -249,6 +246,12 @@ public class BikeStateTracker {
                         history.stream()
                                .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
                                .allMatch(s -> s.activeBoxes.contains(box) == currentlyActive);
+                if (box == ScreenBox.LCD6) {
+                    for (StateTime s : history) {
+                        boolean recent = currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis;
+                        System.out.println("Saw " + s.addedMillis + " recent=" + recent + " active=" + s.activeBoxes.contains(box));
+                    }
+                }
 
                 if (!historyMatches) { // Changes over time => blinking
                     blinking = true;

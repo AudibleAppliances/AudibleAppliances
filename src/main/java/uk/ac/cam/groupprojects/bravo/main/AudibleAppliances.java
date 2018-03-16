@@ -145,6 +145,8 @@ public class AudibleAppliances {
             long overallDuration = System.currentTimeMillis() - overallStart;
             System.out.println();
             System.out.println("Time for this iteration: " + overallDuration);
+            System.out.println();
+            System.out.println();
         }
     };
 
