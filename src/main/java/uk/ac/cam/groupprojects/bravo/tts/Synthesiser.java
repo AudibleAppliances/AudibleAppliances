@@ -147,7 +147,7 @@ public class Synthesiser implements AutoCloseable {
     }
     
     @Override
-    public synchronized void close() {
+    public void close() {
         try {
             in.close();
             out.close();
@@ -166,7 +166,7 @@ public class Synthesiser implements AutoCloseable {
     }
     // Read a single whitespace-delimited token from the process' output.
     // Ignore tokens containing the festival prompt ("festival>")
-    private synchronized String read() {
+    private String read() {
         synchronized (festival) {
             String s;
             do {
