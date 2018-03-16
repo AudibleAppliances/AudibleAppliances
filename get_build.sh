@@ -39,4 +39,4 @@ cp pi_run.sh ~/pi_run.sh &&
 cp killstartups ~/ &&
 cp runserver ~/ &&
 cp runjar ~/ &&
-cp runwebserver ~/ &&
+cp runwebserver ~/
