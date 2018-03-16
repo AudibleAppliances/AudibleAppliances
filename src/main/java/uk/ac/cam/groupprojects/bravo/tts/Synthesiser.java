@@ -22,6 +22,7 @@ import java.util.Arrays;
  * "startup banner" (wall of text), and skip past any prompts ("festival> ") that are presented.
  */
 public class Synthesiser implements AutoCloseable {
+    // The types of command we can store in the event queue
     interface Command { }
     class SpeakCommand implements Command {
         public String text;
