@@ -8,4 +8,4 @@ python /home/pi/AudibleAppliances/gpio/gpio.py &
 ./home/pi/runwebserver &
 
 # Run the actual program
-./home/pi/runjar
+./home/pi/runjar &
