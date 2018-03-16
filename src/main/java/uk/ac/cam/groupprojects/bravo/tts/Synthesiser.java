@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 
@@ -26,7 +28,8 @@ public class Synthesiser implements AutoCloseable {
     private final Scanner in;
 
     // Command queue
-    private BlockingQueue<Command> commandQueue;
+    private final LinkedList<Command> commandQueue;
+    private final Semaphore availableCommands;
 
     public Synthesiser() throws FestivalMissingException {
         festival = spawnFestivalProcess();
@@ -40,14 +43,27 @@ public class Synthesiser implements AutoCloseable {
             s = in.next();
         }
 
-        commandQueue = new LinkedBlockingQueue<>();
+        commandQueue = new LinkedList<>();
+        availableCommands = new Semaphore(0);
 
         // Speak thread to pull from queue and speak
         Thread speakThread = new Thread(() -> {
             while (true) {
                 try {
-                    // Take latest string from queue
-                    Command c = commandQueue.take();
+                    // Take next command from queue
+                    Command c = null;
+                    while (c == null) {
+                        // Wait until there are commands available
+                        availableCommands.acquire();
+                        synchronized (commandQueue) {
+                            if (commandQueue.isEmpty()) {
+                                // The only situation in which we can acquire semaphore permission to read but then
+                                // encounter an empty queue is if the queue was cleared - in this case, just try again.
+                                continue;
+                            }
+                            c = commandQueue.poll();
+                        }
+                    }
 
                     if (c instanceof SpeakCommand) {
                         String toSpeak = ((SpeakCommand)c).text;
@@ -123,26 +139,43 @@ public class Synthesiser implements AutoCloseable {
         }
     }
 
-    public void clearQueue() {
-        commandQueue.clear();
-    }
     public int getQueueSize() {
-        return commandQueue.size();
+        synchronized (commandQueue) {
+            return commandQueue.size();
+        }
     }
 
-    // Put text in queue to be spoken on the speak thread
-    public void speak(String text) {
-        enqueueCommand(new SpeakCommand(text));
-        delay(ApplicationConstants.DEFAULT_SPEECH_PAUSE);
+    public void clearQueue() {
+        // To reset the command queue, we first acquire exclusive access and clear it, then we
+        // reset the semaphore to 0. This is compatible with the enqueueCommands function, but causes
+        // a special case in the reader thread (it can be issued a permit by the semaphore then see an empty queue)
+        synchronized (commandQueue) {
+            commandQueue.clear();
+            availableCommands.drainPermits();
+        }
+    }
+
+    public void speak(String... texts) {
+        // Build up a list of "speak-delay" pairs
+        List<Command> commands = new ArrayList<>(texts.length * 2);
+        for (String s : texts) {
+            commands.add(new SpeakCommand(s));
+            commands.add(new DelayCommand());
+        }
+        enqueueCommands(commands);
     }
     public void delay(int millis) {
-        enqueueCommand(new DelayCommand(millis));
+        enqueueCommands(new DelayCommand(millis));
     }
-    public void enqueueCommand(Command c) {
-        try {
-            commandQueue.put(c);
-        } catch (InterruptedException e) {
-            // Just return
+    // Put a list of commands into the queue for processing
+    public void enqueueCommands(Command... commands) {
+        enqueueCommands(Arrays.asList(commands));
+    }
+    public void enqueueCommands(List<Command> commands) {
+        // Get exclusive access to the queue, add all our commands, signal that there's that many new commands
+        synchronized (commandQueue) {
+            commandQueue.addAll(commands);
+            availableCommands.release(commands.size());
         }
     }
     

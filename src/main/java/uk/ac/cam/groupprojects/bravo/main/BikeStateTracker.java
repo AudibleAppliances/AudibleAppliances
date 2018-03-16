@@ -199,13 +199,14 @@ public class BikeStateTracker {
 
             boolean stateChanged = !history.isEmpty() && history.getFirst().state.getEnum() != history.getLast().state.getEnum();
 
+            if (stateChanged) {
+                synthesiser.clearQueue();
+            }
+
             // Speak if we've stably changed state and the current state demands we speak immediately,
             // or if we've just not spoken in a while
             if ((stableState && stateChanged && currentScreen.isSpeakFirst()) ||
                  System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
-
-                if (stateChanged)
-                    synthesiser.clearQueue();
 
                 List<String> dialogs = currentScreen.formatSpeech(this);
                 for (String text : dialogs) {
