@@ -25,9 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Created by david on 13/02/2018.
- */
 public class BikeStateTracker {
 
     // Holds data about the bike at a given time (enough to compute the state, so LCD and the recognised time)
@@ -101,8 +98,7 @@ public class BikeStateTracker {
     // otherwise we introduce a lot of latency when changing state
     private final LinkedList<StateTime> history;
 
-    // Current useful state of the bike, as inferred from the history    
-    private final Map<ScreenBox, LCDState> boxStates; // Which LCDs are active?
+    private final Map<ScreenBox, LCDState> boxStates; // Which LCDs are active right now?
     private final Map<ScreenBox, LinkedList<ImageTime>> latestImages; // Latest non-blank images of each LCD
     private BikeScreen currentScreen; // What do we think the current state is?
     private boolean timeChanging; // Is the time LCD counting up/down?
@@ -182,31 +178,39 @@ public class BikeStateTracker {
             System.out.println();
         }
 
-        BikeScreen newScreen = null;
+        BikeScreen instantaneousScreen = null;
         for (ScreenEnum s : ScreenEnum.values()) {
             BikeScreen screen = s.getBikeScreen();
             boolean inState = screen.isActiveScreen(this);
             if (inState) {
-                newScreen = screen;
+                instantaneousScreen = screen;
                 break;
             }
         }
 
-        if (newScreen == null) {
-            newScreen = ScreenEnum.INVALID_SCREEN.getBikeScreen();
+        // If we added new history, update its record of the state we're in
+        if (bikeTime != null && !history.isEmpty())
+            history.getLast().state = instantaneousScreen;
+
+        if (instantaneousScreen == null) {
+            instantaneousScreen = ScreenEnum.INVALID_SCREEN.getBikeScreen();
             System.out.println("Failed to identify state");
         }
         else {
             System.out.println();
-            System.out.println("State: " + newScreen.getEnum().toString());
+            System.out.println("Instantaneous State: " + instantaneousScreen.getEnum().toString());
             System.out.println();
         }
 
-        currentScreen = newScreen;
-
-        // If we added new history, update the state we recorded ourselves in
-        if (bikeTime != null && !history.isEmpty())
-            history.getLast().state = newScreen;
+        // Only update the screen if all the history we have agrees in us being in this screen
+        boolean stateChanged = false;
+        if (!history.isEmpty()) {
+            BikeScreen screen = history.getFirst().state;
+            if (history.stream().allMatch(s -> screen.getEnum() == s.state.getEnum())) {
+                currentScreen = screen;
+                stateChanged = true;
+            }
+        }
 
         System.out.println("Items in speak queue: " + synthesiser.getQueueSize());
 
@@ -223,10 +227,6 @@ public class BikeStateTracker {
                                 .allMatch(s -> s.state != null && s.state.getEnum() == currentScreen.getEnum());
 
             boolean stableState = allNull || allSameState;
-            boolean stateChanged = !history.isEmpty() &&
-                                    history.getFirst().state != null &&
-                                    history.getLast().state != null &&
-                                    history.getFirst().state.getEnum() != history.getLast().state.getEnum();
 
             // If we've changed state, get rid of all the messages we still need to speak from the old state
             if (stateChanged) {
