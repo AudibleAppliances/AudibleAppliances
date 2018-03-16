@@ -12,8 +12,7 @@ public class SelectUserProgramScreen extends BikeScreen {
                state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.BLINKING &&
                state.getBoxState(ScreenBox.LCD_TEXT_3) == LCDState.BLINKING &&
                state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.BLINKING &&
-               state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_OFF &&
-               state.getBoxState(ScreenBox.LCD_TEXT_9) == LCDState.BLINKING;
+               state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_OFF;
     }
 
     @Override
