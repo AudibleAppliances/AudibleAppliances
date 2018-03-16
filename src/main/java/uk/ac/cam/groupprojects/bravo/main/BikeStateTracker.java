@@ -205,9 +205,8 @@ public class BikeStateTracker {
         // Only update the screen if all the history we have agrees in us being in this screen
         boolean stateChanged = false;
         if (!history.isEmpty()) {
-            BikeScreen screen = history.getFirst().state;
-            if (history.stream().allMatch(s -> screen.getEnum() == s.state.getEnum())) {
-                currentScreen = screen;
+            if (stableState(currentTime)) {
+                currentScreen = history.getLast().state;
                 stateChanged = true;
             }
         }
@@ -218,15 +217,8 @@ public class BikeStateTracker {
         if (currentScreen != null) {
             // Check that we've been in this state for half the history
             // (half to reduce the latency of speaking after switching to a new state)
-            List<StateTime> recentHistory = history.stream()
-                                .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
-                                .collect(Collectors.toList());
 
-            boolean allNull = recentHistory.stream().allMatch(s -> s.state == null);
-            boolean allSameState = recentHistory.stream()
-                                .allMatch(s -> s.state != null && s.state.getEnum() == currentScreen.getEnum());
-
-            boolean stableState = allNull || allSameState;
+            boolean stableState = stableState(currentTime, 2 * ApplicationConstants.BLINK_FREQ_MILLIS);
 
             // If we've changed state, get rid of all the messages we still need to speak from the old state
             if (stateChanged) {
@@ -249,6 +241,21 @@ public class BikeStateTracker {
                 lastSpeakTime = System.currentTimeMillis();
             }
         }
+    }
+
+    private boolean stableState(long currentTime) {
+        return stableState(currentTime, 100 * ApplicationConstants.BLINK_FREQ_MILLIS);
+    }
+    private boolean stableState(long currentTime, long lookback) {
+        List<StateTime> recentHistory = history.stream()
+                            .filter(s -> currentTime - lookback < s.addedMillis)
+                            .collect(Collectors.toList());
+
+        boolean allNull = recentHistory.stream().allMatch(s -> s.state == null);
+        boolean allSameState = recentHistory.stream()
+                            .allMatch(s -> s.state != null && s.state.getEnum() == currentScreen.getEnum());
+
+        return allNull || allSameState;
     }
 
     // Update which LCDs are blinking and which are solid
