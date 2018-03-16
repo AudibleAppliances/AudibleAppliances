@@ -21,8 +21,7 @@ cd ../../ &&
 echo "Main Repo" &&
 cd AudibleAppliances &&
 git pull &&
-# Don't overwrite the config atm
-#cp src/test/resources/testConfig.json ~/config.json &&
+cp config.json ~/config.json &&
 git pull &&
 
 echo "Daemon" &&
