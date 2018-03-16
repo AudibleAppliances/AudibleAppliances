@@ -227,9 +227,9 @@ public class BikeStateTracker {
 
             // Speak if we've stably changed state and the current state demands we speak immediately,
             // or if we've just not spoken in a while
-            if (stableState &&
-                (stateChanged && currentScreen.isSpeakFirst()) ||
-                System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
+            if (stableState && (
+                stateChanged && currentScreen.isSpeakFirst() ||
+                System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay())) {
 
                 List<String> dialogs = currentScreen.formatSpeech(this);
                 for (String text : dialogs) {
