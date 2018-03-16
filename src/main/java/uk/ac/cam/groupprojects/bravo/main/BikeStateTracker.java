@@ -194,7 +194,8 @@ public class BikeStateTracker {
             boolean stableState = history.stream()
                                          .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
                                          .allMatch(s -> s.state.getEnum() == currentScreen.getEnum());
-            boolean stateChanged = history.getFirst().state.getEnum() != history.getLast().state.getEnum();
+
+            boolean stateChanged = !history.isEmpty() && history.getFirst().state.getEnum() != history.getLast().state.getEnum();
 
             // Speak if we've stably changed state and the current state demands we speak immediately,
             // or if we've just not spoken in a while
