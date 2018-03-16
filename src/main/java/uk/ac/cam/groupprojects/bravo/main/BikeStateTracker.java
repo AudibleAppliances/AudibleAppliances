@@ -210,6 +210,7 @@ public class BikeStateTracker {
         // Check if it's the time to speak, and if yes then speak
         if (currentScreen != null) {
             // Check that we've been in this state for half the history
+            // (half to reduce the latency of speaking after switching to a new state)
             boolean stableState = history.stream()
                                          .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
                                          .allMatch(s -> s.state != null && s.state.getEnum() == currentScreen.getEnum());
@@ -219,14 +220,16 @@ public class BikeStateTracker {
                                     history.getLast().state != null &&
                                     history.getFirst().state.getEnum() != history.getLast().state.getEnum();
 
+            // If we've changed state, get rid of all the messages we still need to speak from the old state
             if (stateChanged) {
                 synthesiser.clearQueue();
             }
 
             // Speak if we've stably changed state and the current state demands we speak immediately,
             // or if we've just not spoken in a while
-            if ((stableState && stateChanged && currentScreen.isSpeakFirst()) ||
-                 System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
+            if (stableState &&
+                (stateChanged && currentScreen.isSpeakFirst()) ||
+                System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
 
                 List<String> dialogs = currentScreen.formatSpeech(this);
                 for (String text : dialogs) {
@@ -254,12 +257,6 @@ public class BikeStateTracker {
                         history.stream()
                                .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
                                .allMatch(s -> s.activeBoxes.contains(box) == currentlyActive);
-                if (box == ScreenBox.LCD6) {
-                    for (StateTime s : history) {
-                        boolean recent = currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis;
-                        System.out.println("Saw " + s.addedMillis + " recent=" + recent + " active=" + s.activeBoxes.contains(box));
-                    }
-                }
 
                 if (!historyMatches) { // Changes over time => blinking
                     blinking = true;
