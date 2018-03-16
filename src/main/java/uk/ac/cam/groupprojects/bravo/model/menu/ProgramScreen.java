@@ -23,14 +23,13 @@ public class ProgramScreen extends BikeScreen {
         if (isActive) {
             programValue = (Program)state.getFieldValue(BikeField.PROGRAM, true);
 
-            if (programValue.getValue() > 10) {
-                String converted = String.valueOf(programValue.getValue()).replaceAll("8", "0");
-                programValue.setValue(Integer.parseInt(converted));
-            }
-
             if (programValue == null) {
                 System.out.println("Program value is null");
             } else {
+                if (programValue.getValue() > 10) {
+                    String converted = String.valueOf(programValue.getValue()).replaceAll("8", "0");
+                    programValue.setValue(Integer.parseInt(converted));
+                }
                 System.out.println("Got program value: " + programValue.getValue());
             }
         }
