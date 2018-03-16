@@ -7,6 +7,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -20,12 +22,23 @@ import java.util.Arrays;
  * "startup banner" (wall of text), and skip past any prompts ("festival> ") that are presented.
  */
 public class Synthesiser implements AutoCloseable {
+    interface Command { }
+    class SpeakCommand implements Command {
+        public String text;
+        public SpeakCommand(String text) { this.text = text; }
+    }
+    class DelayCommand implements Command {
+        public int millis;
+        public DelayCommand(int millis) { this.millis = millis; }
+    }
+
+
     private final Process festival;
     private final PrintWriter out;
     private final Scanner in;
 
     // Command queue
-    private BlockingQueue<String> commandQueue;
+    private BlockingQueue<Command> commandQueue;
 
     public Synthesiser() throws FestivalMissingException {
         festival = spawnFestivalProcess();
@@ -46,15 +59,23 @@ public class Synthesiser implements AutoCloseable {
             while (true) {
                 try {
                     // Take latest string from queue
-                    String toSpeak = commandQueue.take();
+                    Command c = commandQueue.take();
 
-                    // Request Festival to synthesise the text
-                    write("(SayText \"" + toSpeak + "\")");
+                    if (c instanceof SpeakCommand) {
+                        String toSpeak = ((SpeakCommand)c).text;
+                        // Request Festival to synthesise the text
+                        write("(SayText \"" + toSpeak + "\")");
 
-                    // Discard the next line of input (contains "utterance" information)
-                    // Festival only output a line after it's finished speaking, so this also causes us to
-                    // block until it's done speaking (desirable behaviour).
-                    readLine();
+                        // Discard the next line of input (contains "utterance" information)
+                        // Festival only output a line after it's finished speaking, so this also causes us to
+                        // block until it's done speaking (desirable behaviour).
+                        readLine();
+                    }
+                    else if (c instanceof DelayCommand) {
+                        Thread.sleep(((DelayCommand)c).millis);
+                    }
+
+
                 } catch (InterruptedException e) {
                     // Empty as we want to keep going if this happens
                 }
@@ -115,7 +136,15 @@ public class Synthesiser implements AutoCloseable {
     // Put text in queue to be spoken on the speak thread
     public void speak(String text) {
         try {
-            commandQueue.put(text);
+            commandQueue.put(new SpeakCommand(text));
+            delay(ApplicationConstants.DEFAULT_SPEECH_PAUSE);
+        } catch (InterruptedException e) {
+            // Just return
+        }
+    }
+    public void delay(int millis) {
+        try {
+            commandQueue.put(new DelayCommand(millis));
         } catch (InterruptedException e) {
             // Just return
         }
