@@ -17,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -45,13 +46,15 @@ public class BikeStateTracker {
     // Holds the last image we saw for each segment *when it was active* - no blank images here
     class ImageTime {
         public final long addedMillis;
+        public final boolean segmentActive;
         private final BufferedImage boxImage;
         private ScreenNumber recognisedValue;
         private Double brightness;
 
-        public ImageTime(long addedMillis, BufferedImage boxImage) {
+        public ImageTime(long addedMillis, BufferedImage boxImage, boolean segmentActive) {
             this.addedMillis = addedMillis;
             this.boxImage = boxImage;
+            this.segmentActive = segmentActive;
 
             recognisedValue = null;
             brightness = null;
@@ -71,6 +74,7 @@ public class BikeStateTracker {
             return recognisedValue;
         }
 
+        // Brightness on the non-thresholded image
         public double getBrightness() {
             if (brightness == null) {
                 brightness = SegmentActive.imageAverage(boxImage, 0.5, 0);
@@ -123,16 +127,17 @@ public class BikeStateTracker {
         long currentTime = System.currentTimeMillis();
         Set<ScreenBox> activeSegs = new HashSet<>();
 
-        // Compute which LCD segments are lit up (active)
+        // Store an image of each LCD
         for (ScreenBox box : ScreenBox.values()) {
             BufferedImage boxImage = imgSegs.get(box);
             BufferedImage thresholded = SSOCRUtil.roughThreshold(boxImage);
             
-            if (SegmentActive.segmentActive(thresholded)) {
+            boolean segmentActive = SegmentActive.segmentActive(thresholded);
+            if (segmentActive) {
                 // If the LCD is active, record it and update the latest image we have of it
                 activeSegs.add(box);
-                latestImages.get(box).add(new ImageTime(currentTime, boxImage));
             }
+            latestImages.get(box).add(new ImageTime(currentTime, boxImage, segmentActive));
         }
 
         // Store the new state, with the time we recognised at the moment
@@ -297,11 +302,20 @@ public class BikeStateTracker {
 
         ImageTime image = null;
         if (!blinking && latestImages.get(containingBox).size() > 0) {
-            image = latestImages.get(containingBox).getLast();
+            // Get the latest active image - we don't care about whether it's the brightest, as it's not blinking
+            Iterator<ImageTime> i = latestImages.get(containingBox).descendingIterator();
+            while (i.hasNext()) {
+                ImageTime img = i.next();
+                if (img.segmentActive) {
+                    image = img;
+                    break;
+                }
+            }
         }
         else {
-            ImageTime maxBrightness = null;
+            // Get the image in the history with the greatest brightness - not the latest active one
 
+            ImageTime maxBrightness = null;
             for (ImageTime i : latestImages.get(containingBox)) {
                 if (maxBrightness == null || i.getBrightness() > maxBrightness.getBrightness()) {
                     maxBrightness = i;
