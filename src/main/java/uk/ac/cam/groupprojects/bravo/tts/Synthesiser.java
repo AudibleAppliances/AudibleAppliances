@@ -61,7 +61,9 @@ public class Synthesiser implements AutoCloseable {
                         readLine();
                     }
                     else if (c instanceof DelayCommand) {
+                        System.out.println("Started sleeping");
                         Thread.sleep(((DelayCommand)c).millis);
+                        System.out.println("Finished");
                     }
                 } catch (InterruptedException e) {
                     // Empty as we want to keep going if this happens
