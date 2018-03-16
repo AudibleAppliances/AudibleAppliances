@@ -1,7 +1,12 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
+import java.util.Arrays;
+import java.util.List;
+
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
+import uk.ac.cam.groupprojects.bravo.tts.Command;
+import uk.ac.cam.groupprojects.bravo.tts.SpeakCommand;
 
 public class InvalidScreen extends BikeScreen {
     @Override
@@ -15,8 +20,8 @@ public class InvalidScreen extends BikeScreen {
     }
 
     @Override
-    public String formatSpeech(BikeStateTracker bikeStateTracker) {
-        return "Oh dear, something may have gone wrong. If this message repeats, press and hold the reset button until you hear a beep.";
+    public List<Command> formatSpeech(BikeStateTracker bikeStateTracker) {
+        return Arrays.asList(new SpeakCommand("Oh dear, something may have gone wrong. If this message repeats, press and hold the reset button until you hear a beep."));
     }
 
     @Override

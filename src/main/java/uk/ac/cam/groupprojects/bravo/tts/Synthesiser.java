@@ -22,18 +22,6 @@ import java.util.Arrays;
  * "startup banner" (wall of text), and skip past any prompts ("festival> ") that are presented.
  */
 public class Synthesiser implements AutoCloseable {
-    // The types of command we can store in the event queue
-    interface Command { }
-    class SpeakCommand implements Command {
-        public String text;
-        public SpeakCommand(String text) { this.text = text; }
-    }
-    class DelayCommand implements Command {
-        public int millis;
-        public DelayCommand(int millis) { this.millis = millis; }
-    }
-
-
     private final Process festival;
     private final PrintWriter out;
     private final Scanner in;
@@ -134,16 +122,15 @@ public class Synthesiser implements AutoCloseable {
 
     // Put text in queue to be spoken on the speak thread
     public void speak(String text) {
-        try {
-            commandQueue.put(new SpeakCommand(text));
-            delay(ApplicationConstants.DEFAULT_SPEECH_PAUSE);
-        } catch (InterruptedException e) {
-            // Just return
-        }
+        enqueueCommand(new SpeakCommand(text));
+        delay(ApplicationConstants.DEFAULT_SPEECH_PAUSE);
     }
     public void delay(int millis) {
+        enqueueCommand(new DelayCommand(millis));
+    }
+    public void enqueueCommand(Command c) {
         try {
-            commandQueue.put(new DelayCommand(millis));
+            commandQueue.put(c);
         } catch (InterruptedException e) {
             // Just return
         }

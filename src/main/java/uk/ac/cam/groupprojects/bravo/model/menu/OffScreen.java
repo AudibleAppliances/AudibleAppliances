@@ -1,11 +1,14 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
+import java.util.List;
 import java.util.Arrays;
 
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
+import uk.ac.cam.groupprojects.bravo.tts.Command;
+import uk.ac.cam.groupprojects.bravo.tts.SpeakCommand;
 
 public class OffScreen extends BikeScreen {
     @Override
@@ -20,8 +23,8 @@ public class OffScreen extends BikeScreen {
     }
 
     @Override
-    public String formatSpeech(BikeStateTracker bikeStateTracker) {
-        return "The screen is currently off, please click any button to continue";
+    public List<Command> formatSpeech(BikeStateTracker bikeStateTracker) {
+        return Arrays.asList(new SpeakCommand("The screen is currently off, please click any button to continue"));
     }
 
     @Override

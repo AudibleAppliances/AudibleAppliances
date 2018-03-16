@@ -1,11 +1,16 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
+import java.util.Arrays;
+import java.util.List;
+
 import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.numbers.Program;
+import uk.ac.cam.groupprojects.bravo.tts.Command;
+import uk.ac.cam.groupprojects.bravo.tts.SpeakCommand;
 
 // This is the screen where the user selects which program they want to use
 public class ProgramScreen extends BikeScreen {
@@ -43,11 +48,11 @@ public class ProgramScreen extends BikeScreen {
     }
 
     @Override
-    public String formatSpeech(BikeStateTracker bikeStateTracker) {
+    public List<Command> formatSpeech(BikeStateTracker bikeStateTracker) {
         if (programValue != null) {
-            return programValue.formatSpeech();
+            return Arrays.asList(new SpeakCommand(programValue.formatSpeech()));
         } else {
-            return null;
+            return Arrays.asList();
         }
     }
 

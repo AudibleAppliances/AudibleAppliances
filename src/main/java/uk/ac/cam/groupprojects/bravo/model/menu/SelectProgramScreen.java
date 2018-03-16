@@ -1,9 +1,14 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
+import java.util.Arrays;
+import java.util.List;
+
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
+import uk.ac.cam.groupprojects.bravo.tts.Command;
+import uk.ac.cam.groupprojects.bravo.tts.SpeakCommand;
 
 public class SelectProgramScreen extends BikeScreen {
     @Override
@@ -22,8 +27,8 @@ public class SelectProgramScreen extends BikeScreen {
     }
 
     @Override
-    public String formatSpeech(BikeStateTracker bikeStateTracker) {
-        return "Press enter to select program or rotate left to cycle without program.";
+    public List<Command> formatSpeech(BikeStateTracker bikeStateTracker) {
+        return Arrays.asList(new SpeakCommand("Press enter to select program or rotate left to cycle without program."));
     }
 
     @Override

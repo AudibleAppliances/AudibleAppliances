@@ -11,6 +11,7 @@ import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
+import uk.ac.cam.groupprojects.bravo.tts.Command;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 import java.awt.image.BufferedImage;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -197,10 +199,10 @@ public class BikeStateTracker {
         if (currentScreen != null &&
                 System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay() &&
                 enoughSimilar) {
-            String speech = currentScreen.formatSpeech(this);
+            List<Command> commands = currentScreen.formatSpeech(this);
 
-            if (speech != null) {
-                synthesiser.speak(speech);
+            for (Command c : commands) {
+                synthesiser.enqueueCommand(c);
 
                 lastSpeakTime = System.currentTimeMillis();
                 if (ApplicationConstants.DEBUG)
