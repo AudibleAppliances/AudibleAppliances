@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by david on 13/02/2018.
@@ -213,12 +214,13 @@ public class BikeStateTracker {
         if (currentScreen != null) {
             // Check that we've been in this state for half the history
             // (half to reduce the latency of speaking after switching to a new state)
-            boolean allNull = history.stream()
-                                     .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
-                                     .allMatch(s -> s.state == null);
-            boolean allSameState = history.stream()
-                                          .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
-                                          .allMatch(s -> s.state != null && s.state.getEnum() == currentScreen.getEnum());
+            List<StateTime> recentHistory = history.stream()
+                                .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
+                                .collect(Collectors.toList());
+
+            boolean allNull = recentHistory.stream().allMatch(s -> s.state == null);
+            boolean allSameState = recentHistory.stream()
+                                .allMatch(s -> s.state != null && s.state.getEnum() == currentScreen.getEnum());
 
             boolean stableState = allNull || allSameState;
             boolean stateChanged = !history.isEmpty() &&
