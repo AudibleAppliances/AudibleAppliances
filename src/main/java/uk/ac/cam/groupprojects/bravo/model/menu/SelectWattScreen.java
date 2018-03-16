@@ -28,12 +28,12 @@ public class SelectWattScreen extends BikeScreen {
 
     @Override
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
-        return Arrays.asList("Rotate right to choose program.");
+        return Arrays.asList("Rotate right to choose a program.");
     }
 
     @Override
     public int getSpeakDelay() {
-        return ApplicationConstants.DEFAULT_SPEAK_FREQ / 2;
+        return ApplicationConstants.DEFAULT_SPEAK_FREQ;
     }
 
     @Override

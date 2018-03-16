@@ -26,12 +26,12 @@ public class SelectManualScreen extends BikeScreen {
 
     @Override
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
-        return Arrays.asList("Press enter to cycle without program or rotate right to choose a program.");
+        return Arrays.asList("Press enter to cycle freely, or rotate right to choose a program.");
     }
 
     @Override
     public int getSpeakDelay() {
-        return ApplicationConstants.DEFAULT_SPEAK_FREQ / 2;
+        return ApplicationConstants.DEFAULT_SPEAK_FREQ;
     }
 
     @Override

@@ -31,7 +31,7 @@ public class SelectHRCScreen extends BikeScreen {
 
     @Override
     public int getSpeakDelay() {
-        return ApplicationConstants.DEFAULT_SPEAK_FREQ / 2;
+        return ApplicationConstants.DEFAULT_SPEAK_FREQ;
     }
 
     @Override
