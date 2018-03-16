@@ -15,6 +15,7 @@ import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -154,7 +155,9 @@ public class BikeStateTracker {
         // Remove state information that's older than two complete blink cycles (2s) ago
         removeOldHistory(currentTime);
 
-        int imageHistoryMaxLength = latestImages.values().stream().map(l -> l.size()).max(null).get();
+        int imageHistoryMaxLength = latestImages.values().stream()
+                                                          .map(l -> l.size())
+                                                          .max(Comparator.<Integer>naturalOrder()).get();
         System.out.println("Items in state history: " + history.size());
         System.out.println("Items in image history: " + imageHistoryMaxLength);
 
