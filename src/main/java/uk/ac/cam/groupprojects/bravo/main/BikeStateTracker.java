@@ -11,11 +11,9 @@ import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentActive;
 import uk.ac.cam.groupprojects.bravo.ocr.SegmentRecogniser;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
-import uk.ac.cam.groupprojects.bravo.tts.Command;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,11 +32,13 @@ public class BikeStateTracker {
         public final long addedMillis;
         public final Set<ScreenBox> activeBoxes;
         public final int bikeTime;
+        public BikeScreen state;
 
         public StateTime(long addedMillis, Set<ScreenBox> activeBoxes, int bikeTime) {
             this.addedMillis = addedMillis;
             this.activeBoxes = activeBoxes;
             this.bikeTime = bikeTime;
+            state = null;
         }
     }
 
@@ -91,7 +91,6 @@ public class BikeStateTracker {
     // We only look at 1 second of the state to determine if a segment is blinking,
     // otherwise we introduce a lot of latency when changing state
     private final LinkedList<StateTime> history;
-    private final LinkedList<ScreenEnum> stateHistory;
 
     // Current useful state of the bike, as inferred from the history    
     private final Map<ScreenBox, LCDState> boxStates; // Which LCDs are active?
@@ -101,7 +100,6 @@ public class BikeStateTracker {
 
     public BikeStateTracker(ConfigData config, Synthesiser synth) {
         history = new LinkedList<>();
-        stateHistory = new LinkedList<>();
         boxStates = new HashMap<>();
         latestImages = new HashMap<>();
         for (ScreenBox b : ScreenBox.values())
@@ -187,26 +185,27 @@ public class BikeStateTracker {
         }
 
         currentScreen = newScreen;
-
-        // Maintain history of state and see if last 4 previous ones are the same state
-        stateHistory.add(currentScreen.getEnum());
-        while (stateHistory.size() > 4) {
-            stateHistory.removeFirst();
-        }
-        boolean enoughSimilar = stateHistory.stream().allMatch(x -> x.equals(stateHistory.getLast()));
+        if (!history.isEmpty())
+            history.getLast().state = newScreen;
 
         // Check if it's the time to speak, and if yes then speak
-        if (currentScreen != null &&
-                System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay() &&
-                enoughSimilar) {
-            List<String> dialogs = currentScreen.formatSpeech(this);
+        if (currentScreen != null) {
+            // Check that we've been in this state for half the history
+            boolean stableState = history.stream()
+                                         .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
+                                         .allMatch(s -> s.state.getEnum() == currentScreen.getEnum());
+            boolean stateChanged = history.getFirst().state.getEnum() != history.getLast().state.getEnum();
 
-            for (String text : dialogs) {
-                synthesiser.speak(text);
+            // Speak if we've stably changed state and the current state demands we speak immediately,
+            // or if we've just not spoken in a while
+            if ((stableState && stateChanged && currentScreen.isSpeakFirst()) ||
+                 System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay()) {
 
+                List<String> dialogs = currentScreen.formatSpeech(this);
+                for (String text : dialogs) {
+                    synthesiser.speak(text);
+                }
                 lastSpeakTime = System.currentTimeMillis();
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Spoke");
             }
         }
     }
