@@ -148,8 +148,10 @@ public class BikeStateTracker {
 
         // Remove state information that's older than two complete blink cycles (2s) ago
         removeOldHistory(currentTime);
+
+        int imageHistoryMaxLength = latestImages.values().stream().map(l -> l.size()).max(null).get();
         System.out.println("Items in state history: " + history.size());
-        System.out.println("Items in image history: " + latestImages.get(ScreenBox.PROGRAM).size());
+        System.out.println("Items in image history: " + imageHistoryMaxLength);
 
         // Update which LCDs we know are solid/blinking
         updateSolidBlinking(currentTime);
