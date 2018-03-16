@@ -92,7 +92,7 @@ public class BikeStateTracker {
     private final ConfigData configData;
     private final Synthesiser synthesiser;
 
-    private static long lastSpeakTime = 0;
+    private static long lastSpeakTime;
 
     // Back of the list is the most recent state added
     // We keep 2 seconds of state, so we can determine if time is changing
@@ -116,6 +116,8 @@ public class BikeStateTracker {
         timeChanging = false;
         configData = config;
         synthesiser = synth;
+
+        lastSpeakTime = 0;
     }
 
     /**
@@ -227,9 +229,12 @@ public class BikeStateTracker {
 
             // Speak if we've stably changed state and the current state demands we speak immediately,
             // or if we've just not spoken in a while
-            if (stableState && (
-                stateChanged && currentScreen.isSpeakFirst() ||
-                System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay())) {
+            boolean speakOverdue = System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay();
+            System.out.println("Stable: " + stableState);
+            System.out.println("State changed: " + stateChanged);
+            System.out.println("Speech overdue: " + speakOverdue);
+            if (stableState &&
+                ((stateChanged && currentScreen.isSpeakFirst()) || speakOverdue)) {
 
                 List<String> dialogs = currentScreen.formatSpeech(this);
                 for (String text : dialogs) {
