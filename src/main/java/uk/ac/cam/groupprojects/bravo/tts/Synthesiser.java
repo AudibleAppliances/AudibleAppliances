@@ -77,52 +77,56 @@ public class Synthesiser implements AutoCloseable {
         setVoice(voice);
     }
 
-    public synchronized void setVoice(String voice) throws VoiceMissingException {
-        // Sets the voice used by Festival
-        write("(voice_" + voice + ")");
-        
-        // If the process didn't echo the voice back to us, there was an error
-        String output = readLine();
-        if (!output.equals(voice)) {
-            throw new VoiceMissingException("Missing voice: " + voice + ". Instead got: " + output);
+    public void setVoice(String voice) throws VoiceMissingException {
+        synchronized (festival) {
+            // Sets the voice used by Festival
+            write("(voice_" + voice + ")");
+            
+            // If the process didn't echo the voice back to us, there was an error
+            String output = readLine();
+            if (!output.equals(voice)) {
+                throw new VoiceMissingException("Missing voice: " + voice + ". Instead got: " + output);
+            }
         }
     }
 
     // Sets the rate of playback of the voice
     // rate is measured in Hertz - valid values are from 2000 to 192000 inclusive (see aplay's documentation)
-    public synchronized void setRate(int rate) throws RateSetException {
-        if (rate < 2000 || rate > 192000) {
-            throw new RateSetException("Invalid rate: must be between 2000Hz and 192000Hz inclusive.");
-        }
+    public void setRate(int rate) throws RateSetException {
+        synchronized (festival) {
+            if (rate < 2000 || rate > 192000) {
+                throw new RateSetException("Invalid rate: must be between 2000Hz and 192000Hz inclusive.");
+            }
 
-        // Get the current command used by festival to play audio
-        write("(Parameter.get \"Audio_Command\")");
+            // Get the current command used by festival to play audio
+            write("(Parameter.get \"Audio_Command\")");
 
-        // Check it contains a suitable rate parameter
-        String pattern = "-r (\\$SR|\\d+)";
-        String currentSetting = readLine();
-        Pattern p = Pattern.compile(pattern);
-        Matcher m = p.matcher(currentSetting);
-        if (!m.find()) {
-            throw new RateSetException("Failed to set rate. Got current setting: \"" + currentSetting + "\"");
-        }
+            // Check it contains a suitable rate parameter
+            String pattern = "-r (\\$SR|\\d+)";
+            String currentSetting = readLine();
+            Pattern p = Pattern.compile(pattern);
+            Matcher m = p.matcher(currentSetting);
+            if (!m.find()) {
+                throw new RateSetException("Failed to set rate. Got current setting: \"" + currentSetting + "\"");
+            }
 
-        // Overwrite the rate parameter with our rate
-        String newSetting = m.replaceFirst("-r " + rate);
-        // Omit the "" around the new setting as it already contains them (as we read it from the output)
-        write("(Parameter.set \"Audio_Command\" " + newSetting + ")");
+            // Overwrite the rate parameter with our rate
+            String newSetting = m.replaceFirst("-r " + rate);
+            // Omit the "" around the new setting as it already contains them (as we read it from the output)
+            write("(Parameter.set \"Audio_Command\" " + newSetting + ")");
 
-        // Check festival updated correctly
-        String feedback = readLine();
-        if (!feedback.equals(newSetting)) {
-            throw new RateSetException("Failed to set rate. Got feedback: \"" + feedback + "\"");
+            // Check festival updated correctly
+            String feedback = readLine();
+            if (!feedback.equals(newSetting)) {
+                throw new RateSetException("Failed to set rate. Got feedback: \"" + feedback + "\"");
+            }
         }
     }
 
-    public synchronized void clearQueue() {
+    public void clearQueue() {
         commandQueue.clear();
     }
-    public synchronized int getQueueSize() {
+    public int getQueueSize() {
         return commandQueue.size();
     }
 
@@ -154,35 +158,41 @@ public class Synthesiser implements AutoCloseable {
     }
 
     // Output a command to the festival process
-    private synchronized void write(String s) {
-        out.write(s + "\n");
-        out.flush();
+    private void write(String s) {
+        synchronized (festival) {
+            out.write(s + "\n");
+            out.flush();
+        }
     }
     // Read a single whitespace-delimited token from the process' output.
     // Ignore tokens containing the festival prompt ("festival>")
     private synchronized String read() {
-        String s;
-        do {
-            s = in.next();
-        } while (s.startsWith("festival>"));
-        return s;
+        synchronized (festival) {
+            String s;
+            do {
+                s = in.next();
+            } while (s.startsWith("festival>"));
+            return s;
+        }
     }
     // Reada newline-delimited string from the process' output.
     // Ignore tokens containing the festival prompt ("festival>")
-    private synchronized String readLine() {
-        String s = in.nextLine().trim();
-        if (s.startsWith("festival> ")) {
-            s = s.substring(10);
+    private String readLine() {
+        synchronized (festival) {
+            String s = in.nextLine().trim();
+            if (s.startsWith("festival> ")) {
+                s = s.substring(10);
+            }
+            return s;
         }
-        return s;
     }
 
-    public synchronized static List<String> getVoices() throws FestivalMissingException,
+    public static List<String> getVoices() throws FestivalMissingException,
                                                   InvalidVoiceListException {
         try (Synthesiser synth = new Synthesiser()) {
             // Tell the festival process to list the available voices
             synth.write("(voice.list)");
-    
+
             // Read the formatted output (the voice list)
             // Usual output would be eg. "(kal_diphone us1_mbrola cmu_us_awb_arctic_clunits)"
             List<String> voices = new ArrayList<>();
@@ -205,7 +215,7 @@ public class Synthesiser implements AutoCloseable {
                 }
                 voices.add(s);
             }
-    
+
             // Wait for the process to terminate, then return our results
             return voices;
         }
