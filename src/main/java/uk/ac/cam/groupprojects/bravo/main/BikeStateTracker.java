@@ -33,10 +33,13 @@ public class BikeStateTracker {
     class StateTime {
         public final long addedMillis;
         public final Set<ScreenBox> activeBoxes;
-        public final int bikeTime;
+        public final Integer bikeTime;
         public BikeScreen state;
 
-        public StateTime(long addedMillis, Set<ScreenBox> activeBoxes, int bikeTime) {
+        public StateTime(long addedMillis, Set<ScreenBox> activeBoxes) {
+            this(addedMillis, activeBoxes, null);
+        }
+        public StateTime(long addedMillis, Set<ScreenBox> activeBoxes, Integer bikeTime) {
             this.addedMillis = addedMillis;
             this.activeBoxes = activeBoxes;
             this.bikeTime = bikeTime;
@@ -142,10 +145,12 @@ public class BikeStateTracker {
         }
 
         // Store the new state, with the time we recognised at the moment
-        Time bikeTime = (Time)getFieldValue(BikeField.TIME, false);
-        if (bikeTime != null) { // If this is null, it just means we've only just started and don't have enough data yet
-            history.add(new StateTime(currentTime, activeSegs, bikeTime.getValue()));
+        Time timeState = (Time)getFieldValue(BikeField.TIME, false);
+        Integer bikeTime = null;
+        if (timeState != null) { // If this is null, it just means we've only just started and don't have enough data yet
+            bikeTime = timeState.getValue();
         }
+        history.add(new StateTime(currentTime, activeSegs, bikeTime));
 
         // DEBUG
         if (bikeTime == null) {
@@ -274,7 +279,7 @@ public class BikeStateTracker {
             return;
         }
 
-        int currentBikeTime = history.getLast().bikeTime;
+        Integer currentBikeTime = history.getLast().bikeTime;
         timeChanging = !history.stream()
                                .allMatch(s -> s.bikeTime == currentBikeTime);
     }
