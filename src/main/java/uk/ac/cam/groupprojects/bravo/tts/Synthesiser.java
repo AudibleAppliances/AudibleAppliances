@@ -67,15 +67,13 @@ public class Synthesiser implements AutoCloseable {
                         write("(SayText \"" + toSpeak + "\")");
 
                         // Discard the next line of input (contains "utterance" information)
-                        // Festival only output a line after it's finished speaking, so this also causes us to
+                        // Festival only outputs a line after it's finished speaking, so this also causes us to
                         // block until it's done speaking (desirable behaviour).
                         readLine();
                     }
                     else if (c instanceof DelayCommand) {
                         Thread.sleep(((DelayCommand)c).millis);
                     }
-
-
                 } catch (InterruptedException e) {
                     // Empty as we want to keep going if this happens
                 }
