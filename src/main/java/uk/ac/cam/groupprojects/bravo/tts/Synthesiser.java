@@ -119,6 +119,13 @@ public class Synthesiser implements AutoCloseable {
         }
     }
 
+    public synchronized void clearQueue() {
+        commandQueue.clear();
+    }
+    public synchronized int getQueueSize() {
+        return commandQueue.size();
+    }
+
     // Put text in queue to be spoken on the speak thread
     public void speak(String text) {
         enqueueCommand(new SpeakCommand(text));

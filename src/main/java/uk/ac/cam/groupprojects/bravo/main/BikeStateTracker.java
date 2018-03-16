@@ -188,6 +188,8 @@ public class BikeStateTracker {
         if (!history.isEmpty())
             history.getLast().state = newScreen;
 
+        System.out.println("Items in speak queue: " + synthesiser.getQueueSize());
+
         // Check if it's the time to speak, and if yes then speak
         if (currentScreen != null) {
             // Check that we've been in this state for half the history
