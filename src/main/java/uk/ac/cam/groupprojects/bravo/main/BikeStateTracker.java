@@ -199,10 +199,10 @@ public class BikeStateTracker {
         if (currentScreen != null &&
                 System.currentTimeMillis() - lastSpeakTime > currentScreen.getSpeakDelay() &&
                 enoughSimilar) {
-            List<Command> commands = currentScreen.formatSpeech(this);
+            List<String> dialogs = currentScreen.formatSpeech(this);
 
-            for (Command c : commands) {
-                synthesiser.enqueueCommand(c);
+            for (String text : dialogs) {
+                synthesiser.speak(text);
 
                 lastSpeakTime = System.currentTimeMillis();
                 if (ApplicationConstants.DEBUG)

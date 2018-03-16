@@ -7,8 +7,6 @@ import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
-import uk.ac.cam.groupprojects.bravo.tts.Command;
-import uk.ac.cam.groupprojects.bravo.tts.SpeakCommand;
 
 public class SelectManualScreen extends BikeScreen {
     @Override
@@ -27,8 +25,8 @@ public class SelectManualScreen extends BikeScreen {
     }
 
     @Override
-    public List<Command> formatSpeech(BikeStateTracker bikeStateTracker) {
-        return Arrays.asList(new SpeakCommand("Press enter to cycle without program or rotate right to choose a program."));
+    public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
+        return Arrays.asList("Press enter to cycle without program or rotate right to choose a program.");
     }
 
     @Override

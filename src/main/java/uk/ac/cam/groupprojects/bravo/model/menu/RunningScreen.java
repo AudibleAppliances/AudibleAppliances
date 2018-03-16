@@ -10,9 +10,6 @@ import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
-import uk.ac.cam.groupprojects.bravo.tts.Command;
-import uk.ac.cam.groupprojects.bravo.tts.DelayCommand;
-import uk.ac.cam.groupprojects.bravo.tts.SpeakCommand;
 
 public class RunningScreen extends BikeScreen {
 
@@ -38,36 +35,31 @@ public class RunningScreen extends BikeScreen {
     }
 
     @Override
-    public List<Command> formatSpeech(BikeStateTracker bikeStateTracker) {
-        List<Command> commands = new ArrayList<>();
+    public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
+        List<String> dialogs = new ArrayList<>();
 
         if (isActive && !wasActive) {
-            commands.add(new SpeakCommand("Now cycling, you can use the wheel to adjust the difficulty."));
-            commands.add(new DelayCommand());
+            dialogs.add("Now cycling, you can use the wheel to adjust the difficulty.");
         }
 
         if (bikeStateTracker.isBoxActiveNow(ScreenBox.LOAD)) {
             ScreenNumber n = bikeStateTracker.getFieldValue(BikeField.LOAD, false);
-            if (n != null) {
-                commands.add(new SpeakCommand(n.formatSpeech()));
-                commands.add(new DelayCommand());
-            }
+            if (n != null)
+                dialogs.add(n.formatSpeech());
             speakDelay = ApplicationConstants.DEFAULT_SPEAK_FREQ / 5;
         } else {
             ConfigData configData = bikeStateTracker.getConfig();
             for (BikeField field : BikeField.values()) {
                 if (configData.isSpokenField(field)) {
                     ScreenNumber n = bikeStateTracker.getFieldValue(field, false);
-                    if (n != null) {
-                        commands.add(new SpeakCommand(n.formatSpeech()));
-                        commands.add(new DelayCommand());
-                    }
+                    if (n != null)
+                        dialogs.add(n.formatSpeech());
                 }
             }
             speakDelay = ApplicationConstants.RUNNING_SPEAK_FREQ;
         }
 
-        return commands;
+        return dialogs;
     }
 
     @Override
