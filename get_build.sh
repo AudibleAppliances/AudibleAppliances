@@ -39,4 +39,3 @@ cp pi_run.sh ~/ &&
 cp runserver ~/ &&
 cp runjar ~/ &&
 cp runwebserver ~/ &&
-chmod +x ~/pi_run.sh
