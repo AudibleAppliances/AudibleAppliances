@@ -3,8 +3,9 @@
 sudo apt install libimlib2
 
 echo "Binary" &&
-rm -f audible-1.0-SNAPSHOT.jar &&
-wget http://oh260.user.srcf.net/AudibleAppliances/builds/audible-1.0-SNAPSHOT.jar &&
+# Temporary, while the travis build servers are acting up
+#rm -f audible-1.0-SNAPSHOT.jar &&
+#wget http://oh260.user.srcf.net/AudibleAppliances/builds/audible-1.0-SNAPSHOT.jar &&
 
 echo "Raspicam" &&
 cd raspicam &&
