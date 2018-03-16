@@ -213,10 +213,14 @@ public class BikeStateTracker {
         if (currentScreen != null) {
             // Check that we've been in this state for half the history
             // (half to reduce the latency of speaking after switching to a new state)
-            boolean stableState = history.stream()
-                                         .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
-                                         .allMatch(s -> s.state != null && s.state.getEnum() == currentScreen.getEnum());
+            boolean allNull = history.stream()
+                                     .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
+                                     .allMatch(s -> s.state == null);
+            boolean allSameState = history.stream()
+                                          .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
+                                          .allMatch(s -> s.state != null && s.state.getEnum() == currentScreen.getEnum());
 
+            boolean stableState = allNull || allSameState;
             boolean stateChanged = !history.isEmpty() &&
                                     history.getFirst().state != null &&
                                     history.getLast().state != null &&
