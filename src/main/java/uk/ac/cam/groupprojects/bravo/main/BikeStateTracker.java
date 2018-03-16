@@ -212,7 +212,7 @@ public class BikeStateTracker {
             // Check that we've been in this state for half the history
             boolean stableState = history.stream()
                                          .filter(s -> currentTime - 2 * ApplicationConstants.BLINK_FREQ_MILLIS < s.addedMillis)
-                                         .allMatch(s -> s.state.getEnum() == currentScreen.getEnum());
+                                         .allMatch(s -> s.state != null && s.state.getEnum() == currentScreen.getEnum());
 
             boolean stateChanged = !history.isEmpty() && history.getFirst().state.getEnum() != history.getLast().state.getEnum();
 
