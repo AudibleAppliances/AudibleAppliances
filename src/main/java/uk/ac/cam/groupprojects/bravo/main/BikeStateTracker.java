@@ -141,6 +141,9 @@ public class BikeStateTracker {
                 // If the LCD is active, record it and update the latest image we have of it
                 activeSegs.add(box);
             }
+            if (box == ScreenBox.RPM || box == ScreenBox.WATT) {
+                System.out.println(box.toString() + " active: " + segmentActive);
+            }
             latestImages.get(box).add(new ImageTime(currentTime, boxImage, segmentActive));
         }
 
@@ -420,11 +423,7 @@ public class BikeStateTracker {
         return history.getLast().activeBoxes.contains(box);
     }
 
-    static int counter = 0;
     public ScreenNumber getLastActiveReading(BikeField field) throws IOException, UnrecognisedDigitException {
-        if (field == BikeField.RPM && counter > 1) {
-            try { System.in.read(); } catch (Exception e) { }
-        }
         if (!field.hasIndicatorBox()) {
             return null;
         }
@@ -432,17 +431,12 @@ public class BikeStateTracker {
         ScreenBox indicator = field.getIndicatorBox();
         Iterator<StateTime> ist = history.descendingIterator();
         // Iterate over all the history we have of the indicator
-        counter++;
         System.out.println("Beginning iteration");
-        if (field == BikeField.RPM && counter > 1)
-            try { System.in.read(); } catch (Exception e) { }
 
         while (ist.hasNext()) {
             StateTime st = ist.next();
             if (st.activeBoxes.contains(indicator)) {
                 System.out.println("Found previously active time " + st.addedMillis);
-        if (field == BikeField.RPM && counter > 1)
-            try { System.in.read(); } catch (Exception e) { }
                 // Found a timestamp when the indicator was active - now look for a matching timestamp in the
                 // history of images of the box containing this field
 
@@ -453,14 +447,10 @@ public class BikeStateTracker {
                 while (i.hasNext()) {
                     ImageTime image = i.next();
                     System.out.println("Looking at " + image.addedMillis);
-        if (field == BikeField.RPM && counter > 1)
-            try { System.in.read(); } catch (Exception e) { }
 
                     // Found image at the right timestamp
                     if (image.addedMillis == addedTime) {
                         System.out.println("Found matching image");
-        if (field == BikeField.RPM && counter > 1)
-            try { System.in.read(); } catch (Exception e) { }
                         return image.getRecognisedValue(field);
                     }
                 }
