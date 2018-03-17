@@ -74,13 +74,7 @@ public class ProgramScreen extends BikeScreen {
 
     @Override
     public int getSpeakDelay() {
-        if (justLongSpoke) {
-            justLongSpoke = false;
-            return 15000; // Wait longer if we've just queued a long speech
-        }
-        else {
-            return 5000;
-        }
+        return 10000;
     }
 
     @Override
