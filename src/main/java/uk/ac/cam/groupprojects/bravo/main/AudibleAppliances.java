@@ -5,6 +5,7 @@ import uk.ac.cam.groupprojects.bravo.config.ConfigException;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ImageSegments;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ReadImage;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
+import uk.ac.cam.groupprojects.bravo.ocr.SSOCRUtil;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 import uk.ac.cam.groupprojects.bravo.tts.FestivalMissingException;
 import uk.ac.cam.groupprojects.bravo.tts.Synthesiser;
@@ -113,7 +114,8 @@ public class AudibleAppliances {
                 for (ScreenBox box : ScreenBox.values()) {
                     BufferedImage boxImage = segmenter.getImageBox(box, image);
 
-                    //if (box == ScreenBox.LCD1) // LCD1 is huge - resize it to half size
+                    if (box == ScreenBox.LCD1) // LCD1 is huge - resize it to half size
+                        boxImage = SSOCRUtil.resize(boxImage, ApplicationConstants.LCD1_SCALE);
 
                     imgSegs.put(box, boxImage);
                 }
