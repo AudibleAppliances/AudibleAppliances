@@ -188,9 +188,8 @@ public class BikeStateTracker {
             }
         }
 
-        // If we added new history, update its record of the state we're in
-        if (bikeTime != null && !history.isEmpty())
-            history.getLast().state = instantaneousScreen;
+        // Update the record of the state we're in at the moment
+        history.getLast().state = instantaneousScreen;
 
         if (instantaneousScreen == null) {
             instantaneousScreen = ScreenEnum.INVALID_SCREEN.getBikeScreen();
@@ -201,17 +200,18 @@ public class BikeStateTracker {
             System.out.println("Instantaneous State: " + instantaneousScreen.getEnum().toString());
             System.out.println();
         }
-        if (currentScreen != null) {
+        if (currentScreen == null) {
+            System.out.println("No stable state");
+        }
+        else {
             System.out.println("Stable State: " + currentScreen.getEnum().toString());
         }
 
         // Only update the screen if all the history we have agrees in us being in this screen
         boolean stateChanged = false;
-        if (!history.isEmpty()) {
-            if (stableState(currentTime)) {
-                currentScreen = history.getLast().state;
-                stateChanged = true;
-            }
+        if (stableState(currentTime)) {
+            currentScreen = history.getLast().state;
+            stateChanged = true;
         }
 
         System.out.println("Items in speak queue: " + synthesiser.getQueueSize());
