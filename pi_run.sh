@@ -1,3 +1,9 @@
+###
+# This is run from /etc/rc.local on startup as the user "pi"
+# It starts all the scripts and programs that need to run for the
+# appliance to be usable
+###
+
 cd /home/pi
 
 sleep 5
