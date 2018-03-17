@@ -34,6 +34,8 @@ public class LoadChangingScreen extends BikeScreen {
 
     @Override
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
+        if (!bikeStateTracker.isBoxActiveNow(ScreenBox.LOAD))
+            return Arrays.asList();
         Load load = (Load)bikeStateTracker.getFieldValue(BikeField.LOAD, false);
         if (load == null)
             return Arrays.asList();
