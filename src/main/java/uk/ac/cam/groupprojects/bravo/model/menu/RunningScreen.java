@@ -57,6 +57,7 @@ public class RunningScreen extends BikeScreen {
                     }
                     catch (IOException | UnrecognisedDigitException e) {
                         // Do nothing - an error'll get picked up on later
+                        System.out.println("getLastActiveReading call failed");
                     }
                 }
                 else {
