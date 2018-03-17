@@ -16,6 +16,7 @@ public class Speed extends ScreenNumber {
     }
 
     public boolean setValue( int value ){
+        System.out.println("Got speed of " + value);
         return value > 0 && this.setValue( value / 100, value % 100 );
     }
 
