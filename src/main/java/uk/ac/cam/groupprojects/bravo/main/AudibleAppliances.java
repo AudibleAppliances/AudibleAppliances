@@ -109,7 +109,6 @@ public class AudibleAppliances {
                 connectionAttempts = 0;
 
                 // Segment the image
-                start = System.currentTimeMillis();
                 Map<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
                 for (ScreenBox box : ScreenBox.values()) {
                     BufferedImage boxImage = segmenter.getImageBox(box, image);
@@ -117,8 +116,6 @@ public class AudibleAppliances {
                     imgSegs.put(box, boxImage);
                 }
                 elapsedTime = System.currentTimeMillis() - start;
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Time taken to segment the image: " + elapsedTime + "ms ");
 
 
                 // Update tracker state

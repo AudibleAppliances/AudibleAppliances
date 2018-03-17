@@ -348,7 +348,6 @@ public class BikeStateTracker {
         ScreenBox containingBox = field.getScreenBox();
 
         ImageTime image = null;
-        long start = System.currentTimeMillis();
         if (!blinking) {
             // Get the latest active image - we don't care about whether it's the brightest, as it's not blinking
             Iterator<ImageTime> i = latestImages.get(containingBox).descendingIterator();
@@ -371,8 +370,6 @@ public class BikeStateTracker {
 
             image = maxBrightness;
         }
-        long elapsed = System.currentTimeMillis() - start;
-        System.out.println("1: " + elapsed);
 
         if (image == null) { // No images for this box yet
             System.out.println("Got null image");
@@ -381,10 +378,7 @@ public class BikeStateTracker {
 
         ScreenNumber recognisedValue = null;
         try {
-            start = System.currentTimeMillis();
             recognisedValue = image.getRecognisedValue(field);
-            elapsed = System.currentTimeMillis() - start;
-            System.out.println("1: " + elapsed);
         }
         catch (IOException e) {
             System.out.println("IOException when recognising " + field.toString());

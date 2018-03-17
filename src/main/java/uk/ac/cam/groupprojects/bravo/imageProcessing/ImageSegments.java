@@ -38,6 +38,7 @@ public class ImageSegments {
         int y = (int) Math.round(box.getCorner().y/100.0 * image.getHeight());
         int w = (int) Math.round(box.getWidth()/100.0 * image.getWidth());
         int h = (int) Math.round(box.getHeight()/100.0 * image.getHeight());
+
         // Crop image and return
         long start = System.currentTimeMillis();
         BufferedImage sub = image.getSubimage(x, y, w, h);
