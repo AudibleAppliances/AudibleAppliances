@@ -55,7 +55,7 @@ public class ReadImage {
         // Wait for ACK
         if (in.readByte() == 1) {
 
-            BufferedImage img = FastImageIO.read(new File(imagePath));
+            BufferedImage img = ImageIO.read(new File(imagePath));
 
             // Send DONE
             out.write(1);
