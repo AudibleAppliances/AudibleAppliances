@@ -12,7 +12,6 @@ import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
 
 public class RunningScreen extends BikeScreen {
-
     private int speakDelay = ApplicationConstants.RUNNING_SPEAK_FREQ;
 
     @Override
@@ -20,7 +19,8 @@ public class RunningScreen extends BikeScreen {
         boolean active = state.isTimeChanging() &&
                            state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
                            state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.SOLID_ON &&
-                           state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON;
+                           state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON &&
+                           state.getBoxState(ScreenBox.LOAD) == LCDState.SOLID_OFF;
 
         return active;
     }

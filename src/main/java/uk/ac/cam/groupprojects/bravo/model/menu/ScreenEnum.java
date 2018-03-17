@@ -10,6 +10,7 @@ public enum ScreenEnum {
     ERROR_SCREEN,
     INITIAL_SCREEN,
     RUNNING_SCREEN,
+    LOAD_CHANGING_SCREEN,
     PAUSED_SCREEN,
 
     PROGRAM1,
@@ -37,6 +38,7 @@ public enum ScreenEnum {
             case ERROR_SCREEN: return new ErrorScreen();
             case INITIAL_SCREEN: return new InitialScreen();
             case RUNNING_SCREEN: return new RunningScreen();
+            case LOAD_CHANGING_SCREEN: return new LoadChangingScreen();
             case PAUSED_SCREEN: return new PausedScreen();
             case PROGRAM1: return new ProgramScreen.ProgramScreen1();
             case PROGRAM2: return new ProgramScreen.ProgramScreen2();
@@ -55,7 +57,7 @@ public enum ScreenEnum {
             case SELECT_USER_PROGRAM: return new SelectUserProgramScreen();
             case SELECT_HRC: return new SelectHRCScreen();
             case SELECT_WATTS: return new SelectWattScreen();
-            default: return null;
+            default: throw new UnsupportedOperationException("ScreenEnum without an associated screen.");
         }
     }
 }
