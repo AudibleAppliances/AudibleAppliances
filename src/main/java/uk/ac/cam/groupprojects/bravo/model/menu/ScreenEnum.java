@@ -12,7 +12,18 @@ public enum ScreenEnum {
     RUNNING_SCREEN,
     PAUSED_SCREEN,
 
-    PROGRAM,
+    PROGRAM1,
+    PROGRAM2,
+    PROGRAM3,
+    PROGRAM4,
+    PROGRAM5,
+    PROGRAM6,
+    PROGRAM7,
+    PROGRAM8,
+    PROGRAM9,
+    PROGRAM10,
+    PROGRAM11,
+    PROGRAM12,
     SELECT_MANUAL,
     SELECT_PROGRAM,
     SELECT_USER_PROGRAM,
@@ -27,7 +38,18 @@ public enum ScreenEnum {
             case INITIAL_SCREEN: return new InitialScreen();
             case RUNNING_SCREEN: return new RunningScreen();
             case PAUSED_SCREEN: return new PausedScreen();
-            case PROGRAM: return new ProgramScreen();
+            case PROGRAM1: return new ProgramScreen.ProgramScreen1();
+            case PROGRAM2: return new ProgramScreen.ProgramScreen2();
+            case PROGRAM3: return new ProgramScreen.ProgramScreen3();
+            case PROGRAM4: return new ProgramScreen.ProgramScreen4();
+            case PROGRAM5: return new ProgramScreen.ProgramScreen5();
+            case PROGRAM6: return new ProgramScreen.ProgramScreen6();
+            case PROGRAM7: return new ProgramScreen.ProgramScreen7();
+            case PROGRAM8: return new ProgramScreen.ProgramScreen8();
+            case PROGRAM9: return new ProgramScreen.ProgramScreen9();
+            case PROGRAM10: return new ProgramScreen.ProgramScreen10();
+            case PROGRAM11: return new ProgramScreen.ProgramScreen11();
+            case PROGRAM12: return new ProgramScreen.ProgramScreen12();
             case SELECT_MANUAL: return new SelectManualScreen();
             case SELECT_PROGRAM: return new SelectProgramScreen();
             case SELECT_USER_PROGRAM: return new SelectUserProgramScreen();

@@ -13,6 +13,7 @@ public class Program extends ScreenNumber {
 
     @Override
     public String formatSpeech() {
+        // This shouldn't really be called - take a look at ProgramScreen's subclasses
         return String.format("Program %d.", getValue());
     }
 }
