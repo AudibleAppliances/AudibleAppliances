@@ -114,8 +114,8 @@ public class AudibleAppliances {
                 for (ScreenBox box : ScreenBox.values()) {
                     BufferedImage boxImage = segmenter.getImageBox(box, image);
 
-                    if (box == ScreenBox.LCD1) // LCD1 is huge - resize it to half size
-                        boxImage = SSOCRUtil.resize(boxImage, ApplicationConstants.LCD1_SCALE);
+                    if (box.needsScaling())
+                        boxImage = SSOCRUtil.resize(boxImage, box.scaleFactor());
 
                     imgSegs.put(box, boxImage);
                 }

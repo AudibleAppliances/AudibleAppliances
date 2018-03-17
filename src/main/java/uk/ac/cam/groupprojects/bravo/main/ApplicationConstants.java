@@ -27,6 +27,4 @@ public class ApplicationConstants {
     public static final int RUNNING_SPEAK_FREQ = 30000;
 
     public static final int DEFAULT_SPEECH_PAUSE = 750;
-
-    public static final double LCD1_SCALE = 0.5;
 }

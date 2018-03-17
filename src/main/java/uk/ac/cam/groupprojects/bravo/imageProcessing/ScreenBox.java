@@ -75,4 +75,17 @@ public enum ScreenBox {
             return BLUE_THRESHOLD;
         }
     }
+
+    public boolean needsScaling() {
+        switch (this) {
+            case LCD1: return true;
+            default:   return false;
+        }
+    }
+    public double scaleFactor() {
+        switch (this) {
+            case LCD1: return 0.5;
+            default:   return 1;
+        }
+    }
 }
