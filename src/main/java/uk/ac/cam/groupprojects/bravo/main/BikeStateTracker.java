@@ -205,6 +205,10 @@ public class BikeStateTracker {
         }
         System.out.println();
 
+        Speed s = (Speed)getFieldValue(BikeField.SPEED, false);
+        if (s != null)
+            System.out.println(s.getValue());
+
         // Only update the screen if all the history we have agrees in us being in this screen
         boolean stateChanged = false;
         if (!history.isEmpty()) {
