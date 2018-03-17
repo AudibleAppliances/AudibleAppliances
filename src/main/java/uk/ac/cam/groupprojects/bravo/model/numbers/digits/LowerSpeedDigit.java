@@ -8,7 +8,7 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
 public class LowerSpeedDigit extends ScreenNumber {
 
     public LowerSpeedDigit() {
-        super(0, 9);
+        super(0, 99);
     }
 
     @Override
