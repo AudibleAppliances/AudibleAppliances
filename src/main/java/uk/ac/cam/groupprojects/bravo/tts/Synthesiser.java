@@ -150,9 +150,7 @@ public class Synthesiser implements AutoCloseable {
         // reset the semaphore to 0. This is compatible with the enqueueCommands function, but causes
         // a special case in the reader thread (it can be issued a permit by the semaphore then see an empty queue)
         synchronized (commandQueue) {
-            System.out.println("Before clearing: " + commandQueue.size());
             commandQueue.clear();
-            System.out.println("After clearing: " + commandQueue.size());
             availableCommands.drainPermits();
         }
     }

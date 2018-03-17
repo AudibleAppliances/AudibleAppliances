@@ -15,8 +15,9 @@ public enum ScreenBox {
     LCD5,
     LCD6,
     GRAPH,
-    WATT,
+    SPEED,
     RPM,
+    WATT,
     LOAD,
 
     // Text boxes along bottom of graph
@@ -56,8 +57,9 @@ public enum ScreenBox {
             case LCD5:
             case LCD6:
             case GRAPH:
-            case WATT:
+            case SPEED:
             case RPM:
+            case WATT:
             case LOAD: return true;
             default:   return false;
         }

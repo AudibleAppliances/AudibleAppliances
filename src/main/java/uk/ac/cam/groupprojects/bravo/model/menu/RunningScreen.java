@@ -1,5 +1,6 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
+import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 
 public class RunningScreen extends BikeScreen {
     private int speakDelay = ApplicationConstants.RUNNING_SPEAK_FREQ;
@@ -34,21 +36,37 @@ public class RunningScreen extends BikeScreen {
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
         List<String> dialogs = new ArrayList<>();
 
-        if (bikeStateTracker.isBoxActiveNow(ScreenBox.LOAD)) {
-            ScreenNumber n = bikeStateTracker.getFieldValue(BikeField.LOAD, false);
-            if (n != null)
-                dialogs.add(n.formatSpeech());
-            speakDelay = ApplicationConstants.RUNNING_SPEAK_FREQ / 5;
-        } else {
-            ConfigData configData = bikeStateTracker.getConfig();
-            for (BikeField field : BikeField.values()) {
-                if (configData.isSpokenField(field)) {
-                    ScreenNumber n = bikeStateTracker.getFieldValue(field, false);
-                    if (n != null)
-                        dialogs.add(n.formatSpeech());
+        ConfigData configData = bikeStateTracker.getConfig();
+        final BikeField[] readableFields = new BikeField[]
+        {
+            BikeField.SPEED,
+            BikeField.DISTANCE,
+            BikeField.RPM,
+            BikeField.CAL,
+            BikeField.WATT,
+        };
+
+        for (BikeField field : readableFields) {
+            if (configData.isSpokenField(field)) {
+                ScreenNumber n = null;
+
+                if (field.hasIndicatorBox()) {
+                    try {
+                        // Get the last reading from when the indicator was lit up
+                        n = bikeStateTracker.getLastActiveReading(field);
+                    }
+                    catch (IOException | UnrecognisedDigitException e) {
+                        // Do nothing - an error'll get picked up on later
+                    }
                 }
+                else {
+                    // Just get the value of the field
+                    n = bikeStateTracker.getFieldValue(field, false);
+                }
+
+                if (n != null)
+                    dialogs.add(n.formatSpeech());
             }
-            speakDelay = ApplicationConstants.RUNNING_SPEAK_FREQ;
         }
 
         return dialogs;

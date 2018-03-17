@@ -46,7 +46,7 @@ public class BikeStateTracker {
         }
     }
 
-    // Holds the last image we saw for each segment *when it was active* - no blank images here
+    // Holds the last image we saw for each segment along with its brightness
     class ImageTime {
         public final long addedMillis;
         public final boolean segmentActive;
@@ -418,5 +418,38 @@ public class BikeStateTracker {
             return false;
         }
         return history.getLast().activeBoxes.contains(box);
+    }
+
+    public ScreenNumber getLastActiveReading(BikeField field) throws IOException, UnrecognisedDigitException {
+        if (!field.hasIndicatorBox()) {
+            return null;
+        }
+
+        ScreenBox indicator = field.getIndicatorBox();
+        Iterator<StateTime> ist = history.descendingIterator();
+        // Iterate over all the history we have of the indicator
+        while (ist.hasNext()) {
+            StateTime st = ist.next();
+            if (st.activeBoxes.contains(indicator)) {
+                // Found a timestamp when the indicator was active - now look for a matching timestamp in the
+                // history of images of the box containing this field
+
+                long addedTime = st.addedMillis;
+
+                ScreenBox containingBox = field.getScreenBox();
+                Iterator<ImageTime> i = latestImages.get(containingBox).descendingIterator();
+                while (i.hasNext()) {
+                    ImageTime image = i.next();
+
+                    // Found image at the right timestamp
+                    if (image.addedMillis == addedTime) {
+                        return image.getRecognisedValue(field);
+                    }
+                }
+            }
+        }
+
+        // Couldn't find anything
+        return null;
     }
 }

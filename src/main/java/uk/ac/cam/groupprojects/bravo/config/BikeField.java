@@ -62,4 +62,19 @@ public enum BikeField {
             default: return null;
         }
     }
+
+    // Get the ScreenBox that indicates whether this field is active or not
+    // Eg. The LOAD field is only active when the little indicator for Load is turned on
+    public ScreenBox getIndicatorBox() {
+        switch(this) {
+            case SPEED: return ScreenBox.SPEED;
+            case RPM: return ScreenBox.RPM;
+            case WATT: return ScreenBox.WATT;
+            case LOAD: return ScreenBox.LOAD;
+            default: return null;
+        }
+    }
+    public boolean hasIndicatorBox() {
+        return getIndicatorBox() != null;
+    }
 }
