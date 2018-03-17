@@ -141,9 +141,6 @@ public class BikeStateTracker {
                 // If the LCD is active, record it and update the latest image we have of it
                 activeSegs.add(box);
             }
-            if (box == ScreenBox.RPM || box == ScreenBox.WATT) {
-                System.out.println(box.toString() + " active: " + segmentActive);
-            }
             latestImages.get(box).add(new ImageTime(currentTime, boxImage, segmentActive));
         }
 
@@ -431,12 +428,9 @@ public class BikeStateTracker {
         ScreenBox indicator = field.getIndicatorBox();
         Iterator<StateTime> ist = history.descendingIterator();
         // Iterate over all the history we have of the indicator
-        System.out.println("Beginning iteration");
-
         while (ist.hasNext()) {
             StateTime st = ist.next();
             if (st.activeBoxes.contains(indicator)) {
-                System.out.println("Found previously active time " + st.addedMillis);
                 // Found a timestamp when the indicator was active - now look for a matching timestamp in the
                 // history of images of the box containing this field
 
@@ -446,11 +440,9 @@ public class BikeStateTracker {
                 Iterator<ImageTime> i = latestImages.get(containingBox).descendingIterator();
                 while (i.hasNext()) {
                     ImageTime image = i.next();
-                    System.out.println("Looking at " + image.addedMillis);
 
                     // Found image at the right timestamp
                     if (image.addedMillis == addedTime) {
-                        System.out.println("Found matching image");
                         return image.getRecognisedValue(field);
                     }
                 }
