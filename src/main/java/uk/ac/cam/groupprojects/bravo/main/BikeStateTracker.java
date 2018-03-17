@@ -430,6 +430,7 @@ public class BikeStateTracker {
         // Iterate over all the history we have of the indicator
         while (ist.hasNext()) {
             StateTime st = ist.next();
+            System.out.println(st.activeBoxes.size() + " active boxes");
             if (st.activeBoxes.contains(indicator)) {
                 // Found a timestamp when the indicator was active - now look for a matching timestamp in the
                 // history of images of the box containing this field
@@ -437,6 +438,7 @@ public class BikeStateTracker {
                 long addedTime = st.addedMillis;
 
                 ScreenBox containingBox = field.getScreenBox();
+                System.out.println(latestImages.get(containingBox).size() + " latest images of containing box");
                 Iterator<ImageTime> i = latestImages.get(containingBox).descendingIterator();
                 while (i.hasNext()) {
                     ImageTime image = i.next();
