@@ -201,6 +201,9 @@ public class BikeStateTracker {
             System.out.println("Instantaneous State: " + instantaneousScreen.getEnum().toString());
             System.out.println();
         }
+        if (currentScreen != null) {
+            System.out.println("Stable State: " + currentScreen.getEnum().toString());
+        }
 
         // Only update the screen if all the history we have agrees in us being in this screen
         boolean stateChanged = false;
@@ -247,13 +250,18 @@ public class BikeStateTracker {
         return stableState(currentTime, 100 * ApplicationConstants.BLINK_FREQ_MILLIS);
     }
     private boolean stableState(long currentTime, long lookback) {
+        if (history.isEmpty()) {
+            return false; // Treat no state as not being stable
+        }
+
         List<StateTime> recentHistory = history.stream()
                             .filter(s -> currentTime - lookback < s.addedMillis)
                             .collect(Collectors.toList());
 
         boolean allNull = recentHistory.stream().allMatch(s -> s.state == null);
-        boolean allSameState = recentHistory.stream()
-                            .allMatch(s -> s.state != null && s.state.getEnum() == currentScreen.getEnum());
+        BikeScreen screen = recentHistory.get(0).state;
+        boolean allSameState = screen != null && recentHistory.stream()
+                            .allMatch(s -> s.state != null && s.state.getEnum() == screen.getEnum());
 
         return allNull || allSameState;
     }
