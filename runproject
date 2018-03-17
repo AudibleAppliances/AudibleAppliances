@@ -5,7 +5,6 @@
 
 cd /home/pi
 
-sleep 5
 echo "Audible Appliances: Starting image server"
 
 # Start the python image server script
