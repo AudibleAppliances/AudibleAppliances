@@ -1,3 +1,5 @@
+sleep 5
+
 # Run GPIO script
 python /home/pi/AudibleAppliances/gpio/gpio.py &>/dev/null &
 
