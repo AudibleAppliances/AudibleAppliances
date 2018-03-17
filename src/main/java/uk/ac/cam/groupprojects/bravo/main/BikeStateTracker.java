@@ -431,14 +431,14 @@ public class BikeStateTracker {
         // Iterate over all the history we have of the indicator
         counter++;
         System.out.println("Beginning iteration");
-        if (counter > 3)
+        if (counter > 1)
             try { System.in.read(); } catch (Exception e) { }
 
         while (ist.hasNext()) {
             StateTime st = ist.next();
             if (st.activeBoxes.contains(indicator)) {
                 System.out.println("Found previously active time " + st.addedMillis);
-        if (counter > 3)
+        if (counter > 1)
             try { System.in.read(); } catch (Exception e) { }
                 // Found a timestamp when the indicator was active - now look for a matching timestamp in the
                 // history of images of the box containing this field
@@ -450,13 +450,13 @@ public class BikeStateTracker {
                 while (i.hasNext()) {
                     ImageTime image = i.next();
                     System.out.println("Looking at " + image.addedMillis);
-        if (counter > 3)
+        if (counter > 1)
             try { System.in.read(); } catch (Exception e) { }
 
                     // Found image at the right timestamp
                     if (image.addedMillis == addedTime) {
                         System.out.println("Found matching image");
-        if (counter > 3)
+        if (counter > 1)
             try { System.in.read(); } catch (Exception e) { }
                         return image.getRecognisedValue(field);
                     }
