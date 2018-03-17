@@ -134,9 +134,15 @@ public class BikeStateTracker {
         // Store an image of each LCD
         for (ScreenBox box : ScreenBox.values()) {
             BufferedImage boxImage = imgSegs.get(box);
+            long start = System.currentTimeMillis();
             BufferedImage thresholded = SSOCRUtil.roughThreshold(boxImage);
+            long elapsed = System.currentTimeMillis() - start;
+            System.out.println("Thresholding: " + elapsed);
             
+            start = System.currentTimeMillis();
             boolean segmentActive = SegmentActive.segmentActive(thresholded);
+            elapsed = System.currentTimeMillis() - start;
+            System.out.println("Checking active: " + elapsed);
             if (segmentActive) {
                 // If the LCD is active, record it and update the latest image we have of it
                 activeSegs.add(box);

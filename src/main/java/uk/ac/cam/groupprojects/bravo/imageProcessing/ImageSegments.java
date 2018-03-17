@@ -31,7 +31,6 @@ public class ImageSegments {
      * @return Crop of BoxType from image
      */
     public BufferedImage getImageBox(ScreenBox type, BufferedImage image) {
-        long start = System.currentTimeMillis();
         BoxInfo box = mConfigData.getBox(type);
 
         // Calculate coordinates
@@ -42,8 +41,6 @@ public class ImageSegments {
 
         // Crop image and return
         BufferedImage sub = image.getSubimage(x, y, w, h);
-        long elapsed = System.currentTimeMillis() - start;
-        System.out.println("Cropping: " + elapsed);
 
         return sub;
     }
