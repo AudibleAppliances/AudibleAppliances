@@ -36,7 +36,7 @@ public class Distance extends ScreenNumber {
         else {
             lowerStr = Integer.toString(lower);
         }
-        return String.format("You have cycled %d.%s kilometres", km.getValue(), lowerStr);
+        return String.format("You've cycled %d.%s kilometres", km.getValue(), lowerStr);
     }
 
     @Override

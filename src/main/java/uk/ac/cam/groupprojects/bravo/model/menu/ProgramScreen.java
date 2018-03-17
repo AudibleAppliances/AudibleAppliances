@@ -1,11 +1,10 @@
 package uk.ac.cam.groupprojects.bravo.model.menu;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
-import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.numbers.Program;
@@ -13,6 +12,8 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.Program;
 // This is the screen where the user selects which program they want to use
 public class ProgramScreen extends BikeScreen {
     private Program programValue;
+    private long lastTimeLongSpoken = 0; // Keep track of the last time we spoke the "long version" of this
+    private final long TIME_BETWEEN_LONG_SPEECH = 10000;
 
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
@@ -47,20 +48,26 @@ public class ProgramScreen extends BikeScreen {
 
     @Override
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
+        List<String> dialog = new ArrayList<>();
         if (programValue != null) {
-            return Arrays.asList(programValue.formatSpeech());
-        } else {
-            return Arrays.asList();
+            dialog.add(programValue.formatSpeech());
         }
+
+        // Check if we're on schedule to give a longer speech
+        if (System.currentTimeMillis() - TIME_BETWEEN_LONG_SPEECH < lastTimeLongSpoken) {
+            dialog.add("Select a program by rotating the dial. Press start to begin that program.");
+        }
+
+        return dialog;
     }
 
     @Override
     public int getSpeakDelay() {
-        return ApplicationConstants.DEFAULT_SPEAK_FREQ;
+        return 3000;
     }
 
     @Override
     public boolean isSpeakFirst() {
-        return false;
+        return true;
     }
 }
