@@ -30,10 +30,16 @@ public class ProgramScreen extends BikeScreen {
             if (programValue == null) {
                 System.out.println("Program value is null");
             } else {
+                int value;
                 if (programValue.getValue() > 10) {
                     String converted = String.valueOf(programValue.getValue()).replaceAll("8", "0");
-                    programValue.setValue(Integer.parseInt(converted));
+                    value = Integer.parseInt(converted);
                 }
+                else {
+                    value = programValue.getValue();
+                }
+                programValue.setValue(value);
+
                 System.out.println("Got program value: " + programValue.getValue());
             }
         }
@@ -54,8 +60,10 @@ public class ProgramScreen extends BikeScreen {
         }
 
         // Check if we're on schedule to give a longer speech
-        if (System.currentTimeMillis() - TIME_BETWEEN_LONG_SPEECH < lastTimeLongSpoken) {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - TIME_BETWEEN_LONG_SPEECH > lastTimeLongSpoken) {
             dialog.add("Select a program by rotating the dial. Press start to begin that program.");
+            lastTimeLongSpoken = currentTime;
         }
 
         return dialog;
