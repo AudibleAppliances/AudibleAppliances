@@ -221,6 +221,11 @@ public class BikeStateTracker {
             }
         }
 
+        // If we've changed state, get rid of all the messages we still need to speak from the old state
+        if (stateChanged) {
+            synthesiser.clearQueue();
+        }
+
         System.out.println("Items in speak queue: " + synthesiser.getQueueSize());
 
         // Check if it's the time to speak, and if yes then speak
@@ -229,11 +234,6 @@ public class BikeStateTracker {
             // (half to reduce the latency of speaking after switching to a new state)
 
             boolean stableState = stableState(currentTime, 2 * ApplicationConstants.BLINK_FREQ_MILLIS);
-
-            // If we've changed state, get rid of all the messages we still need to speak from the old state
-            if (stateChanged) {
-                synthesiser.clearQueue();
-            }
 
             // Speak if we've stably changed state and the current state demands we speak immediately,
             // or if we've just not spoken in a while
