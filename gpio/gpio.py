@@ -30,12 +30,12 @@ def call(c):
     if (not (RPi.GPIO.input(c))) or (m == c) or (not (RPi.GPIO.input(m))):
         return
 
-# Switch now turns on/off the project, doesn't mute
-#    # check switch
-#
-#    if not RPi.GPIO.input(14):
-#        set_volume(0)
-#        return
+    # check switch
+    # If we're not running the project, ignore requests to change volume
+
+    if not RPi.GPIO.input(14):
+        set_volume(0)
+        return
 
     # dec/increment
 
@@ -62,8 +62,6 @@ RPi.GPIO.add_event_callback(10, call)
 while True:
     RPi.GPIO.wait_for_edge(14, RPi.GPIO.BOTH, bouncetime=500)
     if not RPi.GPIO.input(14):
-        #set_volume(0)
         subprocess.call(['/home/pi/stopproject'])
     else:
-        #set_volume(volume)
         subprocess.call(['/home/pi/runproject'])
