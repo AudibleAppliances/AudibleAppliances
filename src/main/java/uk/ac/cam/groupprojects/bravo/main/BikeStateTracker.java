@@ -370,9 +370,6 @@ public class BikeStateTracker {
             }
 
             image = maxBrightness;
-            if (image != null) {
-                System.out.println("Got max brightness of blinking field " + field.toString() + " as " + image.brightness);
-            }
         }
 
         if (image == null) { // No images for this box yet

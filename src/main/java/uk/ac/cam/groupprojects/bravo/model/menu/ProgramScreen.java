@@ -65,13 +65,13 @@ public abstract class ProgramScreen extends BikeScreen {
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
         List<String> dialogs = new ArrayList<>();
 
-        dialogs.add("Program " + programNumber + ".");
-
         long currentTime = System.currentTimeMillis();
         if (currentTime - TIME_BETWEEN_LONG_SPEECHES > timeGivenLongSpeech) {
             dialogs.add("Rotate to select a program, then press start.");
             timeGivenLongSpeech = currentTime;
         }
+
+        dialogs.add("Program " + programNumber + ".");
 
         return dialogs;
     }
