@@ -72,7 +72,13 @@ public class ProgramScreen extends BikeScreen {
 
     @Override
     public int getSpeakDelay() {
-        return 10000;
+        // Wait a long time if we're waiting for the long speech to finish
+        if (System.currentTimeMillis() - 5000 < lastTimeLongSpoken) {
+            return 10000;
+        }
+        else { // Otherwise don't wait long at all
+            return 4000;
+        }
     }
 
     @Override
