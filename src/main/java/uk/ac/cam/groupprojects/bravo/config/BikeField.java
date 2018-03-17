@@ -64,7 +64,7 @@ public enum BikeField {
     }
 
     // Get the ScreenBox that indicates whether this field is active or not
-    // Eg. The LOAD field is only active when the little indicator for Load is turned on
+    // Eg. The LOAD field is only readable when the little indicator for Load is turned on
     public ScreenBox getIndicatorBox() {
         switch(this) {
             case SPEED: return ScreenBox.SPEED;

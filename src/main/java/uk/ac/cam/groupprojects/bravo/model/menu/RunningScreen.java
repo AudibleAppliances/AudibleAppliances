@@ -14,8 +14,6 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
 import uk.ac.cam.groupprojects.bravo.ocr.UnrecognisedDigitException;
 
 public class RunningScreen extends BikeScreen {
-    private int speakDelay = ApplicationConstants.RUNNING_SPEAK_FREQ;
-
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
         boolean active = state.isTimeChanging() &&
@@ -75,7 +73,7 @@ public class RunningScreen extends BikeScreen {
 
     @Override
     public int getSpeakDelay() {
-        return speakDelay;
+        return ApplicationConstants.RUNNING_SPEAK_FREQ;
     }
 
     @Override
