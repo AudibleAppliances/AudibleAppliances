@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -149,7 +150,6 @@ public class BikeStateTracker {
         if (timeState != null) { // If this is null, it just means we've only just started and don't have enough data yet
             bikeTime = timeState.getValue();
         }
-        System.out.println("Bike time: " + bikeTime);
         history.add(new StateTime(currentTime, activeSegs, bikeTime));
 
         // DEBUG
@@ -313,8 +313,9 @@ public class BikeStateTracker {
         }
 
         Integer currentBikeTime = history.getLast().bikeTime;
+        // Objects.equals does a null-safe comparison
         timeChanging = !history.stream()
-                               .allMatch(s -> s.bikeTime == currentBikeTime);
+                               .allMatch(s -> Objects.equals(s.bikeTime, currentBikeTime));
     }
 
     private void removeOldHistory(long currentTime) {
