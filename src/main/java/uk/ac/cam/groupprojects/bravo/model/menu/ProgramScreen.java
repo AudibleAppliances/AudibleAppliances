@@ -61,7 +61,6 @@ public class ProgramScreen extends BikeScreen {
         if (currentTime - TIME_BETWEEN_LONG_SPEECH > lastTimeLongSpoken) {
             dialog.add("Rotate to select a program. Press start to begin that program.");
             lastTimeLongSpoken = currentTime;
-            justLongSpoke = true;
         }
 
         if (programValue != null) {
