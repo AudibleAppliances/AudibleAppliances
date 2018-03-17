@@ -153,6 +153,7 @@ public class Synthesiser implements AutoCloseable {
             System.out.println("Before clearing: " + commandQueue.size());
             commandQueue.clear();
             System.out.println("After clearing: " + commandQueue.size());
+            try { System.in.read(); } catch (Exception e) { }
             availableCommands.drainPermits();
         }
     }
