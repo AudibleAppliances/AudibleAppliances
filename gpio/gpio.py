@@ -60,12 +60,12 @@ RPi.GPIO.add_event_callback(10, call)
 
 # If the switch is on when the pi's turned on, run the project - below we check for edges, not levels
 if RPi.GPIO.input(14):
-    subprocess.call(['/home/pi/runproject'])
+    subprocess.call(['/home/pi/runproject'], shell=true)
 
 # switch, waits for any edge
 while True:
     RPi.GPIO.wait_for_edge(14, RPi.GPIO.BOTH, bouncetime=500)
     if not RPi.GPIO.input(14):
-        subprocess.call(['/home/pi/stopproject'])
+        subprocess.call(['/home/pi/stopproject'], shell=true)
     else:
-        subprocess.call(['/home/pi/runproject'])
+        subprocess.call(['/home/pi/runproject'], shell=true)
