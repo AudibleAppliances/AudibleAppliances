@@ -14,6 +14,7 @@ public class ProgramScreen extends BikeScreen {
     private Program programValue;
     private long lastTimeLongSpoken = 0; // Keep track of the last time we spoke the "long version" of this
     private final long TIME_BETWEEN_LONG_SPEECH = 10000;
+    private boolean justLongSpoke = false;
 
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
@@ -55,15 +56,17 @@ public class ProgramScreen extends BikeScreen {
     @Override
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
         List<String> dialog = new ArrayList<>();
-        if (programValue != null) {
-            dialog.add(programValue.formatSpeech());
-        }
 
         // Check if we're on schedule to give a longer speech
         long currentTime = System.currentTimeMillis();
         if (currentTime - TIME_BETWEEN_LONG_SPEECH > lastTimeLongSpoken) {
-            dialog.add("Select a program by rotating the dial. Press start to begin that program.");
+            dialog.add("Rotate to select a program. Press start to begin that program.");
             lastTimeLongSpoken = currentTime;
+            justLongSpoke = true;
+        }
+
+        if (programValue != null) {
+            dialog.add(programValue.formatSpeech());
         }
 
         return dialog;
@@ -71,7 +74,13 @@ public class ProgramScreen extends BikeScreen {
 
     @Override
     public int getSpeakDelay() {
-        return 3000;
+        if (justLongSpoke) {
+            justLongSpoke = false;
+            return 15000; // Wait longer if we've just queued a long speech
+        }
+        else {
+            return 5000;
+        }
     }
 
     @Override
