@@ -25,7 +25,7 @@ public class SelectUserProgramScreen extends BikeScreen {
 
     @Override
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
-        return Arrays.asList("Rotate left to choose a program.");
+        return Arrays.asList("Rotate anticlockwise to choose a program.");
     }
 
     @Override

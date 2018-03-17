@@ -26,7 +26,7 @@ public class SelectProgramScreen extends BikeScreen {
 
     @Override
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
-        return Arrays.asList("Press enter to select a program, or rotate left to cycle freely.");
+        return Arrays.asList("Press enter to select a program, or rotate left to select free cycle.");
     }
 
     @Override
