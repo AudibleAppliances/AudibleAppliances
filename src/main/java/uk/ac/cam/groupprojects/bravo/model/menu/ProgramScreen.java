@@ -16,6 +16,9 @@ public abstract class ProgramScreen extends BikeScreen {
     private final int programNumber;
     private final ScreenEnum screenEnum;
 
+    private static long timeGivenLongSpeech = 0;
+    private static final long TIME_BETWEEN_LONG_SPEECHES = 30000;
+
     protected ProgramScreen(int programNumber, ScreenEnum screenEnum) {
         this.programNumber = programNumber;
         this.screenEnum = screenEnum;
@@ -60,7 +63,17 @@ public abstract class ProgramScreen extends BikeScreen {
 
     @Override
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
-        return Arrays.asList("Program " + programNumber + ".");
+        List<String> dialogs = new ArrayList<>();
+
+        dialogs.add("Program " + programNumber + ".");
+
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - TIME_BETWEEN_LONG_SPEECHES > timeGivenLongSpeech) {
+            dialogs.add("Rotate to select a program, then press start.");
+            timeGivenLongSpeech = currentTime;
+        }
+
+        return dialogs;
     }
 
     @Override
