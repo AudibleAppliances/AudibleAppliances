@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +35,17 @@ public class SSOCRUtil {
     }
 
     public static BufferedImage resize(BufferedImage img, double percent) {
-        return null;
+        int newWidth = (int)Math.round(img.getWidth() * percent);
+        int newHeight = (int)Math.round(img.getHeight() * percent);
+
+        Image tmp = img.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+
+        BufferedImage out = new BufferedImage(newWidth, newHeight, img.getType());
+        Graphics2D g = out.createGraphics();
+        g.drawImage(tmp, 0, 0, null);
+        g.dispose();
+
+        return out;
     }
 
     public static Process startSSOCR(List<String> args) throws IOException {

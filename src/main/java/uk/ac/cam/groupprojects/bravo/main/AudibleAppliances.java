@@ -103,19 +103,23 @@ public class AudibleAppliances {
                 long start = System.currentTimeMillis();
                 BufferedImage image = readImage.read(ApplicationConstants.IMAGE_PATH);
                 long elapsedTime = System.currentTimeMillis() - start;
-                if (ApplicationConstants.DEBUG)
-                    System.out.println("Time taken to read image: " + elapsedTime + "ms ");
+                System.out.println("Time taken to read image: " + elapsedTime + "ms ");
                 // Read successfully, reset the failed connection attempt counter
                 connectionAttempts = 0;
 
                 // Segment the image
+                start = System.currentTimeMillis();
                 Map<ScreenBox, BufferedImage> imgSegs = new HashMap<>();
                 for (ScreenBox box : ScreenBox.values()) {
                     BufferedImage boxImage = segmenter.getImageBox(box, image);
 
+                    //if (box == ScreenBox.LCD1) // LCD1 is huge - resize it to half size
+
                     imgSegs.put(box, boxImage);
                 }
                 elapsedTime = System.currentTimeMillis() - start;
+                System.out.println("Time taken to segment image: " + elapsedTime + "ms ");
+                // Read successfully, reset the failed connection attempt counter
 
 
                 // Update tracker state
