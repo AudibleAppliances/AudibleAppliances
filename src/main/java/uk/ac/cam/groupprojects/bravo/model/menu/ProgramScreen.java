@@ -32,6 +32,8 @@ public abstract class ProgramScreen extends BikeScreen {
 
         if (isProgramScreen) {
             Program p  = (Program)state.getFieldValue(BikeField.PROGRAM, true);
+            if (p == null)
+                return false; // Can't recognise the number
 
             int value;
             if (p.getValue() > 10) {
@@ -63,7 +65,7 @@ public abstract class ProgramScreen extends BikeScreen {
 
     @Override
     public int getSpeakDelay() {
-        return 3000;
+        return 4000;
     }
 
     @Override
