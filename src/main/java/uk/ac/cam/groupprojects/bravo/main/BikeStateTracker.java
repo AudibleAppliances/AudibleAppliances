@@ -131,6 +131,7 @@ public class BikeStateTracker {
         long currentTime = System.currentTimeMillis();
         Set<ScreenBox> activeSegs = new HashSet<>();
 
+        long start = System.currentTimeMillis();
         // Store an image of each LCD
         for (ScreenBox box : ScreenBox.values()) {
             BufferedImage boxImage = imgSegs.get(box);
@@ -143,7 +144,10 @@ public class BikeStateTracker {
             }
             latestImages.get(box).add(new ImageTime(currentTime, boxImage, segmentActive));
         }
+        long elapsed = System.currentTimeMillis() - start;
+        System.out.println("1: " + elapsed);
 
+        start = System.currentTimeMillis();
         // Store the new state, with the time we recognised at the moment
         Time timeState = (Time)getFieldValue(BikeField.TIME, false);
         Integer bikeTime = null;
@@ -151,34 +155,37 @@ public class BikeStateTracker {
             bikeTime = timeState.getValue();
         }
         history.add(new StateTime(currentTime, activeSegs, bikeTime));
+        elapsed = System.currentTimeMillis() - start;
+        System.out.println("2: " + elapsed);
 
         // DEBUG
         if (bikeTime == null) {
             System.out.println("Failed to recognise the time");
         }
 
+        start = System.currentTimeMillis();
         // Remove state information that's older than two complete blink cycles (2s) ago
         removeOldHistory(currentTime);
-
-        int imageHistoryMaxLength = latestImages.values().stream()
-                                                          .map(l -> l.size())
-                                                          .max(Comparator.<Integer>naturalOrder()).get();
-        System.out.println("Items in state history: " + history.size());
-        System.out.println("Items in image history: " + imageHistoryMaxLength);
+        elapsed = System.currentTimeMillis() - start;
+        System.out.println("3: " + elapsed);
 
         // Update which LCDs we know are solid/blinking
+        start = System.currentTimeMillis();
         updateSolidBlinking(currentTime);
         updateTimeChanging();
+        elapsed = System.currentTimeMillis() - start;
+        System.out.println("4: " + elapsed);
 
         // DEBUG: Output the state of every box
-        if (ApplicationConstants.DEBUG) {
-            System.out.println("Time Changing: " + isTimeChanging());
-            for (ScreenBox box : ScreenBox.values()) {
-                System.out.println(box.toString() + ": " + getBoxState(box).toString());
-            }
-            System.out.println();
-        }
+        //if (ApplicationConstants.DEBUG) {
+        //    System.out.println("Time Changing: " + isTimeChanging());
+        //    for (ScreenBox box : ScreenBox.values()) {
+        //        System.out.println(box.toString() + ": " + getBoxState(box).toString());
+        //    }
+        //    System.out.println();
+        //}
 
+        start = System.currentTimeMillis();
         BikeScreen instantaneousScreen = null;
         for (ScreenEnum s : ScreenEnum.values()) {
             BikeScreen screen = s.getBikeScreen();
@@ -188,6 +195,8 @@ public class BikeStateTracker {
                 break;
             }
         }
+        elapsed = System.currentTimeMillis() - start;
+        System.out.println("5: " + elapsed);
 
         // Update the record of the state we're in at the moment
         history.getLast().state = instantaneousScreen;
@@ -209,6 +218,7 @@ public class BikeStateTracker {
         System.out.println();
 
         // Only update the screen if all the history we have agrees in us being in this screen
+        start = System.currentTimeMillis();
         boolean stateChanged = false;
         if (!history.isEmpty()) {
             BikeScreen newState = history.getLast().state;
@@ -220,15 +230,21 @@ public class BikeStateTracker {
                 stateChanged = true;
             }
         }
+        elapsed = System.currentTimeMillis() - start;
+        System.out.println("6: " + elapsed);
 
         // If we've changed state, get rid of all the messages we still need to speak from the old state
+        start = System.currentTimeMillis();
         if (stateChanged) {
             synthesiser.clearQueue();
         }
-
+        elapsed = System.currentTimeMillis() - start;
+        System.out.println("7: " + elapsed);
+        
         System.out.println("Items in speak queue: " + synthesiser.getQueueSize());
 
         // Check if it's the time to speak, and if yes then speak
+        start = System.currentTimeMillis();
         if (currentScreen != null) {
             // Check that we've been in this state for half the history
             // (half to reduce the latency of speaking after switching to a new state)
@@ -251,6 +267,8 @@ public class BikeStateTracker {
                 lastSpeakTime = System.currentTimeMillis();
             }
         }
+        elapsed = System.currentTimeMillis() - start;
+        System.out.println("8: " + elapsed);
     }
 
     private boolean stableState(long currentTime) {
@@ -430,7 +448,6 @@ public class BikeStateTracker {
         // Iterate over all the history we have of the indicator
         while (ist.hasNext()) {
             StateTime st = ist.next();
-            System.out.println(st.activeBoxes.size() + " active boxes");
             if (st.activeBoxes.contains(indicator)) {
                 // Found a timestamp when the indicator was active - now look for a matching timestamp in the
                 // history of images of the box containing this field
@@ -438,14 +455,12 @@ public class BikeStateTracker {
                 long addedTime = st.addedMillis;
 
                 ScreenBox containingBox = field.getScreenBox();
-                System.out.println(latestImages.get(containingBox).size() + " latest images of containing box");
                 Iterator<ImageTime> i = latestImages.get(containingBox).descendingIterator();
                 while (i.hasNext()) {
                     ImageTime image = i.next();
 
                     // Found image at the right timestamp
                     if (image.addedMillis == addedTime) {
-                        System.out.println("Found matching image");
                         return image.getRecognisedValue(field);
                     }
                 }

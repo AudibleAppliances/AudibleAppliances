@@ -45,20 +45,16 @@ public class RunningScreen extends BikeScreen {
         };
 
         for (BikeField field : readableFields) {
-            System.out.println(field.toString());
-            try { System.in.read() ; } catch (Exception e) { }
             if (configData.isSpokenField(field)) {
                 ScreenNumber n = null;
 
                 if (field.hasIndicatorBox()) {
-                    System.out.println("Has indicator");
                     try {
                         // Get the last reading from when the indicator was lit up
                         n = bikeStateTracker.getLastActiveReading(field);
                     }
                     catch (IOException | UnrecognisedDigitException e) {
                         // Do nothing - an error'll get picked up on later
-                        System.out.println("getLastActiveReading call failed");
                     }
                 }
                 else {
