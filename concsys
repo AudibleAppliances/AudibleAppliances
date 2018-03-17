@@ -1,0 +1,44 @@
+Server
+
+turn is semaphore with max 1
+writeGuard is semaphore with max 1
+waitingReaders is semaphore with unbounded max
+activeReaders = 0
+
+Acceptor:
+while true:
+    c = accept()
+    spawn new reader thread with c
+
+Writer:
+while true:
+    wait timeout
+    turn.wait()
+    writeGuard.wait()
+    takePicture()
+    doFisheye()
+    writeGuard.signal()
+    turn.signal()
+
+Reader:
+while true:
+    b = recv()
+    if b == REQ:
+        turn.wait()
+        turn.signal()
+
+        writeGuard.wait() -- Stop writer from writing
+        waitingReaders.wait()
+        if activeReaders = 0 then:
+            writeGuard.wait()
+        activeReaders++
+        waitingReaders.signal()
+
+        send(ACK)
+        recv(DONE)
+
+        waitingReaders.wait()
+        activeReaders--
+        if activeReaders = 0 then:
+            writeGuard.signal()
+        waitingReaders.signal()
