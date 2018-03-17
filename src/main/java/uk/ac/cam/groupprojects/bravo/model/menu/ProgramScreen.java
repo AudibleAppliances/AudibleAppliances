@@ -13,8 +13,7 @@ import uk.ac.cam.groupprojects.bravo.model.numbers.Program;
 public class ProgramScreen extends BikeScreen {
     private Program programValue;
     private long lastTimeLongSpoken = 0; // Keep track of the last time we spoke the "long version" of this
-    private final long TIME_BETWEEN_LONG_SPEECH = 10000;
-    private boolean justLongSpoke = false;
+    private final long TIME_BETWEEN_LONG_SPEECH = 30000;
 
     @Override
     public boolean isActiveScreen(BikeStateTracker state) {
