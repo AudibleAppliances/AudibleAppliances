@@ -30,7 +30,7 @@ public class Distance extends ScreenNumber {
     public String formatSpeech() {
         int lower = m.getValue();
         String lowerStr;
-        if (lower > 10) {
+        if (lower < 10) {
             lowerStr = "0"+Integer.toString(lower);
         }
         else {
