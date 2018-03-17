@@ -27,7 +27,7 @@ public class InitialScreen extends BikeScreen {
 
     @Override
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
-        return Arrays.asList("Please click the start button");
+        return Arrays.asList("Please press the start button");
     }
 
     @Override

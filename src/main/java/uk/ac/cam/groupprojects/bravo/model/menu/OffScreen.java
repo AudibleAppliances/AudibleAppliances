@@ -22,7 +22,7 @@ public class OffScreen extends BikeScreen {
 
     @Override
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
-        return Arrays.asList("The screen is currently off, please click any button to continue");
+        return Arrays.asList("The screen is currently off, please press any button to continue");
     }
 
     @Override
