@@ -1,4 +1,9 @@
 #!/bin/bash
 
+# Enable authbind on port 80 (removes the need for root access to bind to low-number port)
+sudo touch /etc/authbind/byport/80
+sudo chown pi /etc/authbind/byport/80
+sudo chmod 755 /etc/authbind/byport/80
+
 cd /home/pi/AudibleAppliances/webInterface;
-authbind gunicorn --bind 0.0.0.0:80 -w 3 -t 60 wsgi;
+authbind gunicorn --bind 0.0.0.0:80 -w 3 -t 60 wsgi
