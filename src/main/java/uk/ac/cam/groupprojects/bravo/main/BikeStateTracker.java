@@ -431,6 +431,7 @@ public class BikeStateTracker {
         while (ist.hasNext()) {
             StateTime st = ist.next();
             if (st.activeBoxes.contains(indicator)) {
+                System.out.println("Found previously active time " + st.addedMillis);
                 // Found a timestamp when the indicator was active - now look for a matching timestamp in the
                 // history of images of the box containing this field
 
@@ -443,6 +444,7 @@ public class BikeStateTracker {
 
                     // Found image at the right timestamp
                     if (image.addedMillis == addedTime) {
+                        System.out.println("Found matching image");
                         return image.getRecognisedValue(field);
                     }
                 }
