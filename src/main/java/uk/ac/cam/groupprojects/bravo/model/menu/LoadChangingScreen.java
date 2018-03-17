@@ -18,7 +18,11 @@ public class LoadChangingScreen extends BikeScreen {
                            state.getBoxState(ScreenBox.LCD_TEXT_1) == LCDState.SOLID_OFF &&
                            state.getBoxState(ScreenBox.LCD_TEXT_4) == LCDState.SOLID_ON &&
                            state.getBoxState(ScreenBox.LCD_TEXT_5_TOP) == LCDState.SOLID_ON &&
-                           state.getBoxState(ScreenBox.LOAD) == LCDState.SOLID_ON;
+                           state.getBoxState(ScreenBox.LOAD) == LCDState.SOLID_ON &&
+                           state.isBoxActiveNow(ScreenBox.LOAD);
+        // Extra check for if the LOAD box is active in the latest image - without this, we
+        // may have moved into a new state but not been in it long enough to have updated, so if
+        // we read from the screen we'll get an old value.
 
         return active;
     }

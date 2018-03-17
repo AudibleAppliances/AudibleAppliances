@@ -414,6 +414,9 @@ public class BikeStateTracker {
 
     // Returns true iff the given LCD is lit in the latest received image
     public boolean isBoxActiveNow(ScreenBox box) {
+        if (history.isEmpty()) {
+            return false;
+        }
         return history.getLast().activeBoxes.contains(box);
     }
 }
