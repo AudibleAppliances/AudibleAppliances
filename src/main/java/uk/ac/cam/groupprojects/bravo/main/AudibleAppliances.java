@@ -84,10 +84,6 @@ public class AudibleAppliances {
             }
         }
         finally {
-            if (synthesiser != null) {
-                synthesiser.speak("Goodbye! Hope to see you again soon!");
-                synthesiser.close();
-            }
             printFooter();
         }
     }

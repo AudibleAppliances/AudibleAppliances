@@ -421,6 +421,8 @@ public class BikeStateTracker {
         return history.getLast().activeBoxes.contains(box);
     }
 
+    // Return the last image of a field for which the field's indicator LCD was turned on
+    // Useful for eg. speed, making sure we read the speed and not the RPM
     public ScreenNumber getLastActiveReading(BikeField field) throws IOException, UnrecognisedDigitException {
         if (!field.hasIndicatorBox()) {
             return null;
