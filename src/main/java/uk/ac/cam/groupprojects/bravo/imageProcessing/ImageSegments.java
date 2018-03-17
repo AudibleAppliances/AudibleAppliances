@@ -39,6 +39,11 @@ public class ImageSegments {
         int w = (int) Math.round(box.getWidth()/100.0 * image.getWidth());
         int h = (int) Math.round(box.getHeight()/100.0 * image.getHeight());
         // Crop image and return
-        return image.getSubimage(x, y, w, h);
+        long start = System.currentTimeMillis();
+        BufferedImage sub = image.getSubimage(x, y, w, h);
+        long elapsed = System.currentTimeMillis() - start;
+        System.out.println("Cropping: " + elapsed);
+
+        return sub;
     }
 }
