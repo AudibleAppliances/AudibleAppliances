@@ -45,7 +45,10 @@ public class RunningScreen extends BikeScreen {
         };
 
         for (BikeField field : readableFields) {
+            System.out.println(field.toString());
+            try { System.in.read() ; } catch (Exception e) { }
             if (configData.isSpokenField(field)) {
+                System.out.println("Is spoken");
                 ScreenNumber n = null;
 
                 if (field.hasIndicatorBox()) {
