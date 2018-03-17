@@ -149,6 +149,7 @@ public class BikeStateTracker {
         if (timeState != null) { // If this is null, it just means we've only just started and don't have enough data yet
             bikeTime = timeState.getValue();
         }
+        System.out.println("Bike time: " + bikeTime);
         history.add(new StateTime(currentTime, activeSegs, bikeTime));
 
         // DEBUG
