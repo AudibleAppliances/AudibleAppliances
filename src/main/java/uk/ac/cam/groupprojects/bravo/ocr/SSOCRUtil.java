@@ -17,7 +17,6 @@ import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter.ToMat;
 
 import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
-import uk.ac.cam.groupprojects.bravo.util.FastImageIO;
 
 public class SSOCRUtil {
     protected static final String IMG_TYPE = "jpg";
@@ -28,9 +27,13 @@ public class SSOCRUtil {
         return saveFile(img, f);
     }
     public static File saveFile(BufferedImage img, File f) throws IOException {
-        FastImageIO.write(img, f);
+        ImageIO.write(img, IMG_TYPE, f);
 
         return f;
+    }
+
+    public static BufferedImage resize(BufferedImage img, double percent) {
+        return null;
     }
 
     public static Process startSSOCR(List<String> args) throws IOException {
