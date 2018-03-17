@@ -211,7 +211,10 @@ public class BikeStateTracker {
         boolean stateChanged = false;
         if (!history.isEmpty()) {
             BikeScreen newState = history.getLast().state;
-            if (newState != null && newState.getEnum() != currentScreen.getEnum() && stableState(currentTime)) {
+            boolean isChange = (newState == null && currentScreen != null) ||
+                               (newState != null && currentScreen == null) ||
+                               (newState != null && currentScreen != null && newState.getEnum() != currentScreen.getEnum());
+            if (isChange && stableState(currentTime)) {
                 currentScreen = newState;
                 stateChanged = true;
             }
