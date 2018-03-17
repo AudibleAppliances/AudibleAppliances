@@ -48,10 +48,10 @@ public class RunningScreen extends BikeScreen {
             System.out.println(field.toString());
             try { System.in.read() ; } catch (Exception e) { }
             if (configData.isSpokenField(field)) {
-                System.out.println("Is spoken");
                 ScreenNumber n = null;
 
                 if (field.hasIndicatorBox()) {
+                    System.out.println("Has indicator");
                     try {
                         // Get the last reading from when the indicator was lit up
                         n = bikeStateTracker.getLastActiveReading(field);

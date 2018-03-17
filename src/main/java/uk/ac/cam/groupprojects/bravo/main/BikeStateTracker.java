@@ -443,6 +443,7 @@ public class BikeStateTracker {
 
                     // Found image at the right timestamp
                     if (image.addedMillis == addedTime) {
+                        System.out.println("Found matching image");
                         return image.getRecognisedValue(field);
                     }
                 }
