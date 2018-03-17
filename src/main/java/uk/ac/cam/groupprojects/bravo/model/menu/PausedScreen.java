@@ -48,7 +48,7 @@ public class PausedScreen extends BikeScreen {
 
     @Override
     public int getSpeakDelay() {
-        return ApplicationConstants.DEFAULT_SPEAK_FREQ;
+        return 20000;
     }
 
     @Override
