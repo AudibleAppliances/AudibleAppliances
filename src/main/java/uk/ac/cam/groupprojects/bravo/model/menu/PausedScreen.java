@@ -6,7 +6,6 @@ import java.util.List;
 import uk.ac.cam.groupprojects.bravo.config.BikeField;
 import uk.ac.cam.groupprojects.bravo.config.ConfigData;
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
-import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
 import uk.ac.cam.groupprojects.bravo.model.numbers.ScreenNumber;
@@ -30,7 +29,7 @@ public class PausedScreen extends BikeScreen {
     @Override
     public List<String> formatSpeech(BikeStateTracker bikeStateTracker) {
         List<String> dialogs = new ArrayList<>();
-        dialogs.add("The bike is currently paused.");
+        dialogs.add("The bike is paused. Press start to resume, or reset to select a new mode.");
 
         ConfigData configData = bikeStateTracker.getConfig();
         if (configData.isSpokenField(BikeField.DISTANCE)) {

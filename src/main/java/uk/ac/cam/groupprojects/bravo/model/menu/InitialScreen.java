@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import uk.ac.cam.groupprojects.bravo.imageProcessing.ScreenBox;
-import uk.ac.cam.groupprojects.bravo.main.ApplicationConstants;
 import uk.ac.cam.groupprojects.bravo.main.BikeStateTracker;
 import uk.ac.cam.groupprojects.bravo.model.LCDState;
 
