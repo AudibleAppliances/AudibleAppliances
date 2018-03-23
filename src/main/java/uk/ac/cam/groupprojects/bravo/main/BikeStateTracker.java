@@ -185,10 +185,6 @@ public class BikeStateTracker {
                 break;
             }
         }
-
-        // Update the record of the state we're in at the moment
-        history.getLast().state = instantaneousScreen;
-
         System.out.println();
         if (instantaneousScreen == null) {
             instantaneousScreen = ScreenEnum.INVALID_SCREEN.getBikeScreen();
@@ -197,6 +193,10 @@ public class BikeStateTracker {
         else {
             System.out.println("Instantaneous State: " + instantaneousScreen.getEnum().toString());
         }
+
+        // Update the record of the state we're in at the moment
+        history.getLast().state = instantaneousScreen;
+
         if (currentScreen == null) {
             System.out.println("No stable state");
         }

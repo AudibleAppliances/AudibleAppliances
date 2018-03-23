@@ -19,6 +19,10 @@ def gen(image_client):
 def index():
     return render_template("index.html")
 
+@app.route('/jquery')
+def jquery():
+    return render_template("jquery.js")
+
 @app.route('/select_components.html')
 def select_components():
     return render_template("select_components.html")
